@@ -1,0 +1,15 @@
+// Included only by the local preview server, never by the Apps Script deployment.
+window.google={script:{get run(){
+  let success=()=>{},failure=()=>{};
+  const chain=new Proxy({}, {get(_,key){
+    if(key==='withSuccessHandler')return fn=>{success=fn;return chain;};
+    if(key==='withFailureHandler')return fn=>{failure=fn;return chain;};
+    return (...args)=>fetch('/rpc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fn:key,args})})
+      .then(r=>r.json()).then(data=>{
+        if(data.error){failure({message:data.error});return;}
+        if(data.resetCode)alert('LOCAL PREVIEW reset code: '+data.resetCode);
+        success(data.result);
+      }).catch(e=>failure({message:e.message}));
+  }});
+  return chain;
+}}};

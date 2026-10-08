@@ -1,0 +1,48 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+let rules=[];
+const ctx=vm.createContext({Date,Intl,console,
+  Utilities:{formatDate(value,tz,pattern){
+    assert.equal(tz,'Asia/Kolkata');
+    const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(value).map(x=>[x.type,x.value]));
+    return pattern==='HH:mm'?`${p.hour}:${p.minute}`:`${p.year}-${p.month}-${p.day}`;
+  }}
+});
+for(const file of ['00_Config.js','03_Bookings.js'])vm.runInContext(fs.readFileSync(file,'utf8'),ctx);
+ctx.getSS_=()=>({getSpreadsheetTimeZone:()=> 'Asia/Kolkata'});
+ctx.sh_=n=>n;ctx.rowsAsObjects_=()=>rules;ctx.getSetting_=(key,fallback)=>key==='BUSINESS_TIMEZONE'?'UTC':fallback;
+const start=new Date('2030-01-07T13:00:00Z'),end=new Date('2030-01-07T13:30:00Z');
+const weekly={RuleType:'WEEKLY',Weekday:'Mon',Enabled:true,Date:'',StartTime:'12:00',EndTime:'20:00'};
+rules=[weekly];assert(ctx.withinWorkingHours_(start,end).ok);
+rules=[{...weekly,StartTime:new Date('2000-01-01T06:30:00Z'),EndTime:new Date('2000-01-01T14:30:00Z')}];
+assert(ctx.withinWorkingHours_(start,end).ok);
+assert.equal(ctx.availabilityRules_()[0].StartTime,'12:00');
+assert(rules[0].StartTime instanceof Date);
+rules.push({RuleType:'BLOCK',Enabled:true,Date:new Date('2030-01-06T18:30:00Z'),StartTime:'',EndTime:''});
+assert.equal(ctx.withinWorkingHours_(start,end).ok,false);
+rules[1].StartTime=new Date('2000-01-01T07:30:00Z');rules[1].EndTime=new Date('2000-01-01T08:30:00Z');
+assert.equal(ctx.withinWorkingHours_(start,end).ok,false);
+assert.throws(()=>ctx.quoteForCandidate_({Timezone:'UTC'},{date:'2030-01-07',startTime:'',endTime:'13:30'},false),/Select a date/);
+const overnight={...weekly,StartTime:'22:00',EndTime:'02:00'};
+const overnightStart=new Date('2030-01-07T23:00:00Z'),overnightEnd=new Date('2030-01-08T01:00:00Z');
+rules=[overnight];assert(ctx.withinWorkingHours_(overnightStart,overnightEnd).ok);
+assert(ctx.withinWorkingHours_(new Date('2030-01-08T00:30:00Z'),new Date('2030-01-08T01:00:00Z')).ok);
+rules.push({RuleType:'BLOCK',Enabled:true,Date:'2030-01-08',StartTime:'',EndTime:''});
+assert.equal(ctx.withinWorkingHours_(overnightStart,overnightEnd).ok,false);
+rules=[overnight,{RuleType:'BLOCK',Enabled:true,Date:'2030-01-08',StartTime:'00:30',EndTime:'01:30'}];
+assert.equal(ctx.withinWorkingHours_(overnightStart,overnightEnd).ok,false);
+rules=[overnight,{RuleType:'BLOCK',Enabled:true,Date:'2030-01-07',StartTime:'23:45',EndTime:'00:45'}];
+assert.equal(ctx.withinWorkingHours_(new Date('2030-01-08T00:30:00Z'),new Date('2030-01-08T01:00:00Z')).ok,false);
+rules=[overnight];
+assert.throws(()=>ctx.bookingEndDate_('2030-01-07','23:00','01:00',false),/Confirm that this is an overnight booking/);
+assert.equal(ctx.bookingEndDate_('2030-01-07','23:00','01:00',true),'2030-01-08');
+assert.equal(ctx.bookingEndDate_('2030-01-07','09:00','10:00'),'2030-01-07');
+assert.throws(()=>ctx.bookingEndDate_('2030-01-07','09:00','09:00'),/different from start/);
+ctx.calculateCharge_=()=>50;
+assert.throws(()=>ctx.quoteForCandidate_({Timezone:'UTC',CandidateType:'PERCENTAGE'},{date:'2030-01-07',startTime:'23:00',endTime:'01:00',overnightConfirmed:false},false),/Confirm that this is an overnight booking/);
+const overnightQuote=ctx.quoteForCandidate_({Timezone:'UTC',CandidateType:'PERCENTAGE'},{date:'2030-01-07',startTime:'23:00',endTime:'01:00',overnightConfirmed:true},false);
+assert(overnightQuote.available);
+assert.equal(overnightQuote.durationMinutes,120);
+assert.equal(overnightQuote.startUTC,'2030-01-07T23:00:00.000Z');
+assert.equal(overnightQuote.endUTC,'2030-01-08T01:00:00.000Z');
+console.log('PASS availability: text/Date cells, spreadsheet vs business timezone, full-day/timed blocks, missing booking fields');
+console.log('PASS overnight booking duration, next-day end conversion, working hours, and next-day block checks');

@@ -1,0 +1,102 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const html=fs.readFileSync('Index.html','utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+new vm.Script(script);
+assert(html.includes("candTab('booked')\">Booked Times"));
+assert(html.includes("adminTab('booked')\">Booked Times"));
+assert(html.includes('data-admin-page="booked"'));
+const bookedUi=vm.createContext({businessTimezoneOptions:timezone=>`<option selected>${timezone}</option>`,esc:value=>String(value??'')});
+const bookedUiStart=script.indexOf('function renderBookedTimes('),bookedUiEnd=script.indexOf('\nasync function loadBookedTimes',bookedUiStart);
+vm.runInContext(script.slice(bookedUiStart,bookedUiEnd),bookedUi);
+const candidateBookedView=bookedUi.renderBookedTimes('candidateBooked','America/New_York');
+assert(candidateBookedView.includes('id="candidateBookedDate"'));
+assert(candidateBookedView.includes('id="candidateBookedTimezone"'));
+assert(candidateBookedView.includes('America/New_York'));
+assert(bookedUi.renderBookedTimesResult({timezone:'America/New_York',booked:[{date:'28 Sept 2026',start:'10:00 PM',end:'10:30 PM'}]}).includes('10:00 PM'));
+const data={candidates:[{candidateId:'AV-1',name:'Anurag Verma',email:'test@example.com',active:true}],bookings:[{bookingId:'INT-1',candidateId:'AV-1',startIST:'Sep 28 2026',type:'Technical',status:'CONFIRMED'}],payments:[{PaymentID:'PAY-1',BookingID:'INT-1',CandidateID:'AV-1',UTR:'TEST-BOOKING-001',SubmittedAmountUSD:50,Status:'VERIFIED'}],refunds:[{RefundID:'REF-1',BookingID:'INT-1',CandidateID:'AV-1',AmountUSD:50,Status:'REFUNDED'}]};
+const row={dataset:{searchIndex:'0'},classList:{toggle(_,hidden){row.hidden=hidden;}},unsavedValue:'75'};
+const empty={classList:{toggle(_,hidden){empty.hidden=hidden;}}};
+const ctx=vm.createContext({zones:['Asia/Kolkata','America/New_York'],document:{},withoutGmtOffset:s=>String(s??''),adminData:data,esc:s=>String(s??'').replaceAll('<','&lt;'),el:id=>id.startsWith('searchTable_')?{querySelectorAll:()=>[row]}:empty});
+vm.runInContext(script.slice(script.indexOf('function adminBusinessTimezone('),script.indexOf('function showSignedOut(')),ctx);
+for(const kind of ['candidates','bookings','payments','refunds']){
+  assert(ctx.adminRecordMatches(kind,data[kind][0],'ANURAG test@example.com'));
+  assert(!ctx.adminRecordMatches(kind,data[kind][0],'missing'));
+  assert(ctx.adminRecordMatches(kind,data[kind][0],'   '));
+  ctx.filterAdminRecords(kind,'missing');assert(row.hidden);assert.equal(empty.hidden,false);
+  ctx.filterAdminRecords(kind,'anurag');assert.equal(row.hidden,false);assert(empty.hidden);assert.equal(row.unsavedValue,'75');
+  const rendered=ctx['render'+kind[0].toUpperCase()+kind.slice(1)]();
+  assert(rendered.includes('oninput="filterAdminRecords'));
+  assert(rendered.includes('data-search-index="0"'));
+}
+assert(ctx.adminRecordMatches('payments',data.payments[0],'50 verified test-booking'));
+assert(ctx.adminRecordMatches('refunds',data.refunds[0],'sep 28 refunded'));
+assert(!ctx.renderCreate().includes('acSearch'));
+assert(ctx.renderCreate().includes('Anurag Verma (AV-1)'));
+assert(!ctx.renderCreate().includes('test@example.com'));
+assert(!fs.readFileSync('04_Admin.js','utf8').includes('.slice(0,100)'));
+const confirmed=data.bookings[0];
+assert(ctx.bookingActions({...confirmed,startUTC:new Date(Date.now()+60000).toISOString()}).includes('Cancel booking'));
+assert(!ctx.bookingActions({...confirmed,startUTC:new Date(Date.now()-60000).toISOString()}).includes('Cancel booking'));
+const expiredButton={dataset:{cancelStart:new Date(Date.now()-1000).toISOString()},classList:{add(){expiredButton.hidden=true;}}};
+ctx.document.querySelectorAll=()=>[expiredButton];ctx.hideExpiredCancelButtons();assert(expiredButton.hidden);
+assert(ctx.bookingActions(confirmed).includes('>Edit</button>'));
+assert(ctx.bookingActions(confirmed).includes('class="small hidden" onclick="saveBooking'));
+assert(!ctx.bookingActions({...confirmed,status:'CANCELLED'}).includes('<button'));
+assert.equal(ctx.bookingAmountCell({...confirmed,status:'CANCELLED'},'fc',50),'$50.00');
+assert(ctx.bookingAmountCell(confirmed,'fc',50).includes('class="hidden"'));
+assert(!ctx.renderPayments().includes('payAction('));
+data.payments[0].Status='SUBMITTED';assert(ctx.renderPayments().includes('payAction('));
+console.log('PASS confirmed booking Edit/hidden Save, read-only cancelled bookings and verified payment actions');
+console.log('PASS live search across four tabs, related candidate/booking fields, case-insensitive terms, empty results, preserved edits and clean candidate dropdown');
+const originalEl=ctx.el,fields=new Map();
+ctx.el=id=>{if(!fields.has(id))fields.set(id,{value:'original',disabled:true,classList:{toggle(_,hidden){fields.get(id).hidden=hidden;}}});return fields.get(id);};
+for(const key of ['candidate_AV-1','settings','timezone']){
+  const ids=['field_'+key];
+  ctx.toggleFields(key,ids,true);assert.equal(ctx.el(ids[0]).disabled,false);
+  assert.equal(ctx.el('actions_'+key).hidden,false);
+  ctx.el(ids[0]).value='unsaved';ctx.toggleFields(key,ids,false);
+  assert.equal(ctx.el(ids[0]).value,'original');assert(ctx.el(ids[0]).disabled);
+  assert.equal(ctx.el('actions_'+key).hidden,true);assert.equal(ctx.el('edit_'+key).hidden,false);
+}
+ctx.el=originalEl;data.settings={};
+data.settings.BUSINESS_TIMEZONE='Europe/London';
+assert(ctx.renderBookings().includes('all times shown in Europe/London'));
+assert(ctx.renderCreate().includes('id="acTz" readonly value="Europe/London"'));
+assert(ctx.renderCandidates().includes('id="ct_AV-1" disabled'));
+assert(ctx.renderSettings().includes('<select disabled id="sTZ"'));
+assert(ctx.businessTimezoneOptions('Asia/Kolkata').includes('value="Asia/Kolkata" selected'));
+assert(ctx.businessTimezoneOptions('Pacific/Chatham').includes('value="Pacific/Chatham" selected'));
+assert(ctx.businessTimezoneOptions('UTC').includes('value="UTC" selected')); 
+assert(html.includes('id="cTz" disabled>'));
+console.log('PASS candidate/settings/timezone edit mode, Cancel restores values, and read-only defaults');
+const avFields=new Map();
+const avElement=key=>{if(!avFields.has(key))avFields.set(key,{value:'keep',classList:{toggle(_,hidden){avFields.get(key).hidden=hidden;}}});return avFields.get(key);};
+const select={value:'BLOCK',closest:()=>({querySelector:avElement})};
+ctx.updateAvailabilityFields(select);
+assert(avElement('.avWeekdayField').hidden);assert(avElement('.avDay').disabled);
+assert.equal(avElement('.avDateField').hidden,false);assert.equal(avElement('.avDate').disabled,false);
+select.value='WEEKLY';ctx.updateAvailabilityFields(select);
+assert.equal(avElement('.avWeekdayField').hidden,false);assert.equal(avElement('.avDay').disabled,false);
+assert(avElement('.avDateField').hidden);assert(avElement('.avDate').disabled);
+assert.equal(avElement('.avDay').value,'keep');
+assert(ctx.avRow({RuleType:'BLOCK'},0).includes('class="avWeekdayField hidden"'));
+assert(ctx.avRow({RuleType:'WEEKLY'},0).includes('class="avDateField hidden"'));
+console.log('PASS availability field visibility on initial render and rule-type changes');
+data.settings.BUSINESS_TIMEZONE='America/New_York';data.nowUTC='2026-09-29T02:00:00Z';
+data.bookings=[
+ {name:'Later',status:'CONFIRMED',startUTC:'2026-09-29T01:00:00Z',endUTC:'2026-09-29T01:30:00Z',duration:30},
+ {name:'Earlier',status:'CONFIRMED',startUTC:'2026-09-28T22:30:00Z',endUTC:'2026-09-28T23:00:00Z',duration:30},
+ {name:'Tomorrow',status:'CONFIRMED',startUTC:'2026-09-29T14:00:00Z'},
+ {name:'Cancelled',status:'CANCELLED',startUTC:'2026-09-28T21:00:00Z'}
+];
+assert.equal(ctx.todaysAdminBookings().length,2);
+assert.equal(ctx.todaysAdminBookings()[0].name,'Earlier');
+assert(ctx.renderTodayBookings().includes('2026-09-28'));
+assert(ctx.renderTodayBookings().includes('30 min'));
+assert(!ctx.renderTodayBookings().includes('Cancelled'));
+assert.equal(ctx.todaysAdminBookings('2026-09-29').length,1);
+assert.equal(ctx.todaysAdminBookings('2026-09-29')[0].name,'Tomorrow');
+assert.equal(ctx.todaysAdminBookings('2026-09-30').length,0);
+assert(ctx.renderTodayBookings().includes('value="2026-09-28"'));
+data.bookings=[];assert(ctx.renderTodayBookings('2026-09-30').includes('value="2026-09-30"'));
+assert(ctx.renderTodayBookings().includes('No confirmed bookings for this date'));
+console.log('PASS today dashboard: business-date boundary, time order, duration, cancelled exclusion and empty state');

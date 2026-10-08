@@ -1,0 +1,1008 @@
+<!doctype html><html><head><base target="_top"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+:root{--b:#1a73e8;--bg:#f5f7fb;--text:#202124;--muted:#6b7280;--bad:#b3261e;--good:#137333}*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;background:var(--bg);color:var(--text)}header{background:#fff;border-bottom:1px solid #e5e7eb;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}.wrap{max-width:1180px;margin:25px auto;padding:0 16px}.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 10px #0000000d;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}label{display:block;font-weight:600;font-size:13px;margin:8px 0 6px}input,select,textarea{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:7px;font-size:14px}button{border:0;border-radius:7px;padding:10px 14px;font-weight:600;cursor:pointer;background:var(--b);color:#fff}button.secondary{background:#eef2ff;color:#1e40af}button.danger{background:var(--bad)}button.small{padding:6px 9px;font-size:12px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.tabs button{background:#fff;color:#374151;border:1px solid #d1d5db}.tabs button.active{background:var(--b);color:#fff}.hidden{display:none!important}.msg{padding:10px;border-radius:7px;margin:10px 0;background:#eef6ff}.err{background:#fdecec;color:var(--bad)}.ok{background:#e9f6ed;color:var(--good)}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:9px;border-bottom:1px solid #eee;vertical-align:top}th{background:#f8fafc}.scroll{overflow:auto}.metric{font-size:26px;font-weight:700}.muted{color:var(--muted);font-size:13px}.loader{position:fixed;inset:0;background:#ffffffb8;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}.spinner{width:44px;height:44px;border:5px solid #dbe7f8;border-top-color:var(--b);border-radius:50%;animation:spin .75s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.booked{background:#fff0f0;padding:10px;border-radius:6px;margin:6px 0}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.right{margin-left:auto}h1,h2,h3{margin-top:0}@media(max-width:760px){.two{grid-template-columns:1fr}.wrap{margin-top:14px}.card{padding:15px}header{padding:12px}}
+
+:root {
+  color-scheme: light;
+  --b: #315efb;
+  --bg: #f4f6fb;
+  --text: #172033;
+  --muted: #68748a;
+  --bad: #c03948;
+  --good: #16805d;
+  --line: #e4e9f2;
+  --surface: #ffffff;
+  --soft-blue: #eef2ff;
+  --shadow: 0 12px 34px rgba(28, 42, 75, .07);
+  --radius: 16px;
+}
+* { box-sizing: border-box; }
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--text);
+  background: radial-gradient(ellipse at 50% -18%, #e8edff 0, transparent 42%), var(--bg);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+header {
+  position: sticky;
+  z-index: 5;
+  top: 0;
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px max(24px, calc((100vw - 1240px) / 2));
+  border-bottom: 1px solid rgba(228, 233, 242, .9);
+  background: rgba(255, 255, 255, .88);
+  box-shadow: 0 4px 18px rgba(28, 42, 75, .035);
+  backdrop-filter: blur(14px);
+}
+header > b { display: flex; align-items: center; gap: 11px; font-size: 15px; font-weight: 750; letter-spacing: -.025em; }
+header > b::before {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 11px;
+  background: linear-gradient(145deg, #547aff, #3153e8);
+  box-shadow: 0 5px 12px rgba(49, 94, 251, .24);
+  color: white;
+  content: "I";
+  font-size: 17px;
+  font-weight: 800;
+}
+.wrap { width: min(1400px, 100%); max-width: 1400px; margin: 34px auto 64px; padding: 0 24px; }
+.card {
+  margin-bottom: 20px;
+  padding: 26px;
+  border: 1px solid rgba(228, 233, 242, .92);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+#register { max-width: 920px; margin-inline: auto; }
+#candidateLogin, #adminLogin, #forgot { max-width: 560px; margin-inline: auto; }
+#welcome {
+  position: relative;
+  overflow: hidden;
+  min-height: 250px;
+  padding: clamp(30px, 6vw, 66px);
+  border: 0;
+  background: linear-gradient(118deg, #182a58 0%, #244aaf 57%, #496df0 100%);
+  box-shadow: 0 20px 48px rgba(32, 64, 150, .2);
+  color: white;
+}
+#welcome::after {
+  position: absolute;
+  top: -165px;
+  right: -70px;
+  width: 390px;
+  height: 390px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 50%;
+  box-shadow: 0 0 0 38px rgba(255,255,255,.035), 0 0 0 78px rgba(255,255,255,.025);
+  content: "";
+  pointer-events: none;
+}
+#welcome h1 { max-width: 600px; margin: 0 0 10px; color: #fff; font-size: clamp(32px, 5vw, 48px); font-weight: 760; letter-spacing: -.045em; line-height: 1.12; }
+#welcome p { max-width: 540px; margin: 0 0 26px; color: rgba(255,255,255,.76); font-size: 15px; }
+#welcome .welcome-actions { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, max-content); gap: 12px; }
+#welcome .welcome-actions button { min-width: 112px; }
+#welcome button { border-color: rgba(255,255,255,.24); background: white; color: #2447a6; }
+#welcome button.secondary { border-color: rgba(255,255,255,.26); background: rgba(255,255,255,.12); color: white; }
+h1, h2, h3 { color: var(--text); letter-spacing: -.025em; line-height: 1.25; }
+h2 { margin-bottom: 18px; font-size: 22px; font-weight: 720; }
+h3 { margin-bottom: 14px; font-size: 16px; font-weight: 700; }
+.grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 18px; }
+.two { gap: 20px; }
+label { margin: 12px 0 7px; color: #39445a; font-size: 12px; font-weight: 700; letter-spacing: .015em; }
+input, select, textarea {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #dce2ec;
+  border-radius: 9px;
+  outline: none;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+  transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+}
+textarea { min-height: 100px; resize: vertical; }
+input:focus, select:focus, textarea:focus { border-color: #6b8cff; box-shadow: 0 0 0 3px rgba(49, 94, 251, .12); }
+input:disabled, select:disabled, textarea:disabled { background: #f7f8fb; color: #59657a; }
+button {
+  min-height: 40px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: var(--b);
+  box-shadow: 0 3px 8px rgba(49, 94, 251, .14);
+  color: white;
+  font: inherit;
+  font-weight: 650;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+button:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(49, 94, 251, .19); }
+button:active { transform: translateY(0); }
+button:focus-visible { outline: 3px solid rgba(49, 94, 251, .3); outline-offset: 2px; }
+button.secondary { border-color: #e0e6f1; background: #f5f7fc; box-shadow: none; color: #34415b; }
+button.secondary:hover { background: #edf1fa; box-shadow: 0 4px 10px rgba(28, 42, 75, .08); }
+button.danger { background: var(--bad); box-shadow: 0 3px 8px rgba(192, 57, 72, .14); }
+button.small { min-height: 32px; padding: 6px 10px; border-radius: 7px; font-size: 12px; }
+.row { gap: 10px; }
+.auth-actions { display: flex; align-items: center; gap: 12px; margin-top: 22px; }
+.auth-actions-single { width: 100%; }
+.auth-actions-single button { width: 100%; }
+.form-actions { margin-top: 22px; }
+.tabs { gap: 6px; margin-bottom: 18px; padding: 6px; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: #fff; box-shadow: 0 5px 18px rgba(28, 42, 75, .04); }
+.tabs button { min-height: 38px; flex: 0 0 auto; padding: 8px 13px; border-color: transparent; background: transparent; box-shadow: none; color: #5d6880; }
+.tabs button:hover { transform: none; background: #f4f6fb; box-shadow: none; }
+.tabs button.active { background: var(--soft-blue); color: #3153d8; }
+.tabs button.logout-button { margin-left: auto; border-color: #f3c5cb; background: #fff1f2; color: #a83240; font-weight: 700; }
+.tabs button.logout-button:hover { border-color: #e8a8b0; background: #ffe4e7; box-shadow: none; }
+.admin-mobile-nav { display: none; position: relative; }
+.admin-mobile-nav .logout-button { border-color: #f3c5cb; background: #fff1f2; box-shadow: none; color: #a83240; }
+.admin-mobile-nav .logout-button:hover { transform: none; border-color: #e8a8b0; background: #ffe4e7; box-shadow: none; }
+.admin-menu-toggle { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; border: 1px solid var(--line); background: white; box-shadow: none; color: var(--text); }
+.admin-menu-toggle:hover { transform: none; background: #f7f8fc; box-shadow: none; }
+.admin-menu-icon { display: grid; gap: 4px; }
+.admin-menu-icon span { display: block; width: 18px; height: 2px; border-radius: 2px; background: currentColor; }
+.admin-menu-panel { position: absolute; z-index: 20; top: calc(100% + 8px); left: 0; display: grid; width: min(320px, calc(100vw - 48px)); gap: 4px; padding: 8px; border: 1px solid var(--line); border-radius: 12px; background: white; box-shadow: 0 14px 32px rgba(28, 42, 75, .16); }
+.admin-menu-panel.hidden { display: none; }
+.admin-menu-panel button { width: 100%; border: 0; background: transparent; box-shadow: none; color: #465269; text-align: left; }
+.admin-menu-panel button:hover { transform: none; background: #f4f6fb; box-shadow: none; }
+.admin-menu-panel button.active { background: var(--soft-blue); color: #3153d8; }
+.hidden { display: none !important; }
+.msg { padding: 12px 14px; border: 1px solid #dce7ff; border-radius: 10px; background: #f2f6ff; }
+.err { border-color: #f2d5d8; background: #fff3f3; color: var(--bad); }
+.ok { border-color: #d1eadf; background: #effaf4; color: var(--good); }
+.muted { color: var(--muted); font-size: 13px; }
+.metric { color: #284ecb; font-size: 32px; font-weight: 760; letter-spacing: -.04em; }
+.scroll { overflow: auto; border: 1px solid var(--line); border-radius: 11px; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+th, td { padding: 12px 13px; border-bottom: 1px solid #edf0f5; text-align: left; vertical-align: top; }
+th { position: sticky; top: 0; background: #f7f8fc; color: #59657a; font-size: 11px; font-weight: 750; letter-spacing: .045em; text-transform: uppercase; white-space: nowrap; }
+tbody tr:last-child td, tr:last-child td { border-bottom: 0; }
+td { color: #39445a; }
+table input, table select { min-width: 88px; }
+#searchTable_bookings { min-width: 1120px; }
+#searchTable_candidates { min-width: 920px; }
+#searchTable_payments { min-width: 900px; }
+#searchTable_refunds { min-width: 760px; }
+#searchTable_bookings th:last-child, #searchTable_bookings td:last-child { min-width: 150px; white-space: nowrap; }
+#searchTable_bookings td:last-child button + button { margin-left: 6px; }
+#adminContent .admin-search {
+  display: grid;
+  grid-template-columns: auto minmax(240px, 420px);
+  align-items: center;
+  justify-content: end;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+#adminContent .admin-search label { margin: 0; white-space: nowrap; }
+#adminContent .admin-search input { width: 100%; }
+#adminContent .dashboard-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 8px; }
+#adminContent .dashboard-heading h2 { margin: 0; }
+#adminContent .dashboard-date { width: min(220px, 100%); flex: 0 1 220px; }
+#adminContent .dashboard-date label { margin: 0 0 6px; }
+#adminContent .dashboard-date input { display: block; width: 100%; }
+#adminContent .dashboard-timezone { margin: 12px 0; }
+#adminContent .dashboard-refresh { display: block; margin-bottom: 14px; }
+#candHome .scroll table { min-width: 980px; }
+#candHome .scroll th, #candHome .scroll td { white-space: nowrap; }
+#candHome .scroll td:nth-child(3) { min-width: 220px; }
+#adminContent .grid > div:has(#acOverride) { display: flex; align-items: flex-end; }
+#adminContent label:has(#acOverride) { display: flex; width: 100%; min-height: 44px; align-items: center; gap: 10px; margin: 0; letter-spacing: 0; }
+#adminContent .card:has(#sTZ) .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+#avRows .av { grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: end; gap: 16px; padding: 22px; }
+#avRows .av > div:nth-child(7) { grid-column: span 3; }
+#avRows .av > div:last-child { grid-column: 1 / -1; display: flex; justify-content: flex-end; }
+#avRows .av .avBlockHint:not(.hidden) { grid-column: 1 / -1; }
+.av-remove { border: 1px solid #f1d8da; background: #fff5f5; box-shadow: none; color: #a83240; }
+.av-remove:hover { transform: none; border-color: #e8a8b0; background: #ffe9eb; box-shadow: none; }
+#adminContent .card > .grid + button { margin-top: 22px; }
+#actions_settings { display: flex; align-items: center; gap: 10px; margin-top: 22px; }
+.overnight-confirmation { width: 100%; min-width: 0; margin: 8px 0 0; padding: 10px 12px; border: 1px solid #dce5ff; border-radius: 9px; background: #f5f7ff; }
+.overnight-confirmation label { display: flex; align-items: center; gap: 9px; min-width: 0; margin: 0; line-height: 1.4; }
+.overnight-confirmation input[type="checkbox"] { width: 18px; min-width: 18px; min-height: 18px; height: 18px; flex: 0 0 18px; margin: 0; padding: 0; }
+.overnight-confirmation label span { min-width: 0; overflow-wrap: anywhere; }
+#acOverride { width: 16px !important; min-height: 16px; height: 16px; flex: 0 0 16px; vertical-align: middle; margin: 0; }
+.booked { margin: 7px 0; padding: 11px 13px; border: 1px solid #f1d8da; border-radius: 9px; background: #fff5f5; color: #9e3540; }
+#candHome .timezone-edit-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+#candHome .timezone-edit-actions #edit_timezone {
+  flex: 0 0 auto;
+  min-height: 30px;
+  margin: 0;
+  padding: 4px 9px;
+  border: 1px solid #dfe6ff;
+  background: var(--soft-blue);
+  box-shadow: none;
+  color: #3153d8;
+  font-size: 12px;
+}
+#candHome .timezone-edit-actions #edit_timezone:hover { transform: none; background: #e4eaff; box-shadow: none; }
+#candHome .timezone-edit-actions #actions_timezone { display: flex; align-items: center; gap: 6px; }
+#candHome .timezone-select { display: block; width: 100%; margin-top: 8px; }
+#quoteBox button { margin-top: 14px; }
+.modal { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; }
+.modal.hidden { display: none; }
+.modal-backdrop { position: absolute; inset: 0; background: rgba(15, 23, 42, .52); }
+.modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(560px, calc(100vw - 24px));
+  max-height: min(84vh, 760px);
+  overflow: auto;
+  padding: 20px 20px 16px;
+  border: 1px solid rgba(228, 233, 242, .9);
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 30px 70px rgba(15, 23, 42, .22);
+}
+.modal-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.modal-header h3 { margin: 0; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; }
+.loader { background: rgba(245, 247, 251, .82); backdrop-filter: blur(5px); }
+.spinner { border-width: 4px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 760px) {
+  header { min-height: 60px; padding: 10px 16px; }
+  header > b { font-size: 14px; }
+  header > b::before { width: 32px; height: 32px; }
+  .wrap { margin: 20px auto 40px; padding: 0 14px; }
+  .local-preview-notice.card { margin-bottom: 10px; padding: 10px 12px; border-width: 1px !important; }
+  .local-preview-notice p { margin: 6px 0; font-size: 12px; line-height: 1.4; }
+  .local-preview-notice details { margin-top: 5px; }
+  .local-preview-notice summary { color: #465269; font-size: 12px; font-weight: 650; cursor: pointer; }
+  .local-preview-notice details p { margin: 5px 0 0; }
+  .card { margin-bottom: 14px; padding: 19px; border-radius: 13px; }
+  #welcome { min-height: 0; padding: 28px 20px; }
+  #welcome::after { opacity: .45; }
+  #welcome p { margin-bottom: 22px; }
+  #welcome .welcome-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  #welcome .welcome-actions button { width: 100%; min-width: 0; padding-inline: 10px; }
+  #welcome .welcome-login { grid-column: 1 / -1; }
+  .two { grid-template-columns: 1fr; }
+  .tabs { flex-wrap: nowrap; margin-right: -2px; scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
+  .tabs button { flex: 0 0 auto; }
+  #candidateApp > .tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-right: 0; overflow: visible; }
+  #candidateApp > .tabs button { width: 100%; min-width: 0; padding-inline: 8px; white-space: normal; }
+  #candidateApp > .tabs .logout-button { grid-column: 1 / -1; margin-left: 0; }
+  #adminApp .tabs { display: none; }
+  #adminApp .admin-mobile-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 14px; padding: 8px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+  #adminApp .admin-mobile-nav .logout-button { min-height: 42px; margin: 0; }
+  #avRows .av { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 16px; }
+  #avRows .av > div:nth-child(7) { grid-column: 1 / -1; }
+  #avRows .av > div:last-child { grid-column: 1 / -1; justify-content: flex-end; }
+  #avRows .av select, #avRows .av input { width: 100%; min-width: 0; }
+  #adminContent .card:has(#sTZ) .grid { grid-template-columns: 1fr; gap: 12px; }
+  #adminContent .dashboard-heading { align-items: stretch; flex-direction: column; gap: 8px; }
+  #adminContent .dashboard-date { width: min(220px, 100%); flex-basis: auto; }
+  #adminContent .admin-search { grid-template-columns: 1fr; justify-content: stretch; gap: 4px; }
+  #adminContent > .dashboard-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  #adminContent > .dashboard-metrics { margin-bottom: 12px; }
+  #adminContent > .dashboard-metrics > .card { min-width: 0; min-height: 0; margin: 0; padding: 13px; }
+  #adminContent > .dashboard-metrics .metric { font-size: 25px; }
+  #adminContent > .card { margin-bottom: 12px; padding: 16px; }
+  #adminContent h2 { margin-bottom: 12px; }
+  #adminContent .dashboard-timezone { display: inline-block; margin: 5px 8px 12px 0; }
+  #adminContent .dashboard-refresh { display: inline-block; margin: 0 0 12px; }
+  #adminContent .dashboard-date { width: 100%; }
+  #adminContent .dashboard-bookings tr:not(:first-child) { gap: 2px 8px; margin-bottom: 8px; padding: 8px 10px; }
+  #adminContent .dashboard-bookings td { padding: 4px 2px; line-height: 1.35; }
+  #adminContent .dashboard-bookings td:first-child { padding-bottom: 5px; }
+  #adminContent .card:has(#searchTable_bookings) .scroll,
+  #adminContent .card:has(#searchTable_candidates) .scroll,
+  #adminContent .card:has(#searchTable_payments) .scroll,
+  #adminContent .card:has(#searchTable_refunds) .scroll { overflow: visible; border: 0; }
+  #adminContent #searchTable_bookings,
+  #adminContent #searchTable_candidates,
+  #adminContent #searchTable_payments,
+  #adminContent #searchTable_refunds { display: block; width: 100%; min-width: 0 !important; }
+  #adminContent #searchTable_bookings tbody,
+  #adminContent #searchTable_candidates tbody,
+  #adminContent #searchTable_payments tbody,
+  #adminContent #searchTable_refunds tbody { display: block; }
+  #adminContent #searchTable_bookings tr:first-child,
+  #adminContent #searchTable_candidates tr:first-child,
+  #adminContent #searchTable_payments tr:first-child,
+  #adminContent #searchTable_refunds tr:first-child,
+  #adminContent .dashboard-bookings tr:first-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  #adminContent #searchTable_bookings tr[data-search-index],
+  #adminContent #searchTable_candidates tr[data-search-index],
+  #adminContent #searchTable_payments tr[data-search-index],
+  #adminContent #searchTable_refunds tr[data-search-index] {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2px 8px;
+    margin-bottom: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: #fff;
+  }
+  #adminContent #searchTable_bookings td,
+  #adminContent #searchTable_candidates td,
+  #adminContent #searchTable_payments td,
+  #adminContent #searchTable_refunds td {
+    display: block;
+    min-width: 0 !important;
+    padding: 3px 1px;
+    border: 0;
+    overflow-wrap: anywhere;
+    white-space: normal !important;
+    line-height: 1.3;
+    font-size: 12px;
+  }
+  #adminContent #searchTable_bookings td::before,
+  #adminContent #searchTable_candidates td::before,
+  #adminContent #searchTable_payments td::before,
+  #adminContent #searchTable_refunds td::before {
+    display: block;
+    margin-bottom: 1px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  #adminContent #searchTable_bookings td:nth-child(3),
+  #adminContent #searchTable_bookings td:nth-child(9) { grid-column: 1 / -1; }
+  #adminContent #searchTable_bookings td:nth-child(1) { color: var(--muted); font-size: 11px; }
+  #adminContent #searchTable_bookings td:nth-child(1)::before { content: "Booking ID"; }
+  #adminContent #searchTable_bookings td:nth-child(2)::before { content: "Candidate"; }
+  #adminContent #searchTable_bookings td:nth-child(3)::before { content: "Interview time"; }
+  #adminContent #searchTable_bookings td:nth-child(4)::before { content: "Type"; }
+  #adminContent #searchTable_bookings td:nth-child(5)::before { content: "Charge"; }
+  #adminContent #searchTable_bookings td:nth-child(6)::before { content: "Paid"; }
+  #adminContent #searchTable_bookings td:nth-child(7)::before { content: "Payment"; }
+  #adminContent #searchTable_bookings td:nth-child(8)::before { content: "Status"; }
+  #adminContent #searchTable_bookings td:nth-child(9)::before { content: none; }
+  #adminContent #searchTable_bookings td:nth-child(9) { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  #adminContent #searchTable_bookings td:nth-child(9) button + button { margin-left: 0; }
+  #adminContent #searchTable_candidates td:nth-child(3) { grid-column: 1 / -1; }
+  #adminContent #searchTable_candidates td:nth-child(1) { color: var(--muted); font-size: 11px; }
+  #adminContent #searchTable_candidates td:nth-child(1)::before { content: "Candidate ID"; }
+  #adminContent #searchTable_candidates td:nth-child(2)::before { content: "Name"; }
+  #adminContent #searchTable_candidates td:nth-child(3)::before { content: "Email / phone"; }
+  #adminContent #searchTable_candidates td:nth-child(4)::before { content: "Type"; }
+  #adminContent #searchTable_candidates td:nth-child(5)::before { content: "Share"; }
+  #adminContent #searchTable_candidates td:nth-child(6)::before { content: "Timezone"; }
+  #adminContent #searchTable_candidates td:nth-child(7)::before { content: none; }
+  #adminContent #searchTable_candidates td:nth-child(2) { font-size: 14px; font-weight: 700; }
+  #adminContent #searchTable_candidates select,
+  #adminContent #searchTable_candidates input { width: 100% !important; min-width: 0; min-height: 38px; padding: 7px 8px; font-size: 12px; }
+  #adminContent #searchTable_candidates td:nth-child(7) > button { min-width: 74px; }
+  #adminContent #searchTable_payments td:nth-child(5) { grid-column: 1 / -1; }
+  #adminContent #searchTable_payments td:nth-child(1) { color: var(--muted); font-size: 11px; }
+  #adminContent #searchTable_payments td:nth-child(1)::before { content: "Payment ID"; }
+  #adminContent #searchTable_payments td:nth-child(2)::before { content: "Booking"; }
+  #adminContent #searchTable_payments td:nth-child(3)::before { content: "Expected"; }
+  #adminContent #searchTable_payments td:nth-child(4)::before { content: "Submitted"; }
+  #adminContent #searchTable_payments td:nth-child(5)::before { content: "UTR"; }
+  #adminContent #searchTable_payments td:nth-child(6)::before { content: "Status"; }
+  #adminContent #searchTable_payments td:nth-child(7)::before { content: none; }
+  #adminContent #searchTable_payments td:nth-child(7) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    gap: 5px;
+  }
+  #adminContent #searchTable_payments td:nth-child(7)::before { grid-column: 1 / -1; }
+  #adminContent #searchTable_payments td:nth-child(7) button { width: 100%; min-width: 0; padding-inline: 8px; }
+  #adminContent #searchTable_refunds td:nth-child(5) { grid-column: 1 / -1; }
+  #adminContent #searchTable_refunds td:nth-child(1) { color: var(--muted); font-size: 11px; }
+  #adminContent #searchTable_refunds td:nth-child(1)::before { content: "Refund ID"; }
+  #adminContent #searchTable_refunds td:nth-child(2)::before { content: "Booking"; }
+  #adminContent #searchTable_refunds td:nth-child(3)::before { content: "Amount"; }
+  #adminContent #searchTable_refunds td:nth-child(4)::before { content: "Status"; }
+  #adminContent #searchTable_refunds td:nth-child(5)::before { content: none; }
+  #adminContent #searchTable_refunds td:nth-child(5) button { width: 100%; }
+  #candHome .candidate-interviews-scroll { overflow: visible; border: 0; }
+  #candHome #candidateInterviews,
+  #candHome #candidateInterviews tbody { display: block; width: 100%; min-width: 0; }
+  #candHome #candidateInterviews tr:first-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  #candHome #candidateInterviews tr:not(:first-child) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 10px;
+    margin-bottom: 9px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: #fff;
+  }
+  #candHome #candidateInterviews td {
+    display: block;
+    min-width: 0;
+    padding: 4px 1px;
+    border: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    line-height: 1.35;
+    font-size: 12px;
+  }
+  #candHome #candidateInterviews td::before {
+    display: block;
+    margin-bottom: 1px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  #candHome #candidateInterviews td:nth-child(1)::before { content: "Booking ID"; }
+  #candHome #candidateInterviews td:nth-child(2)::before { content: "Type"; }
+  #candHome #candidateInterviews td:nth-child(3)::before { content: "Time"; }
+  #candHome #candidateInterviews td:nth-child(4)::before { content: "Status"; }
+  #candHome #candidateInterviews td:nth-child(5)::before { content: "Payment"; }
+  #candHome #candidateInterviews td:nth-child(6)::before { content: "Refund"; }
+  #candHome #candidateInterviews td:nth-child(7)::before { content: "Charge"; }
+  #candHome #candidateInterviews td:nth-child(3),
+  #candHome #candidateInterviews td:nth-child(8) { grid-column: 1 / -1; }
+  #candHome #candidateInterviews td:nth-child(3) { font-size: 13px; font-weight: 650; }
+  #candHome #candidateInterviews td:nth-child(8) { display: flex; justify-content: flex-end; padding-top: 5px; }
+  #candHome #candidateInterviews td[colspan] { grid-column: 1 / -1; }
+  #adminContent .dashboard-bookings .scroll { overflow: visible; }
+  #adminContent .dashboard-bookings table,
+  #adminContent .dashboard-bookings tbody { display: block; width: 100%; }
+  #adminContent .dashboard-bookings tr:not(:first-child) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+  }
+  #adminContent .dashboard-bookings td {
+    min-width: 0;
+    padding: 5px 2px;
+    border: 0;
+    overflow-wrap: anywhere;
+    font-size: 12px;
+  }
+  #adminContent .dashboard-bookings td:first-child {
+    grid-column: 1 / -1;
+    padding-bottom: 7px;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  #adminContent .dashboard-bookings td:nth-child(2)::before { content: "Date"; }
+  #adminContent .dashboard-bookings td:nth-child(3)::before { content: "Start"; }
+  #adminContent .dashboard-bookings td:nth-child(4)::before { content: "End"; }
+  #adminContent .dashboard-bookings td:nth-child(5)::before { content: "Duration"; }
+  #adminContent .dashboard-bookings td:not(:first-child)::before {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .scroll { -webkit-overflow-scrolling: touch; }
+  th, td { padding: 10px; }
+}
+@media (min-width: 761px) and (max-width: 1000px) {
+  #adminApp .tabs { display: none; }
+  #adminApp .admin-mobile-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: #fff; box-shadow: 0 5px 18px rgba(28, 42, 75, .04); }
+  #adminApp .admin-mobile-nav .logout-button { min-height: 44px; margin: 0; }
+  #adminContent .admin-search { grid-template-columns: 1fr; justify-content: stretch; gap: 4px; }
+  #adminContent .admin-search label { white-space: normal; }
+  #adminContent .card:has(#sTZ) .grid,
+  #adminContent > .grid,
+  #avRows .av { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #candHome .candidate-profile-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }
+  #candHome .candidate-profile-grid > div { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 11px; background: #f8f9fc; }
+  #candHome .candidate-profile-grid select { margin-top: 8px; }
+  #avRows .av > div:nth-child(7) { grid-column: 1 / -1; }
+  #avRows .av > div:last-child { grid-column: 1 / -1; justify-content: flex-end; }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  #adminContent .card:has(#searchTable_bookings) .scroll,
+  #adminContent .card:has(#searchTable_candidates) .scroll,
+  #adminContent .card:has(#searchTable_payments) .scroll,
+  #adminContent .card:has(#searchTable_refunds) .scroll { overflow: visible; border: 0; }
+  #adminContent #searchTable_bookings,
+  #adminContent #searchTable_candidates,
+  #adminContent #searchTable_payments,
+  #adminContent #searchTable_refunds { display: block; width: 100%; min-width: 0 !important; }
+  #adminContent #searchTable_bookings tbody,
+  #adminContent #searchTable_candidates tbody,
+  #adminContent #searchTable_payments tbody,
+  #adminContent #searchTable_refunds tbody { display: block; }
+  #adminContent #searchTable_bookings tr:first-child,
+  #adminContent #searchTable_candidates tr:first-child,
+  #adminContent #searchTable_payments tr:first-child,
+  #adminContent #searchTable_refunds tr:first-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  #adminContent #searchTable_bookings tr[data-search-index],
+  #adminContent #searchTable_candidates tr[data-search-index],
+  #adminContent #searchTable_payments tr[data-search-index],
+  #adminContent #searchTable_refunds tr[data-search-index] {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px 12px;
+    margin-bottom: 10px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: #fff;
+  }
+  #adminContent #searchTable_bookings td,
+  #adminContent #searchTable_candidates td,
+  #adminContent #searchTable_payments td,
+  #adminContent #searchTable_refunds td {
+    display: block;
+    min-width: 0 !important;
+    padding: 4px 2px;
+    border: 0;
+    overflow-wrap: anywhere;
+    white-space: normal !important;
+    line-height: 1.35;
+    font-size: 12px;
+  }
+  #adminContent #searchTable_bookings td::before,
+  #adminContent #searchTable_candidates td::before,
+  #adminContent #searchTable_payments td::before,
+  #adminContent #searchTable_refunds td::before {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  #adminContent #searchTable_bookings td:nth-child(1)::before { content: "Booking ID"; }
+  #adminContent #searchTable_bookings td:nth-child(2)::before { content: "Candidate"; }
+  #adminContent #searchTable_bookings td:nth-child(3)::before { content: "Interview time"; }
+  #adminContent #searchTable_bookings td:nth-child(4)::before { content: "Type"; }
+  #adminContent #searchTable_bookings td:nth-child(5)::before { content: "Charge"; }
+  #adminContent #searchTable_bookings td:nth-child(6)::before { content: "Paid"; }
+  #adminContent #searchTable_bookings td:nth-child(7)::before { content: "Payment"; }
+  #adminContent #searchTable_bookings td:nth-child(8)::before { content: "Status"; }
+  #adminContent #searchTable_bookings td:nth-child(3),
+  #adminContent #searchTable_bookings td:nth-child(9) { grid-column: 1 / -1; }
+  #adminContent #searchTable_bookings td:nth-child(9) { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  #adminContent #searchTable_candidates td:nth-child(1)::before { content: "Candidate ID"; }
+  #adminContent #searchTable_candidates td:nth-child(2)::before { content: "Name"; }
+  #adminContent #searchTable_candidates td:nth-child(3)::before { content: "Email / phone"; }
+  #adminContent #searchTable_candidates td:nth-child(4)::before { content: "Type"; }
+  #adminContent #searchTable_candidates td:nth-child(5)::before { content: "Share"; }
+  #adminContent #searchTable_candidates td:nth-child(6)::before { content: "Timezone"; }
+  #adminContent #searchTable_candidates td:nth-child(2) { font-size: 14px; font-weight: 700; }
+  #adminContent #searchTable_candidates td:nth-child(3),
+  #adminContent #searchTable_candidates td:nth-child(7) { grid-column: 1 / -1; }
+  #adminContent #searchTable_candidates select,
+  #adminContent #searchTable_candidates input { width: 100% !important; min-width: 0; min-height: 38px; padding: 7px 8px; font-size: 12px; }
+  #adminContent #searchTable_candidates td:nth-child(7) > button { min-width: 74px; }
+  #adminContent #searchTable_payments td:nth-child(1)::before { content: "Payment ID"; }
+  #adminContent #searchTable_payments td:nth-child(2)::before { content: "Booking"; }
+  #adminContent #searchTable_payments td:nth-child(3)::before { content: "Expected"; }
+  #adminContent #searchTable_payments td:nth-child(4)::before { content: "Submitted"; }
+  #adminContent #searchTable_payments td:nth-child(5)::before { content: "UTR"; }
+  #adminContent #searchTable_payments td:nth-child(6)::before { content: "Status"; }
+  #adminContent #searchTable_payments td:nth-child(5),
+  #adminContent #searchTable_payments td:nth-child(7) { grid-column: 1 / -1; }
+  #adminContent #searchTable_payments td:nth-child(7) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  #adminContent #searchTable_payments td:nth-child(7) button { width: 100%; min-width: 0; }
+  #adminContent #searchTable_refunds td:nth-child(1)::before { content: "Refund ID"; }
+  #adminContent #searchTable_refunds td:nth-child(2)::before { content: "Booking"; }
+  #adminContent #searchTable_refunds td:nth-child(3)::before { content: "Amount"; }
+  #adminContent #searchTable_refunds td:nth-child(4)::before { content: "Status"; }
+  #adminContent #searchTable_refunds td:nth-child(5) { grid-column: 1 / -1; }
+  #adminContent #searchTable_refunds td:nth-child(5) button { width: 100%; }
+  #candHome .candidate-interviews-scroll { overflow: visible; border: 0; }
+  #candHome #candidateInterviews,
+  #candHome #candidateInterviews tbody { display: block; width: 100%; min-width: 0 !important; }
+  #candHome #candidateInterviews tr:first-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  #candHome #candidateInterviews tr:not(:first-child) {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px 12px;
+    margin-bottom: 10px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: #fff;
+  }
+  #candHome #candidateInterviews td {
+    display: block;
+    min-width: 0;
+    padding: 4px 2px;
+    border: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    line-height: 1.35;
+    font-size: 12px;
+  }
+  #candHome #candidateInterviews td::before {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  #candHome #candidateInterviews td:nth-child(1)::before { content: "Booking ID"; }
+  #candHome #candidateInterviews td:nth-child(2)::before { content: "Type"; }
+  #candHome #candidateInterviews td:nth-child(3)::before { content: "Time"; }
+  #candHome #candidateInterviews td:nth-child(4)::before { content: "Status"; }
+  #candHome #candidateInterviews td:nth-child(5)::before { content: "Payment"; }
+  #candHome #candidateInterviews td:nth-child(6)::before { content: "Refund"; }
+  #candHome #candidateInterviews td:nth-child(7)::before { content: "Charge"; }
+  #candHome #candidateInterviews td:nth-child(3),
+  #candHome #candidateInterviews td:nth-child(8),
+  #candHome #candidateInterviews td[colspan] { grid-column: 1 / -1; }
+  #candHome #candidateInterviews td:nth-child(3) { font-size: 13px; font-weight: 650; }
+  #candHome #candidateInterviews td:nth-child(8) { display: flex; justify-content: flex-end; padding-top: 5px; }
+  #adminContent .dashboard-bookings .scroll { overflow: visible; border: 0; }
+  #adminContent .dashboard-bookings table,
+  #adminContent .dashboard-bookings tbody { display: block; width: 100%; }
+  #adminContent .dashboard-bookings tr:first-child {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  #adminContent .dashboard-bookings tr:not(:first-child) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px 12px;
+    margin-bottom: 10px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+  }
+  #adminContent .dashboard-bookings td { min-width: 0; padding: 5px 2px; border: 0; overflow-wrap: anywhere; font-size: 12px; }
+  #adminContent .dashboard-bookings td:first-child { grid-column: 1 / -1; padding-bottom: 7px; border-bottom: 1px solid var(--line); font-size: 14px; font-weight: 700; }
+  #adminContent .dashboard-bookings td:nth-child(2)::before { content: "Date"; }
+  #adminContent .dashboard-bookings td:nth-child(3)::before { content: "Start"; }
+  #adminContent .dashboard-bookings td:nth-child(4)::before { content: "End"; }
+  #adminContent .dashboard-bookings td:nth-child(5)::before { content: "Duration"; }
+  #adminContent .dashboard-bookings td:not(:first-child)::before { display: block; margin-bottom: 2px; color: var(--muted); font-size: 10px; font-weight: 700; text-transform: uppercase; }
+}
+@media (max-width: 420px) {
+  header { align-items: flex-start; }
+  header #topUser { max-width: 46%; overflow-wrap: anywhere; text-align: right; }
+  .row > button { flex: 1 1 auto; }
+  #welcome { padding: 26px 18px; }
+  .card { padding: 17px; }
+  h2 { font-size: 20px; }
+  .auth-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .auth-actions button { width: 100%; min-width: 0; padding-inline: 8px; white-space: nowrap; }
+  #candidateLogin .auth-actions button:first-child { grid-column: 1 / -1; }
+  .auth-actions-single { grid-template-columns: minmax(0, 1fr); }
+  .auth-actions-single button { width: 100%; }
+  .form-actions > button { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+</style></head><body><div id="loader" class="loader hidden"><div class="spinner"></div><b>Please wait...</b></div><header><b>Interview Booking Portal</b><div id="topUser" class="muted"></div></header><main class="wrap">
+<div id="landing"><div id="welcome" class="card"><h1>Interview Portal</h1><p class="muted">Choose how you want to continue.</p><div class="welcome-actions"><button class="welcome-login" onclick="show('candidateLogin')">Candidate Login</button><button class="secondary" onclick="show('register')">Register</button><button class="secondary" onclick="show('adminLogin')">Admin</button></div></div>
+<div class="card"><h2>Booked times</h2><div class="grid"><div><label for="publicDate">Date</label><input id="publicDate" type="date" onchange="loadPublicBookings()"></div><div><label for="publicTimezone">Timezone</label><select id="publicTimezone" onchange="loadPublicBookings()"></select></div></div><div class="form-actions"><button onclick="loadPublicBookings()">Check booked times</button></div><div id="publicBooked" aria-live="polite"><p class="muted">Select a date to see booked times.</p></div></div></div>
+<div id="register" class="card hidden"><h2>Candidate Registration</h2><div class="grid"><div><label>Full name</label><input id="rName"></div><div><label>Email</label><input id="rEmail" type="email"></div><div><label>Country code</label><select id="rCountry"></select></div><div><label>Phone number</label><input id="rPhone" inputmode="tel"></div><div><label>Timezone</label><select id="rTz"></select></div><div><label>Password</label><input id="rPass" autocomplete="new-password" maxlength="1024" type="password" minlength="8"></div><div><label>Confirm password</label><input id="rPass2" autocomplete="new-password" maxlength="1024" type="password" minlength="8"></div></div><div class="row auth-actions"><button onclick="register()">Register</button><button class="secondary" onclick="show('landing')">Back</button></div><div id="rMsg"></div></div>
+<div id="candidateLogin" class="card hidden"><h2>Candidate Login</h2><label>Candidate ID or Email</label><input id="lId"><label>Password</label><input id="lPass" autocomplete="current-password" maxlength="1024" type="password"><div class="auth-actions"><button onclick="candidateSignIn()">Login</button><button class="secondary" onclick="showForgot()">Forgot Password</button><button class="secondary" onclick="show('landing')">Back</button></div><div id="lMsg"></div></div>
+<div id="forgot" class="card hidden"><h2>Reset Password</h2><label>Registered Email</label><input id="fEmail" type="email"><div class="auth-actions auth-actions-single"><button onclick="sendReset()">Send Reset Code</button></div><div id="resetBox" class="hidden"><label>6-digit code</label><input id="fOtp" inputmode="numeric" maxlength="6" autocomplete="one-time-code"><label>New password</label><input id="fPass" autocomplete="new-password" maxlength="1024" type="password"><label>Confirm new password</label><input id="fPass2" autocomplete="new-password" maxlength="1024" type="password"><div class="auth-actions auth-actions-single"><button onclick="doReset()">Reset Password</button></div></div><div id="fMsg"></div><div class="auth-actions auth-actions-single"><button class="secondary" onclick="show('candidateLogin')">Back to Login</button></div></div>
+<div id="adminLogin" class="card hidden"><h2>Admin Login</h2><label>Admin email</label><input id="aEmail" type="email"><label>Password</label><input id="aPass" type="password"><div class="row auth-actions"><button onclick="adminSignIn()">Login</button><button class="secondary" onclick="show('landing')">Back</button></div><div id="aMsg"></div></div>
+
+<div id="candidateApp" class="hidden"><div class="tabs"><button onclick="candTab('home')">Dashboard</button><button onclick="candTab('booked')">Booked Times</button><button onclick="candTab('book')">Book Interview</button><button onclick="candTab('password')">Change Password</button><button class="logout-button" onclick="logoutNow()">Logout</button></div><div id="candHome"></div><div id="candBooked" class="hidden"></div><div id="candPassword" class="hidden"></div><div id="candBook" class="hidden card"><h2>Book Interview</h2><div class="grid"><div><label>Date</label><input id="bDate" type="date"></div><div><label>Start time</label><input id="bStart" type="time" oninput="updateOvernightConfirmation('b')" onchange="updateOvernightConfirmation('b')"></div><div><label>End time</label><input id="bEnd" type="time" oninput="updateOvernightConfirmation('b')" onchange="updateOvernightConfirmation('b')"><div id="bOvernightWrap" class="overnight-confirmation hidden"><label><input id="bOvernightConfirmed" type="checkbox"><span>This is an overnight booking and ends the next day</span></label></div></div><div><label>Interview type</label><select id="bType"><option>Technical</option><option>Coding</option><option>HR</option></select></div></div><div class="form-actions"><button onclick="quote()">Check availability & price</button></div><div id="quoteBox"></div><div class="card" style="margin-top:18px"><h3>Booked times on selected date</h3><button class="secondary small" onclick="loadBooked()">Refresh</button><div id="bookedList"></div></div></div></div>
+<div id="adminApp" class="hidden"><div class="tabs"><button onclick="adminTab('dash')">Dashboard</button><button onclick="adminTab('booked')">Booked Times</button><button onclick="adminTab('bookings')">Bookings</button><button onclick="adminTab('candidates')">Candidates</button><button onclick="adminTab('payments')">Payments</button><button onclick="adminTab('refunds')">Refunds</button><button onclick="adminTab('availability')">Availability</button><button onclick="adminTab('settings')">Settings</button><button onclick="adminTab('create')">Create Booking</button><button class="logout-button" onclick="logoutNow()">Logout</button></div><div class="admin-mobile-nav"><button type="button" class="admin-menu-toggle" aria-expanded="false" aria-controls="adminMenuPanel" onclick="toggleAdminMenu()"><span class="admin-menu-icon" aria-hidden="true"><span></span><span></span><span></span></span><span id="adminMenuCurrent">Dashboard</span></button><div id="adminMenuPanel" class="admin-menu-panel hidden" role="menu"><button type="button" role="menuitem" data-admin-page="dash" onclick="selectAdminMenuPage('dash')">Dashboard</button><button type="button" role="menuitem" data-admin-page="booked" onclick="selectAdminMenuPage('booked')">Booked Times</button><button type="button" role="menuitem" data-admin-page="bookings" onclick="selectAdminMenuPage('bookings')">Bookings</button><button type="button" role="menuitem" data-admin-page="candidates" onclick="selectAdminMenuPage('candidates')">Candidates</button><button type="button" role="menuitem" data-admin-page="payments" onclick="selectAdminMenuPage('payments')">Payments</button><button type="button" role="menuitem" data-admin-page="refunds" onclick="selectAdminMenuPage('refunds')">Refunds</button><button type="button" role="menuitem" data-admin-page="availability" onclick="selectAdminMenuPage('availability')">Availability</button><button type="button" role="menuitem" data-admin-page="settings" onclick="selectAdminMenuPage('settings')">Settings</button><button type="button" role="menuitem" data-admin-page="create" onclick="selectAdminMenuPage('create')">Create Booking</button></div><button class="logout-button" onclick="logoutNow()">Logout</button></div><div id="adminContent"></div></div>
+</main><script>
+let token='',role='',home=null,adminData=null,currentQuote=null; const zones=['Asia/Kolkata','America/New_York','America/Chicago','America/Denver','America/Los_Angeles','America/Toronto','America/Vancouver','Europe/London','Europe/Dublin','Europe/Paris','Europe/Berlin','Europe/Amsterdam','Asia/Dubai','Asia/Singapore','Asia/Tokyo','Asia/Hong_Kong','Australia/Sydney','Australia/Melbourne','Pacific/Auckland']; const countries=[['India','+91'],['United States','+1'],['Canada','+1'],['United Kingdom','+44'],['Australia','+61'],['New Zealand','+64'],['UAE','+971'],['Singapore','+65'],['Germany','+49'],['France','+33'],['Ireland','+353'],['Netherlands','+31'],['Spain','+34'],['Italy','+39'],['Japan','+81'],['Hong Kong','+852'],['Saudi Arabia','+966'],['Pakistan','+92'],['Bangladesh','+880'],['Sri Lanka','+94'],['Nepal','+977'],['South Africa','+27']];
+function el(id){return document.getElementById(id)} function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))} function msg(id,t,bad=false){el(id).innerHTML=`<div class="msg ${bad?'err':'ok'}">${esc(t)}</div>`} let pendingCalls=0;function setLoading(on){pendingCalls+=on?1:-1;pendingCalls=Math.max(0,pendingCalls);el('loader').classList.toggle('hidden',pendingCalls===0)} function call(fn,...args){setLoading(true);return new Promise((res,rej)=>google.script.run.withSuccessHandler(x=>{setLoading(false);res(x)}).withFailureHandler(e=>{setLoading(false);rej(new Error(e.message||e))})[fn](...args))} function show(id){['landing','register','candidateLogin','forgot','adminLogin'].forEach(x=>el(x).classList.toggle('hidden',x!==id))} const detectedTimezone=Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Kolkata';if(!zones.includes(detectedTimezone))zones.push(detectedTimezone);zones.forEach(z=>el('rTz').add(new Option(z,z))); countries.forEach(c=>el('rCountry').add(new Option(`${c[0]} (${c[1]})`,c[1]))); el('rTz').value=detectedTimezone;
+el('publicTimezone').innerHTML=businessTimezoneOptions(Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC');
+let publicRequest=0;
+const bookedTimeRequests={};
+function renderBookedTimes(prefix,timezone){return `<div class="card"><h2>Booked times</h2><div class="grid"><div><label for="${prefix}Date">Date</label><input id="${prefix}Date" type="date" onchange="loadBookedTimes('${prefix}')"></div><div><label for="${prefix}Timezone">Timezone</label><select id="${prefix}Timezone" onchange="loadBookedTimes('${prefix}')">${businessTimezoneOptions(timezone)}</select></div></div><div class="form-actions"><button onclick="loadBookedTimes('${prefix}')">Check booked times</button></div><div id="${prefix}Result" aria-live="polite"><p class="muted">Select a date to see booked times.</p></div></div>`}
+function renderBookedTimesResult(result){return `<p class="muted">Times in ${esc(result.timezone)}</p>`+(result.booked.length?`<div class="scroll"><table><thead><tr><th>Status</th><th>Date</th><th>Start</th><th>End</th></tr></thead><tbody>${result.booked.map(b=>`<tr><td>Booked</td><td>${esc(b.date)}</td><td>${esc(b.start)}</td><td>${esc(b.end)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">No bookings on this date.</p>')}
+async function loadBookedTimes(prefix){
+  const request=bookedTimeRequests[prefix]=(bookedTimeRequests[prefix]||0)+1,date=el(prefix+'Date').value,tz=el(prefix+'Timezone').value,result=el(prefix+'Result');
+  if(!date){result.innerHTML='<p class="muted">Select a date to see booked times.</p>';return;}
+  try{const data=await call('getPublicBookedTimes',date,tz);if(request!==bookedTimeRequests[prefix])return;result.innerHTML=renderBookedTimesResult(data);}
+  catch(e){if(request===bookedTimeRequests[prefix])msg(prefix+'Result',e.message,true);}
+}
+async function loadPublicBookings(){
+  const request=++publicRequest,date=el('publicDate').value,tz=el('publicTimezone').value;
+  if(!date){el('publicBooked').innerHTML='<p class="muted">Select a date to see booked times.</p>';return;}
+  try{
+    const result=await call('getPublicBookedTimes',date,tz);if(request!==publicRequest)return;
+    el('publicBooked').innerHTML=renderBookedTimesResult(result);
+  }catch(e){if(request===publicRequest)msg('publicBooked',e.message,true);}
+}
+async function register(){try{if(el('rPass').value!==el('rPass2').value)throw new Error('Passwords do not match.');const r=await call('registerCandidate',{name:el('rName').value,email:el('rEmail').value,countryCode:el('rCountry').value,phone:el('rPhone').value,timezone:el('rTz').value,password:el('rPass').value});token=r.token;role='candidate';saveSession();await loadCandidate()}catch(e){msg('rMsg',e.message,true);show('register')}}
+async function candidateSignIn(){try{const r=await call('candidateLogin',el('lId').value,el('lPass').value);token=r.token;role='candidate';saveSession();await loadCandidate()}catch(e){msg('lMsg',e.message,true)}}
+let recoveryCandidateId='',recoveryEmail='';
+function clearRecovery(){recoveryCandidateId='';recoveryEmail='';['fOtp','fPass','fPass2'].forEach(id=>el(id).value='');el('resetBox').classList.add('hidden');el('fMsg').innerHTML='';}
+function showForgot(){clearRecovery();el('lMsg').innerHTML='';el('lPass').value='';const identifier=el('lId').value.trim();el('fEmail').value=identifier.includes('@')?identifier:'';show('forgot')}
+async function sendReset(){
+  clearRecovery();
+  try{
+    const email=el('fEmail').value.trim();
+    if(!email)throw new Error('Enter your registered email.');
+    const r=await call('requestPasswordReset',email,email);
+    recoveryCandidateId=r.candidateId;recoveryEmail=email;
+    el('resetBox').classList.remove('hidden');msg('fMsg','Reset code sent to your registered email.');
+  }catch(e){msg('fMsg',e.message,true)}
+}
+async function doReset(){
+  try{
+    if(!recoveryCandidateId)throw new Error('Request a reset code first.');
+    if(el('fPass').value!==el('fPass2').value)throw new Error('Passwords do not match.');
+    await call('resetCandidatePassword',recoveryCandidateId,el('fOtp').value,el('fPass').value);
+    el('lId').value=recoveryEmail;el('lPass').value='';clearRecovery();
+    msg('lMsg','Password reset successfully. Sign in with your new password.');show('candidateLogin');
+  }catch(e){msg('fMsg',e.message,true)}
+}
+function saveSession(){try{localStorage.setItem('interviewPortalSession',JSON.stringify({token,role}))}catch(e){alert('Browser storage is blocked. Enable it to stay signed in after refresh.')}} function clearSession(){try{localStorage.removeItem('interviewPortalSession')}catch(e){}}
+async function adminSignIn(){try{const r=await call('adminLogin',el('aEmail').value,el('aPass').value);token=r.token;role='admin';saveSession();el('landing').classList.add('hidden');el('adminLogin').classList.add('hidden');el('adminApp').classList.remove('hidden');el('topUser').textContent='Admin';await refreshAdmin();adminTab('dash')}catch(e){msg('aMsg',e.message,true)}}
+async function loadCandidate(){home=await call('getCandidateHome',token);['landing','candidateLogin','register','forgot','adminLogin'].forEach(x=>el(x).classList.add('hidden'));el('candidateApp').classList.remove('hidden');el('topUser').textContent=`${home.profile.candidateId} • ${home.profile.timezone}`;renderCandidateHome();el('candBooked').innerHTML=renderBookedTimes('candidateBooked',home.profile.timezone);el('candPassword').innerHTML=renderPasswordChange('candidatePassword','Change Password');}
+function withoutGmtOffset(value){return String(value??'').replace(/\s+GMT[+-]\d{1,2}(?::?\d{2})?/gi,'').trim()}
+function renderCandidateHome(){const p=home.profile;let rows=home.bookings.map(b=>`<tr><td>${esc(b.bookingId)}</td><td>${esc(b.type)}</td><td>${esc(withoutGmtOffset(b.start))}</td><td>${esc(b.status)}</td><td>${esc(b.paymentStatus)}</td><td>${esc(b.refundStatus)}</td><td>$${b.charge}</td><td>${b.canCancel&&new Date(b.startUTC).getTime()>Date.now()?`<button data-cancel-start="${esc(b.startUTC)}" class="danger small" onclick="cancelBooking('${esc(b.bookingId)}')">Cancel</button>`:''}</td></tr>`).join('');el('candHome').innerHTML=`<div class="card"><h2>Hello ${esc(p.name)}</h2><div class="grid candidate-profile-grid"><div><b>Candidate ID</b><br>${esc(p.candidateId)}</div><div><b>Account</b><br>${esc(p.type)}${p.type==='PERCENTAGE'?` • ${p.percentage}%`:''}</div><div><b>Timezone</b><select class="timezone-select" id="cTz" disabled>${[...new Set([...zones,p.timezone])].map(z=>`<option ${z===p.timezone?'selected':''}>${esc(z)}</option>`).join('')}</select><div class="timezone-edit-actions">${editControls('timezone',['cTz'],'saveTz()')}</div></div></div></div><div class="card candidate-interviews"><h3>My Interviews</h3><div class="scroll candidate-interviews-scroll"><table id="candidateInterviews"><tr><th>ID</th><th>Type</th><th>Time</th><th>Status</th><th>Payment</th><th>Refund</th><th>Charge</th><th></th></tr>${rows||'<tr><td colspan=8>No interviews yet.</td></tr>'}</table></div></div>`}
+async function saveTz(){try{await call('updateCandidateTimezone',token,el('cTz').value);invalidateQuote();await loadCandidate()}catch(e){alert(e.message)}} function candTab(t){el('candHome').classList.toggle('hidden',t!=='home');el('candBooked').classList.toggle('hidden',t!=='booked');el('candBook').classList.toggle('hidden',t!=='book');el('candPassword').classList.toggle('hidden',t!=='password');if(t==='book')loadBooked();if(t==='booked')loadBookedTimes('candidateBooked')} async function loadBooked(){if(!el('bDate').value)return;try{const r=await call('getAvailabilityForDate',token,el('bDate').value);el('bookedList').innerHTML=r.booked.length?r.booked.map(x=>`<div class="booked">BOOKED — ${esc(withoutGmtOffset(x.from))} to ${esc(withoutGmtOffset(x.to))}</div>`).join(''):'<div class="msg ok">No booked interviews found for this date.</div>'}catch(e){el('bookedList').innerHTML=`<div class="msg err">${esc(e.message)}</div>`}}
+function renderPasswordChange(prefix,title){return `<div class="card"><h2>${title}</h2><p class="muted">Enter your current password and choose a new password (8–1024 characters). You will need to sign in again after changing it.</p><div class="grid"><div><label for="${prefix}Current">Current password</label><input id="${prefix}Current" type="password" autocomplete="current-password" maxlength="1024"></div><div><label for="${prefix}New">New password</label><input id="${prefix}New" type="password" autocomplete="new-password" minlength="8" maxlength="1024"></div><div><label for="${prefix}Confirm">Confirm new password</label><input id="${prefix}Confirm" type="password" autocomplete="new-password" minlength="8" maxlength="1024"></div></div><div class="form-actions"><button onclick="changePassword('${prefix}')">Update password</button></div><div id="${prefix}Message" aria-live="polite"></div></div>`}
+async function changePassword(prefix){try{const current=el(prefix+'Current').value,next=el(prefix+'New').value,confirmNext=el(prefix+'Confirm').value;if(next!==confirmNext)throw new Error('New passwords do not match.');await call(role==='admin'?'adminChangePassword':'changeCandidatePassword',token,current,next);alert('Password changed successfully. Please sign in again with your new password.');showSignedOut()}catch(e){msg(prefix+'Message',e.message,true)}}
+function renderUpiPayment(q){
+  const id=q.upiId?`<p><b>UPI ID:</b> <span style="user-select:all">${esc(q.upiId)}</span></p>`:q.upiQrUrl?'<p class="muted">Scan the QR code below to pay.</p>':'<p class="muted">Contact Admin for the UPI payment details.</p>';
+  const qr=q.upiQrUrl?`<figure style="margin:12px 0"><img src="${esc(q.upiQrUrl)}" alt="Admin UPI payment QR code" referrerpolicy="no-referrer" style="width:220px;max-width:100%;height:auto" onerror="this.hidden=true;this.nextElementSibling.textContent='QR image could not load. Use the UPI ID or contact Admin.'"><figcaption>Scan with your UPI app.</figcaption></figure>`:'';
+  return id+qr+(q.upiQrLink?`<p><a href="${esc(q.upiQrLink)}" target="_blank" rel="noopener noreferrer">Open payment QR</a></p>`:'')+'<p class="muted">Prices are shown in USD. Confirm the INR payment amount with Admin before paying, then enter your payment reference below.</p>';
+}
+function openPaymentModal(q){
+  if(!q||JSON.stringify(q.formData)!==JSON.stringify(bookingFormData())){invalidateQuote();return;}
+  currentQuote = q;
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = `
+    <div class="modal-backdrop" onclick="closePaymentModal()"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
+      <div class="modal-header">
+        <h3 id="paymentModalTitle">Pay for interview</h3>
+        <button type="button" class="secondary small" onclick="closePaymentModal()">Close</button>
+      </div>
+      <div class="msg ok"><b>Available</b><br>${esc(q.candidateDisplay)}<br>Duration: ${q.durationMinutes} min<br>Charge: $${esc(q.finalChargeUSD)}</div>
+      <div style="margin-top:14px">${renderUpiPayment(q)}</div>
+      <p class="muted">After paying, enter the UTR and select “I’ve paid — submit for verification”. Your payment remains pending until Admin verifies it.</p>
+      <div style="margin-top:14px">
+        <label>Amount paid (USD equivalent)</label>
+        <input id="payAmount" type="number" step="0.01" value="${q.finalChargeUSD}">
+        <label>UPI UTR / transaction reference</label>
+        <input id="payUtr" placeholder="Enter UTR after payment">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="secondary" onclick="closePaymentModal()">Cancel</button>
+        <button type="button" onclick="confirmBooking(true)">I’ve paid — submit for verification</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+function closePaymentModal(){
+  const modal = document.querySelector('.modal');
+  if(modal) modal.remove();
+}
+function isOvernightTime(start,end){
+  const parse=value=>/^\d{2}:\d{2}$/.test(value)?Number(value.slice(0,2))*60+Number(value.slice(3,5)):null;
+  const startMinutes=parse(start),endMinutes=parse(end);
+  return startMinutes!==null&&endMinutes!==null&&endMinutes<startMinutes;
+}
+function updateOvernightConfirmation(prefix){
+  const start=el(prefix==='b'?'bStart':'acStart'),end=el(prefix==='b'?'bEnd':'acEnd');
+  const wrapper=el(prefix+'OvernightWrap'),checkbox=el(prefix+'OvernightConfirmed');
+  const overnight=isOvernightTime(start.value,end.value);
+  wrapper.classList.toggle('hidden',!overnight);
+  if(!overnight)checkbox.checked=false;
+  return overnight;
+}
+function bookingFormData(){return {date:el('bDate').value,startTime:el('bStart').value,endTime:el('bEnd').value,interviewType:el('bType').value,overnightConfirmed:el('bOvernightConfirmed').checked};}
+function invalidateQuote(){currentQuote=null;el('quoteBox').innerHTML='';closePaymentModal();}
+['bDate','bStart','bEnd','bType','bOvernightConfirmed'].forEach(id=>{el(id).addEventListener('change',invalidateQuote);el(id).addEventListener('input',invalidateQuote);});
+async function quote(){
+  try {
+    invalidateQuote();
+    const data=bookingFormData();
+    const q=await call('quoteBooking',token,data);
+    if(JSON.stringify(data)!==JSON.stringify(bookingFormData()))return;
+    if(!q.available){el('quoteBox').innerHTML=`<div class="msg err">${esc(q.reason)}</div>`;return;}
+    q.formData=data;
+    currentQuote = q;
+    const html = q.paymentRequired ? `
+      <div class="msg ok"><b>Available</b><br>${esc(q.candidateDisplay)}<br>Duration: ${q.durationMinutes} min<br>Charge: $${esc(q.finalChargeUSD)}</div>
+      <div class="form-actions">
+        <button onclick="openPaymentModal(currentQuote)">Pay & Confirm</button>
+      </div>
+    ` : `<div class="msg ok"><b>Available</b><br>${esc(q.candidateDisplay)}<br>Duration: ${q.durationMinutes} min<br>Percentage candidate — no upfront payment.<br><button onclick="confirmBooking(false)">Confirm Booking</button></div>`;
+    el('quoteBox').innerHTML = html;
+  } catch(e){el('quoteBox').innerHTML=`<div class="msg err">${esc(e.message)}</div>`;}
+}
+async function confirmBooking(pay){
+  try {
+    if(!currentQuote||JSON.stringify(currentQuote.formData)!==JSON.stringify(bookingFormData()))throw new Error('Booking details changed. Check availability and price again.');
+    const data={
+      date: el('bDate').value,
+      startTime: el('bStart').value,
+      endTime: el('bEnd').value,
+      overnightConfirmed: el('bOvernightConfirmed').checked,
+      interviewType: el('bType').value,
+      utr: pay ? (document.getElementById('payUtr') ? document.getElementById('payUtr').value : '') : '',
+      amountPaid: pay ? (document.getElementById('payAmount') ? document.getElementById('payAmount').value : 0) : 0
+    };
+    Object.assign(data,{expectedStartUTC:currentQuote.startUTC,expectedEndUTC:currentQuote.endUTC,expectedCharge:currentQuote.finalChargeUSD,expectedPaymentRequired:currentQuote.paymentRequired});
+    if(pay&&!data.utr.trim())throw new Error('Enter your UTR/reference number.');
+    const r=await call('submitCandidateBooking',token,data);
+    closePaymentModal();currentQuote=null;
+    el('quoteBox').innerHTML=`<div class="msg ok">Booking confirmed. ID: ${esc(r.bookingId)}${pay?'<br>Payment submitted and pending Admin verification.':''}</div>`;
+    await loadCandidate();
+    candTab('home');
+  } catch(e){if(document.querySelector('.modal'))alert(e.message);else el('quoteBox').innerHTML=`<div class="msg err">${esc(e.message)}</div>`;}
+}
+async function cancelBooking(id){if(!confirm('Cancel this interview? If payment was submitted, a refund request will be created.'))return;try{await call('cancelCandidateBooking',token,id);await loadCandidate()}catch(e){alert(e.message)}}
+async function refreshAdmin(){adminData=await call('getAdminDashboard',token);el('topUser').textContent='Admin | '+adminBusinessTimezone()}
+const adminPageNames={dash:'Dashboard',booked:'Booked Times',bookings:'Bookings',candidates:'Candidates',payments:'Payments',refunds:'Refunds',availability:'Availability',settings:'Settings',create:'Create Booking'};
+function toggleAdminMenu(force){const panel=el('adminMenuPanel'),toggle=document.querySelector('.admin-menu-toggle');if(!panel||!toggle)return;const open=typeof force==='boolean'?force:panel.classList.contains('hidden');panel.classList.toggle('hidden',!open);toggle.setAttribute('aria-expanded',String(open));}
+function selectAdminMenuPage(page){adminTab(page);toggleAdminMenu(false);}
+function adminTab(t){if(!adminData)return;const c=el('adminContent');if(t==='dash')c.innerHTML=renderDash();if(t==='booked')c.innerHTML=renderBookedTimes('adminBooked',adminBusinessTimezone());if(t==='bookings')c.innerHTML=renderBookings();if(t==='candidates')c.innerHTML=renderCandidates();if(t==='payments')c.innerHTML=renderPayments();if(t==='refunds')c.innerHTML=renderRefunds();if(t==='settings')c.innerHTML=renderSettings()+renderPasswordChange('adminPassword','Change Password');if(t==='availability')c.innerHTML=renderAvailability();if(t==='create')c.innerHTML=renderCreate();const current=el('adminMenuCurrent');if(current)current.textContent=adminPageNames[t]||'Admin';document.querySelectorAll('#adminMenuPanel [data-admin-page]').forEach(button=>button.classList.toggle('active',button.dataset.adminPage===t));}
+function adminBusinessTimezone(){return adminData?.settings?.BUSINESS_TIMEZONE||'America/New_York'}
+function editControls(key,fields,saveAction){
+  const args=esc(JSON.stringify(fields));
+  return `<button id="edit_${key}" class="small" onclick="toggleFields('${key}',${args},true)">Edit</button> <span id="actions_${key}" class="hidden"><button class="small" onclick="${esc(saveAction)}">Save</button> <button class="secondary small" onclick="toggleFields('${key}',${args},false)">Cancel</button></span>`;
+}
+function toggleFields(key,fields,editing){
+  fields.forEach(id=>{const field=el(id);if(editing)field.savedValue=field.value;else field.value=field.savedValue;field.disabled=!editing;});
+  el('edit_'+key).classList.toggle('hidden',editing);
+  el('actions_'+key).classList.toggle('hidden',!editing);
+}
+function adminSearchBar(kind){return `<div class="admin-search"><label for="search_${kind}">Search ${kind}</label><input id="search_${kind}" type="search" placeholder="Search by name, email, date, status, amount or reference" oninput="filterAdminRecords('${kind}',this.value)"></div>`}
+function adminRecordMatches(kind,record,query){
+  const booking=kind==='payments'||kind==='refunds'?(adminData.bookings||[]).find(b=>b.bookingId===record.BookingID):null;
+  const candidateId=record.candidateId||record.CandidateID||booking?.candidateId;
+  const candidate=(adminData.candidates||[]).find(c=>c.candidateId===candidateId);
+  const text=[record,candidate,booking].filter(Boolean).flatMap(x=>Object.values(x)).join(' ').toLowerCase();
+  return query.trim().toLowerCase().split(/\s+/).every(term=>text.includes(term));
+}
+function filterAdminRecords(kind,query){
+  let count=0;
+  el('searchTable_'+kind).querySelectorAll('[data-search-index]').forEach(row=>{
+    const matches=adminRecordMatches(kind,adminData[kind][Number(row.dataset.searchIndex)],query);
+    row.classList.toggle('hidden',!matches);if(matches)count++;
+  });
+  el('searchEmpty_'+kind).classList.toggle('hidden',count!==0);
+}
+function adminDayKey(value,tz){
+  const parts=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(value));
+  const p=Object.fromEntries(parts.map(x=>[x.type,x.value]));return p.year+'-'+p.month+'-'+p.day;
+}
+function todaysAdminBookings(selectedDate){
+  const tz=adminBusinessTimezone(),today=selectedDate||adminDayKey(adminData.nowUTC||new Date(),tz);
+  return adminData.bookings.filter(b=>b.status==='CONFIRMED'&&Number.isFinite(new Date(b.startUTC).getTime())&&adminDayKey(b.startUTC,tz)===today).sort((a,b)=>new Date(a.startUTC)-new Date(b.startUTC));
+}
+function renderTodayBookings(selectedDate){
+  const tz=adminBusinessTimezone(),today=selectedDate||adminDayKey(adminData.nowUTC||new Date(),tz);
+  const time=iso=>new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'numeric',minute:'2-digit'}).format(new Date(iso));
+  const rows=todaysAdminBookings(today).map(b=>`<tr><td>${esc(b.name)}</td><td>${esc(adminDayKey(b.startUTC,tz))}</td><td>${esc(time(b.startUTC))}</td><td>${esc(time(b.endUTC))}${adminDayKey(b.endUTC,tz)!==today?' ('+esc(adminDayKey(b.endUTC,tz))+')':''}</td><td>${esc(b.duration)} min</td></tr>`).join('');
+  return `<div class="card dashboard-bookings"><div class="dashboard-heading"><h2>Confirmed bookings</h2><div class="dashboard-date"><label for="dashboardDate">Date</label><input id="dashboardDate" type="date" value="${esc(today)}" onchange="selectDashboardDate(this.value)"></div></div><p class="muted dashboard-timezone">Times in ${esc(tz)}</p><button class="secondary small dashboard-refresh" onclick="refreshAdminDashboard()">Refresh</button><div class="scroll"><table><tr><th>Candidate name</th><th>Date</th><th>Start</th><th>End</th><th>Duration</th></tr>${rows||'<tr><td colspan="5">No confirmed bookings for this date.</td></tr>'}</table></div></div>`;
+}
+function selectDashboardDate(date){el('adminContent').innerHTML=renderDash(date)}
+async function refreshAdminDashboard(){const date=el('dashboardDate').value;try{await refreshAdmin();selectDashboardDate(date)}catch(e){alert(e.message)}}
+function renderDash(selectedDate){let x=adminData.counts;return `<div class="grid dashboard-metrics"><div class="card"><div class="metric">${x.candidates}</div><div>Candidates</div></div><div class="card"><div class="metric">${x.upcoming}</div><div>Upcoming</div></div><div class="card"><div class="metric">${x.pendingPayments}</div><div>Pending payments</div></div><div class="card"><div class="metric">${x.refunds}</div><div>Refund requests</div></div></div>${renderTodayBookings(selectedDate)}`}
+function bookingAmountCell(b,prefix,value){
+  const amount=esc(Number(value||0).toFixed(2));
+  if(b.status!=='CONFIRMED')return '$'+amount;
+  return `<span id="view_${prefix}_${b.bookingId}">${amount}</span><input class="hidden" style="width:90px" type="number" min="0" step="0.01" aria-label="${prefix==='fc'?'Charge':'Amount paid'}" id="${prefix}_${b.bookingId}" value="${amount}">`;
+}
+function hideExpiredCancelButtons(){
+  document.querySelectorAll('[data-cancel-start]').forEach(button=>{
+    if(!(new Date(button.dataset.cancelStart).getTime()>Date.now()))button.classList.add('hidden');
+  });
+}
+if(typeof setInterval==='function')setInterval(hideExpiredCancelButtons,1000);
+if(document.addEventListener)document.addEventListener('visibilitychange',hideExpiredCancelButtons);
+function bookingActions(b){
+  if(b.status!=='CONFIRMED')return '<span class="muted">No actions</span>';
+  return `<button id="edit_${b.bookingId}" class="small" onclick="editBooking('${b.bookingId}',true)">Edit</button> <button id="save_${b.bookingId}" class="small hidden" onclick="saveBooking('${b.bookingId}')">Save</button> <button id="discard_${b.bookingId}" class="secondary small hidden" onclick="editBooking('${b.bookingId}',false)">Discard</button> ${new Date(b.startUTC).getTime()>Date.now()?`<button data-cancel-start="${esc(b.startUTC)}" class="danger small" onclick="adminCancel('${b.bookingId}')">Cancel booking</button>`:''}`;
+}
+function editBooking(id,editing){
+  const b=adminData.bookings.find(x=>x.bookingId===id);if(!b||b.status!=='CONFIRMED')return;
+  ['fc','ap'].forEach(prefix=>{
+    el(prefix+'_'+id).classList.toggle('hidden',!editing);
+    el('view_'+prefix+'_'+id).classList.toggle('hidden',editing);
+    if(!editing)el(prefix+'_'+id).value=Number((prefix==='fc'?b.finalCharge:b.amountPaid)||0).toFixed(2);
+  });
+  el('edit_'+id).classList.toggle('hidden',editing);
+  ['save','discard'].forEach(prefix=>el(prefix+'_'+id).classList.toggle('hidden',!editing));
+}
+function renderBookings(){return `<div class="card"><h2>Bookings — all times shown in ${esc(adminBusinessTimezone())}</h2>${adminSearchBar('bookings')}<div class="scroll"><table id="searchTable_bookings"><tr><th>ID</th><th>Candidate</th><th>Time (${esc(adminBusinessTimezone())})</th><th>Type</th><th>Charge</th><th>Paid</th><th>Payment</th><th>Status</th><th>Actions</th></tr>${adminData.bookings.map((b,i)=>`<tr data-search-index="${i}"><td>${b.bookingId}</td><td>${esc(b.candidateId)}<br>${esc(b.name)}</td><td>${esc(withoutGmtOffset(b.startAdmin))}<br>${esc(withoutGmtOffset(b.endAdmin))}</td><td>${esc(b.type)}</td><td>${bookingAmountCell(b,'fc',b.finalCharge)}</td><td>${bookingAmountCell(b,'ap',b.amountPaid)}</td><td>${esc(b.paymentStatus)}</td><td>${esc(b.status)}</td><td>${bookingActions(b)}</td></tr>`).join('')}</table></div><p id="searchEmpty_bookings" class="muted hidden">No matching records.</p></div>`}
+async function saveBooking(id){await call('adminUpdateBooking',token,{bookingId:id,finalCharge:el('fc_'+id).value,amountPaid:el('ap_'+id).value});await refreshAdmin();adminTab('bookings')} async function adminCancel(id){if(confirm('Cancel booking and remove calendar event?')){await call('adminCancelBooking',token,id);await refreshAdmin();adminTab('bookings')}}
+function renderCandidates(){return `<div class="card"><h2>Candidates</h2>${adminSearchBar('candidates')}<div class="scroll"><table id="searchTable_candidates"><tr><th>ID</th><th>Name</th><th>Email/Phone</th><th>Type</th><th>%</th><th>Timezone</th><th>Actions</th></tr>${adminData.candidates.map((c,i)=>`<tr data-search-index="${i}"><td>${c.candidateId}</td><td>${esc(c.name)}</td><td>${esc(c.email)}<br>${esc(c.phone)}</td><td><select id="ct_${c.candidateId}" disabled><option ${c.type==='REGULAR'?'selected':''}>REGULAR</option><option ${c.type==='PERCENTAGE'?'selected':''}>PERCENTAGE</option></select></td><td><input disabled type="number" min="0" max="100" id="cp_${c.candidateId}" value="${c.percentage}" style="width:70px"></td><td>${esc(c.timezone)}</td><td>${editControls("candidate_"+c.candidateId,["ct_"+c.candidateId,"cp_"+c.candidateId],"saveCandidate('"+c.candidateId+"')")}</td></tr>`).join('')}</table></div><p id="searchEmpty_candidates" class="muted hidden">No matching records.</p></div>`} async function saveCandidate(id){try{await call('adminUpdateCandidate',token,{candidateId:id,type:el('ct_'+id).value,percentage:el('cp_'+id).value,active:adminData.candidates.find(c=>c.candidateId===id).active});await refreshAdmin();adminTab('candidates')}catch(e){alert(e.message)}}
+function renderPayments(){return `<div class="card"><h2>Payments</h2>${adminSearchBar('payments')}<div class="scroll"><table id="searchTable_payments"><tr><th>ID</th><th>Booking</th><th>Expected</th><th>Submitted</th><th>UTR</th><th>Status</th><th>Action</th></tr>${adminData.payments.map((p,i)=>`<tr data-search-index="${i}"><td>${p.PaymentID}</td><td>${p.BookingID}</td><td>$${p.ExpectedAmountUSD}</td><td>$${p.SubmittedAmountUSD}</td><td>${esc(p.UTR)}</td><td>${esc(p.Status)}</td><td>${p.Status==='VERIFIED'?'<span class="muted">Verified</span>':`<button class="small" onclick="payAction('${p.PaymentID}','VERIFIED')">Verify</button> <button class="danger small" onclick="payAction('${p.PaymentID}','FAILED')">Failed</button>`}</td></tr>`).join('')}</table></div><p id="searchEmpty_payments" class="muted hidden">No matching records.</p></div>`} async function payAction(id,s){await call('adminVerifyPayment',token,id,s,'');await refreshAdmin();adminTab('payments')}
+function renderRefunds(){return `<div class="card"><h2>Refunds</h2>${adminSearchBar('refunds')}<div class="scroll"><table id="searchTable_refunds"><tr><th>ID</th><th>Booking</th><th>Amount</th><th>Status</th><th>Action</th></tr>${adminData.refunds.map((r,i)=>`<tr data-search-index="${i}"><td>${r.RefundID}</td><td>${r.BookingID}</td><td>$${r.AmountUSD}</td><td>${r.Status}</td><td>${r.Status==='REQUESTED'?`<button class="small" onclick="refund('${r.RefundID}')">Mark Refunded</button>`:''}</td></tr>`).join('')}</table></div><p id="searchEmpty_refunds" class="muted hidden">No matching records.</p></div>`} async function refund(id){const u=prompt('Refund UTR/reference:');if(u===null)return;await call('adminMarkRefunded',token,id,u,'');await refreshAdmin();adminTab('refunds')}
+function businessTimezoneOptions(current){
+  let available=zones;
+  try{if(typeof Intl.supportedValuesOf==='function')available=Intl.supportedValuesOf('timeZone');}catch(e){}
+  const selected=String(current||'America/New_York');
+  return [...new Set([...available,...zones,'UTC',selected])].sort().map(tz=>`<option value="${esc(tz)}" ${tz===selected?'selected':''}>${esc(tz.replace(/_/g,' '))}</option>`).join('');
+}
+function renderSettings(){let s=adminData.settings;return `<div class="card"><h2>Settings</h2><div class="grid"><div><label>Business timezone</label><select disabled id="sTZ" aria-label="Business timezone">${businessTimezoneOptions(s.BUSINESS_TIMEZONE)}</select></div><div><label>Buffer before (min)</label><input disabled id="sBB" value="${s.BUFFER_BEFORE_MINUTES}"></div><div><label>Buffer after (min)</label><input disabled id="sBA" value="${s.BUFFER_AFTER_MINUTES}"></div><div><label>UPI ID</label><input disabled id="sUPI" value="${esc(s.UPI_ID)}"></div><div><label for="sQR">UPI QR image or Google Drive link (optional)</label><input disabled id="sQR" type="url" value="${esc(s.UPI_QR_URL||'')}" placeholder="https://drive.google.com/file/d/.../view"><p class="muted">Paste your QR image file link from Drive. Set sharing to Anyone with the link - Viewer.</p></div><div><label>Short threshold min</label><input disabled id="sST" value="${s.PRICE_SHORT_THRESHOLD_MINUTES}"></div><div><label>Short price USD</label><input disabled id="sSP" value="${s.PRICE_SHORT_USD}"></div><div><label>Long price USD</label><input disabled id="sLP" value="${s.PRICE_LONG_USD}"></div><div><label>Calendar name</label><input disabled id="sCAL" value="${esc(s.CALENDAR_NAME)}"></div></div>${editControls('settings',['sTZ','sBB','sBA','sUPI','sQR','sST','sSP','sLP','sCAL'],'saveSettings()')}<p class="muted">Pricing works per started 60-minute block: up to the short threshold uses short price; above it uses long price. Example defaults: 30=$50, 40=$70, 90=$120, 100=$140.</p></div>`} async function saveSettings(){try{await call('adminUpdateSettings',token,{BUSINESS_TIMEZONE:el('sTZ').value,BUFFER_BEFORE_MINUTES:el('sBB').value,BUFFER_AFTER_MINUTES:el('sBA').value,UPI_ID:el('sUPI').value,UPI_QR_URL:el('sQR').value.trim(),PRICE_SHORT_THRESHOLD_MINUTES:el('sST').value,PRICE_SHORT_USD:el('sSP').value,PRICE_LONG_USD:el('sLP').value,CALENDAR_NAME:el('sCAL').value});await refreshAdmin();adminTab('settings')}catch(e){alert(e.message)}}
+function renderAvailability(){return `<div class="card"><h2>Availability</h2><p class="muted">Business timezone: ${esc(adminData.settings.BUSINESS_TIMEZONE)}. WEEKLY rules define working hours. BLOCK with a date and blank times blocks the full day.</p><div id="avRows">${adminData.availability.map((r,i)=>avRow(r,i)).join('')}</div><button class="secondary" onclick="addAv()">Add Rule</button> <button onclick="saveAv()">Save Availability</button></div>`} function avRow(r,i){return `<div class="grid card av"><div><label>Type</label><select class="avType" onchange="updateAvailabilityFields(this)"><option ${r.RuleType==='WEEKLY'?'selected':''}>WEEKLY</option><option ${r.RuleType==='BLOCK'?'selected':''}>BLOCK</option></select></div><div class="avWeekdayField ${r.RuleType==='BLOCK'?'hidden':''}"><label>Weekday</label><select class="avDay" ${r.RuleType==='BLOCK'?'disabled':''}>${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<option ${d===r.Weekday?'selected':''}>${d}</option>`).join('')}</select></div><div class="avDateField ${r.RuleType==='WEEKLY'?'hidden':''}"><label>Date</label><input class="avDate" ${r.RuleType==='WEEKLY'?'disabled':''} type="date" value="${esc(r.Date)}"></div><div><label>Start</label><input class="avStart" type="time" value="${esc(r.StartTime)}"></div><div><label>End</label><input class="avEnd" type="time" value="${esc(r.EndTime)}"></div><div class="avBlockHint muted ${r.RuleType==='WEEKLY'?'hidden':''}">Leave Start and End blank to block the whole day.</div><div><label>Note</label><input class="avNote" value="${esc(r.Note)}"></div><div><button class="av-remove small" onclick="this.closest('.av').remove()">Remove</button></div></div>`} function updateAvailabilityFields(select){
+  const row=select.closest('.av'),block=select.value==='BLOCK';
+  row.querySelector('.avWeekdayField').classList.toggle('hidden',block);
+  row.querySelector('.avDay').disabled=block;
+  row.querySelector('.avDateField').classList.toggle('hidden',!block);
+  row.querySelector('.avDate').disabled=!block;
+  row.querySelector('.avBlockHint').classList.toggle('hidden',!block);
+}
+function addAv(){el('avRows').insertAdjacentHTML('beforeend',avRow({RuleType:'BLOCK',Weekday:'Mon',Date:'',StartTime:'',EndTime:'',Note:''},Date.now()))} async function saveAv(){let rules=[...document.querySelectorAll('.av')].map(x=>({ruleType:x.querySelector('.avType').value,weekday:x.querySelector('.avType').value==='WEEKLY'?x.querySelector('.avDay').value:'',date:x.querySelector('.avType').value==='BLOCK'?x.querySelector('.avDate').value:'',startTime:x.querySelector('.avStart').value,endTime:x.querySelector('.avEnd').value,note:x.querySelector('.avNote').value,enabled:true}));await call('adminSaveAvailability',token,rules);await refreshAdmin();adminTab('availability')}
+function bookingCandidateOptions(query,selected=''){
+  const q=query.trim().toLowerCase();
+  const candidates=(adminData?.candidates||[]).filter(c=>c.active!==false&&[c.candidateId,c.name,c.email].some(v=>String(v||'').toLowerCase().includes(q)));
+  return '<option value="">'+(candidates.length?'Select a candidate':'No matching candidates')+'</option>'+candidates.map(c=>`<option value="${esc(c.candidateId)}" ${c.candidateId===selected?'selected':''}>${esc(c.name)} (${esc(c.candidateId)})</option>`).join('');
+}
+
+function renderCreate(){return `<div class="card"><h2>Admin Create Booking</h2><div class="grid"><div><label for="acId">Candidate</label><select id="acId">${bookingCandidateOptions('')}</select></div><div><label>Date</label><input id="acDate" type="date"></div><div><label>Start</label><input id="acStart" type="time" oninput="updateOvernightConfirmation('ac')" onchange="updateOvernightConfirmation('ac')"></div><div><label>End</label><input id="acEnd" type="time" oninput="updateOvernightConfirmation('ac')" onchange="updateOvernightConfirmation('ac')"><div id="acOvernightWrap" class="overnight-confirmation hidden"><label><input id="acOvernightConfirmed" type="checkbox"><span>This is an overnight booking and ends the next day</span></label></div></div><div><label>Business timezone</label><input id="acTz" readonly value="${esc(adminBusinessTimezone())}"></div><div><label>Interview type</label><select id="acType"><option>Technical</option><option>Coding</option><option>HR</option></select></div><div><label>Final charge override (optional)</label><input id="acCharge" type="number"></div><div><label><input id="acOverride" type="checkbox" style="width:auto"> Override availability/buffer</label></div></div><button onclick="adminCreate()">Create Booking</button><div id="acMsg"></div></div>`} async function adminCreate(){try{if(!el('acId').value)throw new Error('Select a candidate before creating a booking.');const r=await call('adminCreateBooking',token,{candidateId:el('acId').value,date:el('acDate').value,startTime:el('acStart').value,endTime:el('acEnd').value,timezone:el('acTz').value,interviewType:el('acType').value,finalCharge:el('acCharge').value,override:el('acOverride').checked,overnightConfirmed:el('acOvernightConfirmed').checked});msg('acMsg','Created '+r.bookingId);await refreshAdmin()}catch(e){msg('acMsg',e.message,true)}}
+function showSignedOut(){
+  invalidateQuote();token='';role='';home=null;adminData=null;clearSession();clearRecovery();
+  ['candidateApp','adminApp'].forEach(id=>el(id).classList.add('hidden'));
+  ['candHome','candBooked','candPassword','adminContent','quoteBox','bookedList','rMsg','lMsg','aMsg','fMsg'].forEach(id=>el(id).innerHTML='');
+  ['rPass','rPass2','lPass','aPass','fPass','fPass2','fOtp'].forEach(id=>el(id).value='');
+  el('resetBox').classList.add('hidden');el('topUser').textContent='';
+  candTab('home');show('landing');
+}
+async function logoutNow(){
+  try{if(token)await call('logout',token)}
+  catch(e){alert('Could not revoke your server session. Please try Logout again.');return;}
+  showSignedOut();
+} async function restoreSession(){try{const raw=localStorage.getItem('interviewPortalSession');if(!raw)return;const x=JSON.parse(raw);token=x.token||'';role=x.role||'';if(!token)return;const validated=await call('validateSession',token);role=validated.role;saveSession();if(role==='candidate')await loadCandidate();else if(role==='admin'){el('landing').classList.add('hidden');el('adminApp').classList.remove('hidden');el('topUser').textContent='Admin';await refreshAdmin();adminTab('dash')}}catch(e){token='';role='';clearSession()}} restoreSession();
+</script></body></html>
