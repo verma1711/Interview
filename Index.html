@@ -1,5 +1,6 @@
 <!doctype html><html><head><base target="_top"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
-:root{--b:#1a73e8;--bg:#f5f7fb;--text:#202124;--muted:#6b7280;--bad:#b3261e;--good:#137333}*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;background:var(--bg);color:var(--text)}header{background:#fff;border-bottom:1px solid #e5e7eb;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}.wrap{max-width:1180px;margin:25px auto;padding:0 16px}.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 10px #0000000d;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}label{display:block;font-weight:600;font-size:13px;margin:8px 0 6px}input,select,textarea{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:7px;font-size:14px}button{border:0;border-radius:7px;padding:10px 14px;font-weight:600;cursor:pointer;background:var(--b);color:#fff}button.secondary{background:#eef2ff;color:#1e40af}button.danger{background:var(--bad)}button.small{padding:6px 9px;font-size:12px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.tabs button{background:#fff;color:#374151;border:1px solid #d1d5db}.tabs button.active{background:var(--b);color:#fff}.hidden{display:none!important}.msg{padding:10px;border-radius:7px;margin:10px 0;background:#eef6ff}.err{background:#fdecec;color:var(--bad)}.ok{background:#e9f6ed;color:var(--good)}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:9px;border-bottom:1px solid #eee;vertical-align:top}th{background:#f8fafc}.scroll{overflow:auto}.metric{font-size:26px;font-weight:700}.muted{color:var(--muted);font-size:13px}.loader{position:fixed;inset:0;background:#ffffffb8;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}.spinner{width:44px;height:44px;border:5px solid #dbe7f8;border-top-color:var(--b);border-radius:50%;animation:spin .75s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.booked{background:#fff0f0;padding:10px;border-radius:6px;margin:6px 0}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.right{margin-left:auto}h1,h2,h3{margin-top:0}@media(max-width:760px){.two{grid-template-columns:1fr}.wrap{margin-top:14px}.card{padding:15px}header{padding:12px}}
+:root{--b:#1a73e8;--bg:#f5f7fb;--text:#202124;--muted:#6b7280;--bad:#b3261e;--good:#137333}*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;background:var(--bg);color:var(--text)}header{background:#fff;border-bottom:1px solid #e5e7eb;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}.wrap{max-width:1180px;margin:25px auto;padding:0 16px}.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 10px #0000000d;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}label{display:block;font-weight:600;font-size:13px;margin:8px 0 6px}input,select,textarea{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:7px;font-size:14px}button{border:0;border-radius:7px;padding:10px 14px;font-weight:600;cursor:pointer;background:var(--b);color:#fff}button.secondary{background:#eef2ff;color:#1e40af}button.danger{background:var(--bad)}button.small{padding:6px 9px;font-size:12px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.tabs button{background:#fff;color:#374151;border:1px solid #d1d5db}.tabs button.active{background:var(--b);color:#fff}.hidden{display:none!important}.msg{padding:10px;border-radius:7px;margin:10px 0;background:#eef6ff}.err{background:#fdecec;color:var(--bad)}.ok{background:#e9f6ed;color:var(--good)}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:9px;border-bottom:1px solid #eee;vertical-align:top}th{background:#f8fafc}.scroll{overflow:auto}.metric{font-size:26px;font-weight:700}.muted{color:var(--muted);font-size:13px}.loader{position:fixed;inset:0;background:#ffffffb8;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}.spinner{width:44px;height:44px;border:5px solid #dbe7f8;border-top-color:var(--b);border-radius:50%;animation:spin .75s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.booked{background:#fff0f0;padding:10px;border-radius:6px;margin:6px 0}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.right{margin-left:auto}h1,h2,h3{margin-top:0}/* Disabled viewport breakpoint: (max-width:760px) */
+@media not all {.two{grid-template-columns:1fr}.wrap{margin-top:14px}.card{padding:15px}header{padding:12px}}
 
 :root {
   color-scheme: light;
@@ -194,7 +195,17 @@ table input, table select { min-width: 88px; }
 #adminContent .dashboard-refresh { display: block; margin-bottom: 14px; }
 #candHome .scroll table { min-width: 980px; }
 #candHome .scroll th, #candHome .scroll td { white-space: nowrap; }
-#candHome .scroll td:nth-child(3) { min-width: 220px; }
+#candHome .scroll td:nth-child(3) { min-width: 100px; }
+.candidate-booking-id { display: inline-block; max-width: 100%; color: var(--text); font-size: 12px; font-weight: 650; line-height: 1.4; overflow-wrap: anywhere; }
+.candidate-status-badge { display: inline-flex; max-width: 100%; align-items: center; gap: 5px; padding: 4px 9px; border: 1px solid transparent; border-radius: 999px; font-size: 11px; font-weight: 700; line-height: 1.35; white-space: normal; }
+.candidate-status-confirmed, .candidate-status-not-required { border-color: #dce5ff; background: #f1f4ff; color: #3153d8; }
+.candidate-status-verified { border-color: #ccebdc; background: #edfaf3; color: #137548; }
+.candidate-status-pending { border-color: #f1dfb6; background: #fff8e8; color: #8a5a00; }
+.candidate-status-failed, .candidate-status-cancelled { border-color: #f1d8da; background: #fff1f2; color: #a83240; }
+.candidate-status-unknown { border-color: var(--line); background: #f7f8fb; color: #59657a; }
+.candidate-status-legend { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 14px; }
+.candidate-status-legend .candidate-status-badge { font-size: 10px; }
+.candidate-status-legend button[aria-pressed="true"] { outline: 2px solid var(--b); outline-offset: 2px; }
 #adminContent .grid > div:has(#acOverride) { display: flex; align-items: flex-end; }
 #adminContent label:has(#acOverride) { display: flex; width: 100%; min-height: 44px; align-items: center; gap: 10px; margin: 0; letter-spacing: 0; }
 #adminContent .card:has(#sTZ) .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
@@ -249,7 +260,8 @@ table input, table select { min-width: 88px; }
 .loader { background: rgba(245, 247, 251, .82); backdrop-filter: blur(5px); }
 .spinner { border-width: 4px; }
 @keyframes spin { to { transform: rotate(360deg); } }
-@media (max-width: 760px) {
+/* Disabled viewport breakpoint: (max-width: 760px) */
+@media not all {
   header { min-height: 60px; padding: 10px 16px; }
   header > b { font-size: 14px; }
   header > b::before { width: 32px; height: 32px; }
@@ -416,16 +428,10 @@ table input, table select { min-width: 88px; }
   #candHome #candidateInterviews,
   #candHome #candidateInterviews tbody { display: block; width: 100%; min-width: 0; }
   #candHome #candidateInterviews tr:first-child {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+    display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px;
   }
+  #candHome #candidateInterviews th { border: 0; padding: 0; border-radius: 7px; }
+  #candHome #candidateInterviews th:last-child { display: none; }
   #candHome #candidateInterviews tr:not(:first-child) {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -457,16 +463,16 @@ table input, table select { min-width: 88px; }
   }
   #candHome #candidateInterviews td:nth-child(1)::before { content: "Booking ID"; }
   #candHome #candidateInterviews td:nth-child(2)::before { content: "Type"; }
-  #candHome #candidateInterviews td:nth-child(3)::before { content: "Time"; }
-  #candHome #candidateInterviews td:nth-child(4)::before { content: "Status"; }
-  #candHome #candidateInterviews td:nth-child(5)::before { content: "Payment"; }
-  #candHome #candidateInterviews td:nth-child(6)::before { content: "Refund"; }
-  #candHome #candidateInterviews td:nth-child(7)::before { content: "Charge"; }
-  #candHome #candidateInterviews td:nth-child(3),
-  #candHome #candidateInterviews td:nth-child(8) { grid-column: 1 / -1; }
-  #candHome #candidateInterviews td:nth-child(3) { font-size: 13px; font-weight: 650; }
-  #candHome #candidateInterviews td:nth-child(8) { display: flex; justify-content: flex-end; padding-top: 5px; }
+  #candHome #candidateInterviews td:nth-child(3)::before { content: "Date"; }
+  #candHome #candidateInterviews td:nth-child(6)::before { content: "Booking status"; }
+  #candHome #candidateInterviews td:nth-child(7)::before { content: "Payment verification"; }
+  #candHome #candidateInterviews td:nth-child(8)::before { content: "Refund status"; }
+  #candHome #candidateInterviews td:nth-child(9)::before { content: "Charge"; }
+    #candHome #candidateInterviews td:nth-child(10),
   #candHome #candidateInterviews td[colspan] { grid-column: 1 / -1; }
+  #candHome #candidateInterviews td:nth-child(4)::before { content: "Start"; }
+  #candHome #candidateInterviews td:nth-child(5)::before { content: "End"; }
+  #candHome #candidateInterviews td:nth-child(10) { display: flex; justify-content: flex-end; padding-top: 5px; }
   #adminContent .dashboard-bookings .scroll { overflow: visible; }
   #adminContent .dashboard-bookings table,
   #adminContent .dashboard-bookings tbody { display: block; width: 100%; }
@@ -509,7 +515,8 @@ table input, table select { min-width: 88px; }
   .scroll { -webkit-overflow-scrolling: touch; }
   th, td { padding: 10px; }
 }
-@media (min-width: 761px) and (max-width: 1000px) {
+/* Disabled viewport breakpoint: (min-width: 761px) and (max-width: 1000px) */
+@media not all {
   #adminApp .tabs { display: none; }
   #adminApp .admin-mobile-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: #fff; box-shadow: 0 5px 18px rgba(28, 42, 75, .04); }
   #adminApp .admin-mobile-nav .logout-button { min-height: 44px; margin: 0; }
@@ -524,7 +531,8 @@ table input, table select { min-width: 88px; }
   #avRows .av > div:nth-child(7) { grid-column: 1 / -1; }
   #avRows .av > div:last-child { grid-column: 1 / -1; justify-content: flex-end; }
 }
-@media (min-width: 761px) and (max-width: 1100px) {
+/* Disabled viewport breakpoint: (min-width: 761px) and (max-width: 1100px) */
+@media not all {
   #adminContent .card:has(#searchTable_bookings) .scroll,
   #adminContent .card:has(#searchTable_candidates) .scroll,
   #adminContent .card:has(#searchTable_payments) .scroll,
@@ -632,16 +640,10 @@ table input, table select { min-width: 88px; }
   #candHome #candidateInterviews,
   #candHome #candidateInterviews tbody { display: block; width: 100%; min-width: 0 !important; }
   #candHome #candidateInterviews tr:first-child {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+    display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px;
   }
+  #candHome #candidateInterviews th { border: 0; padding: 0; border-radius: 7px; }
+  #candHome #candidateInterviews th:last-child { display: none; }
   #candHome #candidateInterviews tr:not(:first-child) {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -673,16 +675,16 @@ table input, table select { min-width: 88px; }
   }
   #candHome #candidateInterviews td:nth-child(1)::before { content: "Booking ID"; }
   #candHome #candidateInterviews td:nth-child(2)::before { content: "Type"; }
-  #candHome #candidateInterviews td:nth-child(3)::before { content: "Time"; }
-  #candHome #candidateInterviews td:nth-child(4)::before { content: "Status"; }
-  #candHome #candidateInterviews td:nth-child(5)::before { content: "Payment"; }
-  #candHome #candidateInterviews td:nth-child(6)::before { content: "Refund"; }
-  #candHome #candidateInterviews td:nth-child(7)::before { content: "Charge"; }
-  #candHome #candidateInterviews td:nth-child(3),
-  #candHome #candidateInterviews td:nth-child(8),
+  #candHome #candidateInterviews td:nth-child(3)::before { content: "Date"; }
+  #candHome #candidateInterviews td:nth-child(6)::before { content: "Booking status"; }
+  #candHome #candidateInterviews td:nth-child(7)::before { content: "Payment verification"; }
+  #candHome #candidateInterviews td:nth-child(8)::before { content: "Refund status"; }
+  #candHome #candidateInterviews td:nth-child(9)::before { content: "Charge"; }
+    #candHome #candidateInterviews td:nth-child(10),
   #candHome #candidateInterviews td[colspan] { grid-column: 1 / -1; }
-  #candHome #candidateInterviews td:nth-child(3) { font-size: 13px; font-weight: 650; }
-  #candHome #candidateInterviews td:nth-child(8) { display: flex; justify-content: flex-end; padding-top: 5px; }
+  #candHome #candidateInterviews td:nth-child(4)::before { content: "Start"; }
+  #candHome #candidateInterviews td:nth-child(5)::before { content: "End"; }
+  #candHome #candidateInterviews td:nth-child(10) { display: flex; justify-content: flex-end; padding-top: 5px; }
   #adminContent .dashboard-bookings .scroll { overflow: visible; border: 0; }
   #adminContent .dashboard-bookings table,
   #adminContent .dashboard-bookings tbody { display: block; width: 100%; }
@@ -715,7 +717,8 @@ table input, table select { min-width: 88px; }
   #adminContent .dashboard-bookings td:nth-child(5)::before { content: "Duration"; }
   #adminContent .dashboard-bookings td:not(:first-child)::before { display: block; margin-bottom: 2px; color: var(--muted); font-size: 10px; font-weight: 700; text-transform: uppercase; }
 }
-@media (max-width: 420px) {
+/* Disabled viewport breakpoint: (max-width: 420px) */
+@media not all {
   header { align-items: flex-start; }
   header #topUser { max-width: 46%; overflow-wrap: anywhere; text-align: right; }
   .row > button { flex: 1 1 auto; }
@@ -732,36 +735,140 @@ table input, table select { min-width: 88px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+.tabs button { position: relative; transition: transform .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease; }
+.tabs button::after { content: ''; position: absolute; left: 14px; right: 14px; bottom: 3px; height: 2px; border-radius: 2px; background: currentColor; transform: scaleX(0); transition: transform .18s ease; }
+.tabs button:hover { transform: translateY(-2px); background: #edf2ff; color: #3153d8; box-shadow: 0 4px 10px rgba(49,94,251,.1); }
+.tabs button:hover::after, .tabs button.active::after { transform: scaleX(1); }
+.tabs button.active { background: var(--soft-blue); color: #3153d8; box-shadow: inset 0 0 0 1px #d5dfff; }
+.tabs button:active { transform: translateY(0) scale(.97); }
+.candidate-sort-button { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 5px 3px; border: 0; border-radius: 5px; background: transparent; color: inherit; box-shadow: none; font-size: inherit; white-space: nowrap; }
+.candidate-sort-button:hover { transform: none; background: #e9efff; color: #3153d8; box-shadow: none; }
+.candidate-sort-button span { color: #8590a5; }
+#candidateInterviews th[aria-sort="ascending"] .candidate-sort-button, #candidateInterviews th[aria-sort="descending"] .candidate-sort-button { color: #3153d8; }
+@media (prefers-reduced-motion: reduce) { .tabs button, .tabs button::after { transition: none; } .tabs button:hover, .tabs button:active { transform: none; } }
+.sort-arrows { width: 14px; height: 18px; flex: 0 0 auto; fill: #a4afc1; }
+.sort-arrows .selected { fill: #3153d8; }
+.picker-field { position: relative; }
+.picker-source { display: none !important; }
+.picker-trigger { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #dce2ec; background: #fff; color: var(--text); box-shadow: none; text-align: left; font-weight: 500; }
+.picker-trigger:hover { transform: none; border-color: #91a9f7; background: #f8faff; box-shadow: none; }
+.picker-trigger[aria-expanded="true"] { border-color: #6b8cff; box-shadow: 0 0 0 3px rgba(49,94,251,.12); }
+.picker-trigger svg { width: 18px; height: 18px; color: #667791; flex: 0 0 auto; }
+.picker-placeholder { color: #8590a5; }
+.picker-panel { position: fixed; z-index: 100; width: 300px; max-width: calc(100vw - 24px); max-height: calc(100vh - 24px); overflow: auto; padding: 16px; border: 1px solid #e0e6f1; border-radius: 15px; background: #fff; box-shadow: 0 16px 48px rgba(28,42,75,.18); }
+.picker-panel button { min-height: 36px; padding: 7px; background: transparent; color: #34415b; box-shadow: none; }
+.picker-panel button:hover { transform: none; background: #edf2ff; color: #3153d8; box-shadow: none; }
+.picker-panel button[aria-selected="true"], .picker-panel button[aria-pressed="true"] { background: #3153d8; color: white; }
+.picker-panel button:disabled { opacity: .35; cursor: default; }
+.picker-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 700; }
+.picker-heading button { display: grid; place-items: center; width: 32px; }
+.picker-heading svg { width: 16px; height: 16px; }
+.picker-calendar { display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap: 3px; }
+.picker-calendar .picker-weekday { padding: 6px 0; color: #8590a5; font-size: 11px; font-weight: 700; text-align: center; }
+.picker-calendar button { padding: 5px 0; font-size: 12px; border-radius: 8px; }
+.picker-calendar .picker-today { box-shadow: inset 0 0 0 1px #91a9f7; }
+.picker-footer { display: flex; justify-content: space-between; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #edf0f5; }
+.picker-panel .picker-apply { background: #3153d8; color: white; padding: 7px 14px; }
+.picker-options { display: grid; gap: 5px; }
+.picker-options-scroll { max-height: 260px; overflow-y: auto; scrollbar-width: thin; margin-top: 10px; }
+.picker-search { min-height: 38px; font-size: 13px; }
+.picker-trigger:disabled { background: #f7f8fb; color: #59657a; cursor: default; }
+.picker-trigger:disabled:hover { border-color: #dce2ec; box-shadow: none; }
+#candHome .picker-field:has(.timezone-select) { margin-top: 8px; }
+.picker-options-empty { margin: 12px 0 4px; color: #8590a5; font-size: 13px; }
+.picker-options button { text-align: left; padding: 11px 12px; border-radius: 9px; }
+.picker-time { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px; }
+.picker-time-label { margin-bottom: 8px; color: #8590a5; text-align: center; font-size: 11px; font-weight: 700; }
+.picker-time-list { display: grid; gap: 4px; max-height: 210px; overflow-y: auto; scrollbar-width: thin; }
+.picker-time-list button { width: 100%; flex-shrink: 0; font-size: 13px; }
+
+.tabs button.logout-button, .admin-mobile-nav button.logout-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; overflow: hidden; transition: background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .12s ease; }
+.tabs button.logout-button::after { display: none; }
+.logout-icon { width: 18px; height: 18px; flex: 0 0 auto; }
+.logout-arrow { transition: transform .22s ease; }
+.tabs button.logout-button:hover, .admin-mobile-nav button.logout-button:hover,
+.tabs button.logout-button:focus-visible, .admin-mobile-nav button.logout-button:focus-visible { transform: none; border-color: #c23c4c; background: #c23c4c; color: #fff; box-shadow: 0 3px 12px rgba(192,57,72,.18); }
+.logout-button:hover .logout-arrow, .logout-button:focus-visible .logout-arrow { transform: translateX(3px); }
+.tabs button.logout-button:active, .admin-mobile-nav button.logout-button:active { transform: scale(.96); background: #a83240; box-shadow: none; }
+@media (prefers-reduced-motion: reduce) { .tabs button.logout-button, .admin-mobile-nav button.logout-button, .logout-arrow { transition: none; } .logout-button:hover .logout-arrow, .logout-button:focus-visible .logout-arrow, .tabs button.logout-button:active, .admin-mobile-nav button.logout-button:active { transform: none; } }
+/* Fixed desktop layout requested temporarily; width breakpoints above are disabled. */
+body { min-width: 1365px; }
+.wrap { width: 1365px; min-width: 1365px; max-width: 1365px; }
+header { width: 1365px; margin-left: auto; margin-right: auto; padding-left: 24px; padding-right: 24px; }
+#welcome h1 { font-size: 48px; }
+
+.candidate-filter-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 16px; }
+.candidate-filter-toolbar .candidate-status-legend { margin: 0; }
+.candidate-date-filters { display: flex; flex-shrink: 0; align-items: center; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 10px; background: #f8f9fc; margin-left: auto; }
+.candidate-date-filters button { background: transparent; color: #59657a; box-shadow: none; white-space: nowrap; }
+.candidate-date-filters button:hover { background: #edf2ff; color: #3153d8; transform: none; box-shadow: none; }
+.candidate-date-filters button[aria-pressed="true"] { background: #3153d8; color: white; }
+.candidate-date-range { display: flex; align-items: flex-end; justify-content: flex-end; gap: 10px; margin: 0 0 18px; }
+.candidate-date-range > div { width: 180px; }
+.candidate-date-range label { margin-top: 0; }
+.candidate-date-range > button { min-height: 44px; }
+#candidateDateError { color: var(--bad); font-size: 12px; max-width: 160px; margin: 0 0 10px; }
+
+.time-format-preference { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 12px; color: #59657a; font-size: 12px; }
+.time-format-preference > div { display: flex; gap: 3px; padding: 3px; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+.time-format-preference button { min-height: 30px; padding: 5px 10px; font-size: 12px; background: transparent; color: #59657a; box-shadow: none; }
+.time-format-preference button[aria-pressed="true"] { background: #3153d8; color: white; }
+.picker-time.picker-time-24 { grid-template-columns: 1fr 1fr; }
+
+.candidate-profile-grid .time-format-preference { align-items: flex-start; flex-direction: column; gap: 6px; margin: 14px 0 0; }
 </style></head><body><div id="loader" class="loader hidden"><div class="spinner"></div><b>Please wait...</b></div><header><b>Interview Booking Portal</b><div id="topUser" class="muted"></div></header><main class="wrap">
 <div id="landing"><div id="welcome" class="card"><h1>Interview Portal</h1><p class="muted">Choose how you want to continue.</p><div class="welcome-actions"><button class="welcome-login" onclick="show('candidateLogin')">Candidate Login</button><button class="secondary" onclick="show('register')">Register</button><button class="secondary" onclick="show('adminLogin')">Admin</button></div></div>
-<div class="card"><h2>Booked times</h2><div class="grid"><div><label for="publicDate">Date</label><input id="publicDate" type="date" onchange="loadPublicBookings()"></div><div><label for="publicTimezone">Timezone</label><select id="publicTimezone" onchange="loadPublicBookings()"></select></div></div><div class="form-actions"><button onclick="loadPublicBookings()">Check booked times</button></div><div id="publicBooked" aria-live="polite"><p class="muted">Select a date to see booked times.</p></div></div></div>
+<div class="card"><h2>Blocked schedules</h2><div class="grid"><div><label for="publicDate">Date</label><input id="publicDate" type="date" onchange="loadPublicBookings()"></div><div><label for="publicTimezone">Timezone</label><select id="publicTimezone" onchange="loadPublicBookings()"></select></div></div><div class="form-actions"><button onclick="loadPublicBookings()">Check blocked schedules</button></div><div id="publicBooked" aria-live="polite"><p class="muted">Select a date to see blocked schedules.</p></div></div></div>
 <div id="register" class="card hidden"><h2>Candidate Registration</h2><div class="grid"><div><label>Full name</label><input id="rName"></div><div><label>Email</label><input id="rEmail" type="email"></div><div><label>Country code</label><select id="rCountry"></select></div><div><label>Phone number</label><input id="rPhone" inputmode="tel"></div><div><label>Timezone</label><select id="rTz"></select></div><div><label>Password</label><input id="rPass" autocomplete="new-password" maxlength="1024" type="password" minlength="8"></div><div><label>Confirm password</label><input id="rPass2" autocomplete="new-password" maxlength="1024" type="password" minlength="8"></div></div><div class="row auth-actions"><button onclick="register()">Register</button><button class="secondary" onclick="show('landing')">Back</button></div><div id="rMsg"></div></div>
 <div id="candidateLogin" class="card hidden"><h2>Candidate Login</h2><label>Candidate ID or Email</label><input id="lId"><label>Password</label><input id="lPass" autocomplete="current-password" maxlength="1024" type="password"><div class="auth-actions"><button onclick="candidateSignIn()">Login</button><button class="secondary" onclick="showForgot()">Forgot Password</button><button class="secondary" onclick="show('landing')">Back</button></div><div id="lMsg"></div></div>
 <div id="forgot" class="card hidden"><h2>Reset Password</h2><label>Registered Email</label><input id="fEmail" type="email"><div class="auth-actions auth-actions-single"><button onclick="sendReset()">Send Reset Code</button></div><div id="resetBox" class="hidden"><label>6-digit code</label><input id="fOtp" inputmode="numeric" maxlength="6" autocomplete="one-time-code"><label>New password</label><input id="fPass" autocomplete="new-password" maxlength="1024" type="password"><label>Confirm new password</label><input id="fPass2" autocomplete="new-password" maxlength="1024" type="password"><div class="auth-actions auth-actions-single"><button onclick="doReset()">Reset Password</button></div></div><div id="fMsg"></div><div class="auth-actions auth-actions-single"><button class="secondary" onclick="show('candidateLogin')">Back to Login</button></div></div>
 <div id="adminLogin" class="card hidden"><h2>Admin Login</h2><label>Admin email</label><input id="aEmail" type="email"><label>Password</label><input id="aPass" type="password"><div class="row auth-actions"><button onclick="adminSignIn()">Login</button><button class="secondary" onclick="show('landing')">Back</button></div><div id="aMsg"></div></div>
 
-<div id="candidateApp" class="hidden"><div class="tabs"><button onclick="candTab('home')">Dashboard</button><button onclick="candTab('booked')">Booked Times</button><button onclick="candTab('book')">Book Interview</button><button onclick="candTab('password')">Change Password</button><button class="logout-button" onclick="logoutNow()">Logout</button></div><div id="candHome"></div><div id="candBooked" class="hidden"></div><div id="candPassword" class="hidden"></div><div id="candBook" class="hidden card"><h2>Book Interview</h2><div class="grid"><div><label>Date</label><input id="bDate" type="date"></div><div><label>Start time</label><input id="bStart" type="time" oninput="updateOvernightConfirmation('b')" onchange="updateOvernightConfirmation('b')"></div><div><label>End time</label><input id="bEnd" type="time" oninput="updateOvernightConfirmation('b')" onchange="updateOvernightConfirmation('b')"><div id="bOvernightWrap" class="overnight-confirmation hidden"><label><input id="bOvernightConfirmed" type="checkbox"><span>This is an overnight booking and ends the next day</span></label></div></div><div><label>Interview type</label><select id="bType"><option>Technical</option><option>Coding</option><option>HR</option></select></div></div><div class="form-actions"><button onclick="quote()">Check availability & price</button></div><div id="quoteBox"></div><div class="card" style="margin-top:18px"><h3>Booked times on selected date</h3><button class="secondary small" onclick="loadBooked()">Refresh</button><div id="bookedList"></div></div></div></div>
-<div id="adminApp" class="hidden"><div class="tabs"><button onclick="adminTab('dash')">Dashboard</button><button onclick="adminTab('booked')">Booked Times</button><button onclick="adminTab('bookings')">Bookings</button><button onclick="adminTab('candidates')">Candidates</button><button onclick="adminTab('payments')">Payments</button><button onclick="adminTab('refunds')">Refunds</button><button onclick="adminTab('availability')">Availability</button><button onclick="adminTab('settings')">Settings</button><button onclick="adminTab('create')">Create Booking</button><button class="logout-button" onclick="logoutNow()">Logout</button></div><div class="admin-mobile-nav"><button type="button" class="admin-menu-toggle" aria-expanded="false" aria-controls="adminMenuPanel" onclick="toggleAdminMenu()"><span class="admin-menu-icon" aria-hidden="true"><span></span><span></span><span></span></span><span id="adminMenuCurrent">Dashboard</span></button><div id="adminMenuPanel" class="admin-menu-panel hidden" role="menu"><button type="button" role="menuitem" data-admin-page="dash" onclick="selectAdminMenuPage('dash')">Dashboard</button><button type="button" role="menuitem" data-admin-page="booked" onclick="selectAdminMenuPage('booked')">Booked Times</button><button type="button" role="menuitem" data-admin-page="bookings" onclick="selectAdminMenuPage('bookings')">Bookings</button><button type="button" role="menuitem" data-admin-page="candidates" onclick="selectAdminMenuPage('candidates')">Candidates</button><button type="button" role="menuitem" data-admin-page="payments" onclick="selectAdminMenuPage('payments')">Payments</button><button type="button" role="menuitem" data-admin-page="refunds" onclick="selectAdminMenuPage('refunds')">Refunds</button><button type="button" role="menuitem" data-admin-page="availability" onclick="selectAdminMenuPage('availability')">Availability</button><button type="button" role="menuitem" data-admin-page="settings" onclick="selectAdminMenuPage('settings')">Settings</button><button type="button" role="menuitem" data-admin-page="create" onclick="selectAdminMenuPage('create')">Create Booking</button></div><button class="logout-button" onclick="logoutNow()">Logout</button></div><div id="adminContent"></div></div>
+<div id="candidateApp" class="hidden"><div class="tabs"><button data-candidate-page="home" onclick="candTab('home')">Dashboard</button><button data-candidate-page="booked" onclick="candTab('booked')">Blocked Schedules</button><button data-candidate-page="book" onclick="candTab('book')">Book Interview</button><button data-candidate-page="password" onclick="candTab('password')">Change Password</button><button class="logout-button" onclick="logoutNow()"><span>Logout</span><svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H5v16h5"/><g class="logout-arrow"><path d="M10 12h10m-4-4 4 4-4 4"/></g></svg></button></div><div id="candHome"></div><div id="candBooked" class="hidden"></div><div id="candPassword" class="hidden"></div><div id="candBook" class="hidden card"><h2>Book Interview</h2><div class="grid"><div><label>Date</label><input id="bDate" type="date"></div><div><label>Start time</label><input id="bStart" type="time" oninput="updateOvernightConfirmation('b')" onchange="updateOvernightConfirmation('b')"></div><div><label>End time</label><input id="bEnd" type="time" oninput="updateOvernightConfirmation('b')" onchange="updateOvernightConfirmation('b')"><div id="bOvernightWrap" class="overnight-confirmation hidden"><label><input id="bOvernightConfirmed" type="checkbox"><span>This is an overnight booking and ends the next day</span></label></div></div><div><label>Interview type</label><select id="bType"><option>Technical</option><option>Coding</option><option>HR</option></select></div></div><div class="form-actions"><button onclick="quote()">Check availability & price</button></div><div id="quoteBox"></div><div class="card" style="margin-top:18px"><h3>Blocked schedules on selected date</h3><button class="secondary small" onclick="loadBooked()">Refresh</button><div id="bookedList"></div></div></div></div>
+<div id="adminApp" class="hidden"><div class="time-format-preference"><span>Preferred time format</span><div role="group" aria-label="Preferred time format"><button type="button" data-time-format="12" onclick="setPreferredTimeFormat('12')">12 hours</button><button type="button" data-time-format="24" onclick="setPreferredTimeFormat('24')">24 hours</button></div></div><div class="tabs"><button data-admin-page="dash" onclick="adminTab('dash')">Dashboard</button><button data-admin-page="booked" onclick="adminTab('booked')">Blocked Schedules</button><button data-admin-page="bookings" onclick="adminTab('bookings')">Bookings</button><button data-admin-page="candidates" onclick="adminTab('candidates')">Candidates</button><button data-admin-page="payments" onclick="adminTab('payments')">Payments</button><button data-admin-page="refunds" onclick="adminTab('refunds')">Refunds</button><button data-admin-page="availability" onclick="adminTab('availability')">Availability</button><button data-admin-page="settings" onclick="adminTab('settings')">Settings</button><button data-admin-page="create" onclick="adminTab('create')">Create Booking</button><button class="logout-button" onclick="logoutNow()"><span>Logout</span><svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H5v16h5"/><g class="logout-arrow"><path d="M10 12h10m-4-4 4 4-4 4"/></g></svg></button></div><div class="admin-mobile-nav"><button type="button" class="admin-menu-toggle" aria-expanded="false" aria-controls="adminMenuPanel" onclick="toggleAdminMenu()"><span class="admin-menu-icon" aria-hidden="true"><span></span><span></span><span></span></span><span id="adminMenuCurrent">Dashboard</span></button><div id="adminMenuPanel" class="admin-menu-panel hidden" role="menu"><button type="button" role="menuitem" data-admin-page="dash" onclick="selectAdminMenuPage('dash')">Dashboard</button><button type="button" role="menuitem" data-admin-page="booked" onclick="selectAdminMenuPage('booked')">Blocked Schedules</button><button type="button" role="menuitem" data-admin-page="bookings" onclick="selectAdminMenuPage('bookings')">Bookings</button><button type="button" role="menuitem" data-admin-page="candidates" onclick="selectAdminMenuPage('candidates')">Candidates</button><button type="button" role="menuitem" data-admin-page="payments" onclick="selectAdminMenuPage('payments')">Payments</button><button type="button" role="menuitem" data-admin-page="refunds" onclick="selectAdminMenuPage('refunds')">Refunds</button><button type="button" role="menuitem" data-admin-page="availability" onclick="selectAdminMenuPage('availability')">Availability</button><button type="button" role="menuitem" data-admin-page="settings" onclick="selectAdminMenuPage('settings')">Settings</button><button type="button" role="menuitem" data-admin-page="create" onclick="selectAdminMenuPage('create')">Create Booking</button></div><button class="logout-button" onclick="logoutNow()"><span>Logout</span><svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H5v16h5"/><g class="logout-arrow"><path d="M10 12h10m-4-4 4 4-4 4"/></g></svg></button></div><div id="adminContent"></div></div>
 </main><script>
 let token='',role='',home=null,adminData=null,currentQuote=null; const zones=['Asia/Kolkata','America/New_York','America/Chicago','America/Denver','America/Los_Angeles','America/Toronto','America/Vancouver','Europe/London','Europe/Dublin','Europe/Paris','Europe/Berlin','Europe/Amsterdam','Asia/Dubai','Asia/Singapore','Asia/Tokyo','Asia/Hong_Kong','Australia/Sydney','Australia/Melbourne','Pacific/Auckland']; const countries=[['India','+91'],['United States','+1'],['Canada','+1'],['United Kingdom','+44'],['Australia','+61'],['New Zealand','+64'],['UAE','+971'],['Singapore','+65'],['Germany','+49'],['France','+33'],['Ireland','+353'],['Netherlands','+31'],['Spain','+34'],['Italy','+39'],['Japan','+81'],['Hong Kong','+852'],['Saudi Arabia','+966'],['Pakistan','+92'],['Bangladesh','+880'],['Sri Lanka','+94'],['Nepal','+977'],['South Africa','+27']];
 function el(id){return document.getElementById(id)} function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))} function msg(id,t,bad=false){el(id).innerHTML=`<div class="msg ${bad?'err':'ok'}">${esc(t)}</div>`} let pendingCalls=0;function setLoading(on){pendingCalls+=on?1:-1;pendingCalls=Math.max(0,pendingCalls);el('loader').classList.toggle('hidden',pendingCalls===0)} function call(fn,...args){setLoading(true);return new Promise((res,rej)=>google.script.run.withSuccessHandler(x=>{setLoading(false);res(x)}).withFailureHandler(e=>{setLoading(false);rej(new Error(e.message||e))})[fn](...args))} function show(id){['landing','register','candidateLogin','forgot','adminLogin'].forEach(x=>el(x).classList.toggle('hidden',x!==id))} const detectedTimezone=Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Kolkata';if(!zones.includes(detectedTimezone))zones.push(detectedTimezone);zones.forEach(z=>el('rTz').add(new Option(z,z))); countries.forEach(c=>el('rCountry').add(new Option(`${c[0]} (${c[1]})`,c[1]))); el('rTz').value=detectedTimezone;
 el('publicTimezone').innerHTML=businessTimezoneOptions(Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC');
 let publicRequest=0;
 const bookedTimeRequests={};
-function renderBookedTimes(prefix,timezone){return `<div class="card"><h2>Booked times</h2><div class="grid"><div><label for="${prefix}Date">Date</label><input id="${prefix}Date" type="date" onchange="loadBookedTimes('${prefix}')"></div><div><label for="${prefix}Timezone">Timezone</label><select id="${prefix}Timezone" onchange="loadBookedTimes('${prefix}')">${businessTimezoneOptions(timezone)}</select></div></div><div class="form-actions"><button onclick="loadBookedTimes('${prefix}')">Check booked times</button></div><div id="${prefix}Result" aria-live="polite"><p class="muted">Select a date to see booked times.</p></div></div>`}
-function renderBookedTimesResult(result){return `<p class="muted">Times in ${esc(result.timezone)}</p>`+(result.booked.length?`<div class="scroll"><table><thead><tr><th>Status</th><th>Date</th><th>Start</th><th>End</th></tr></thead><tbody>${result.booked.map(b=>`<tr><td>Booked</td><td>${esc(b.date)}</td><td>${esc(b.start)}</td><td>${esc(b.end)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">No bookings on this date.</p>')}
+function renderBookedTimes(prefix,timezone){return `<div class="card"><h2>Blocked schedules</h2><div class="grid"><div><label for="${prefix}Date">Date</label><input id="${prefix}Date" type="date" onchange="loadBookedTimes('${prefix}')"></div><div><label for="${prefix}Timezone">Timezone</label><select id="${prefix}Timezone" onchange="loadBookedTimes('${prefix}')">${businessTimezoneOptions(timezone)}</select></div></div><div class="form-actions"><button onclick="loadBookedTimes('${prefix}')">Check blocked schedules</button></div><div id="${prefix}Result" aria-live="polite"><p class="muted">Select a date to see blocked schedules.</p></div></div>`}
+const blockedScheduleViews={};
+function blockedScheduleValue(booking,key){
+  if(key==='status')return 'Booked';
+  if(key==='date')return Date.parse(booking.date)||0;
+  const time=String(booking[key]||''),endDate=time.match(/\(([^)]+)\)/);
+  return Date.parse((endDate?endDate[1]:booking.date)+' '+time.replace(/\s*\([^)]+\)/,''))||0;
+}
+function sortBlockedSchedules(target,key){
+  const view=blockedScheduleViews[target];if(!view)return;
+  view.sort={key,direction:view.sort.key===key&&view.sort.direction==='ascending'?'descending':'ascending'};
+  el(target).innerHTML=renderBookedTimesResult(view.result,target);
+}
+function blockedScheduleHeader(target,key,label,sort){
+  const direction=sort.key===key?sort.direction:'none';
+  return `<th aria-sort="${direction}"><button type="button" class="candidate-sort-button" onclick="sortBlockedSchedules('${target}','${key}')" title="Sort by ${label}">${label}<svg class="sort-arrows" viewBox="0 0 16 20" aria-hidden="true"><path class="${direction==='ascending'?'selected':''}" d="M8 2 3 7h10z"/><path class="${direction==='descending'?'selected':''}" d="m8 18 5-5H3z"/></svg></button></th>`;
+}
+function renderBookedTimesResult(result,target='publicBooked'){
+  const sort=blockedScheduleViews[target]?.sort||{key:'start',direction:'ascending'};
+  blockedScheduleViews[target]={result,sort};
+  const rows=result.booked.slice().sort((a,b)=>{const left=blockedScheduleValue(a,sort.key),right=blockedScheduleValue(b,sort.key);return (sort.direction==='ascending'?1:-1)*(typeof left==='number'?left-right:left.localeCompare(right));});
+  return `<p class="muted">Times in ${esc(result.timezone)}</p>`+(rows.length?`<div class="scroll"><table class="blocked-schedules-table"><thead><tr>${[['status','Status'],['date','Date'],['start','Start'],['end','End']].map(([key,label])=>blockedScheduleHeader(target,key,label,sort)).join('')}</tr></thead><tbody>${rows.map(b=>`<tr><td>Booked</td><td>${esc(b.date)}</td><td>${esc(b.start)}</td><td>${esc(b.end)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">No bookings on this date.</p>');
+}
+
 async function loadBookedTimes(prefix){
   const request=bookedTimeRequests[prefix]=(bookedTimeRequests[prefix]||0)+1,date=el(prefix+'Date').value,tz=el(prefix+'Timezone').value,result=el(prefix+'Result');
-  if(!date){result.innerHTML='<p class="muted">Select a date to see booked times.</p>';return;}
-  try{const data=await call('getPublicBookedTimes',date,tz);if(request!==bookedTimeRequests[prefix])return;result.innerHTML=renderBookedTimesResult(data);}
+  if(!date){result.innerHTML='<p class="muted">Select a date to see blocked schedules.</p>';return;}
+  try{const data=await call('getPublicBookedTimes',date,tz);if(request!==bookedTimeRequests[prefix])return;result.innerHTML=renderBookedTimesResult(data,prefix+'Result');}
   catch(e){if(request===bookedTimeRequests[prefix])msg(prefix+'Result',e.message,true);}
 }
 async function loadPublicBookings(){
   const request=++publicRequest,date=el('publicDate').value,tz=el('publicTimezone').value;
-  if(!date){el('publicBooked').innerHTML='<p class="muted">Select a date to see booked times.</p>';return;}
+  if(!date){el('publicBooked').innerHTML='<p class="muted">Select a date to see blocked schedules.</p>';return;}
   try{
     const result=await call('getPublicBookedTimes',date,tz);if(request!==publicRequest)return;
-    el('publicBooked').innerHTML=renderBookedTimesResult(result);
+    el('publicBooked').innerHTML=renderBookedTimesResult(result,'publicBooked');
   }catch(e){if(request===publicRequest)msg('publicBooked',e.message,true);}
 }
 async function register(){try{if(el('rPass').value!==el('rPass2').value)throw new Error('Passwords do not match.');const r=await call('registerCandidate',{name:el('rName').value,email:el('rEmail').value,countryCode:el('rCountry').value,phone:el('rPhone').value,timezone:el('rTz').value,password:el('rPass').value});token=r.token;role='candidate';saveSession();await loadCandidate()}catch(e){msg('rMsg',e.message,true);show('register')}}
@@ -790,12 +897,108 @@ async function doReset(){
 }
 function saveSession(){try{localStorage.setItem('interviewPortalSession',JSON.stringify({token,role}))}catch(e){alert('Browser storage is blocked. Enable it to stay signed in after refresh.')}} function clearSession(){try{localStorage.removeItem('interviewPortalSession')}catch(e){}}
 async function adminSignIn(){try{const r=await call('adminLogin',el('aEmail').value,el('aPass').value);token=r.token;role='admin';saveSession();el('landing').classList.add('hidden');el('adminLogin').classList.add('hidden');el('adminApp').classList.remove('hidden');el('topUser').textContent='Admin';await refreshAdmin();adminTab('dash')}catch(e){msg('aMsg',e.message,true)}}
-async function loadCandidate(){home=await call('getCandidateHome',token);['landing','candidateLogin','register','forgot','adminLogin'].forEach(x=>el(x).classList.add('hidden'));el('candidateApp').classList.remove('hidden');el('topUser').textContent=`${home.profile.candidateId} • ${home.profile.timezone}`;renderCandidateHome();el('candBooked').innerHTML=renderBookedTimes('candidateBooked',home.profile.timezone);el('candPassword').innerHTML=renderPasswordChange('candidatePassword','Change Password');}
+async function loadCandidate(){home=await call('getCandidateHome',token);['landing','candidateLogin','register','forgot','adminLogin'].forEach(x=>el(x).classList.add('hidden'));el('candidateApp').classList.remove('hidden');el('topUser').textContent=`${home.profile.candidateId} • ${home.profile.timezone}`;renderCandidateHome();el('candBooked').innerHTML=renderBookedTimes('candidateBooked',home.profile.timezone);el('candPassword').innerHTML=renderPasswordChange('candidatePassword','Change Password');candTab('home');}
 function withoutGmtOffset(value){return String(value??'').replace(/\s+GMT[+-]\d{1,2}(?::?\d{2})?/gi,'').trim()}
-function renderCandidateHome(){const p=home.profile;let rows=home.bookings.map(b=>`<tr><td>${esc(b.bookingId)}</td><td>${esc(b.type)}</td><td>${esc(withoutGmtOffset(b.start))}</td><td>${esc(b.status)}</td><td>${esc(b.paymentStatus)}</td><td>${esc(b.refundStatus)}</td><td>$${b.charge}</td><td>${b.canCancel&&new Date(b.startUTC).getTime()>Date.now()?`<button data-cancel-start="${esc(b.startUTC)}" class="danger small" onclick="cancelBooking('${esc(b.bookingId)}')">Cancel</button>`:''}</td></tr>`).join('');el('candHome').innerHTML=`<div class="card"><h2>Hello ${esc(p.name)}</h2><div class="grid candidate-profile-grid"><div><b>Candidate ID</b><br>${esc(p.candidateId)}</div><div><b>Account</b><br>${esc(p.type)}${p.type==='PERCENTAGE'?` • ${p.percentage}%`:''}</div><div><b>Timezone</b><select class="timezone-select" id="cTz" disabled>${[...new Set([...zones,p.timezone])].map(z=>`<option ${z===p.timezone?'selected':''}>${esc(z)}</option>`).join('')}</select><div class="timezone-edit-actions">${editControls('timezone',['cTz'],'saveTz()')}</div></div></div></div><div class="card candidate-interviews"><h3>My Interviews</h3><div class="scroll candidate-interviews-scroll"><table id="candidateInterviews"><tr><th>ID</th><th>Type</th><th>Time</th><th>Status</th><th>Payment</th><th>Refund</th><th>Charge</th><th></th></tr>${rows||'<tr><td colspan=8>No interviews yet.</td></tr>'}</table></div></div>`}
-async function saveTz(){try{await call('updateCandidateTimezone',token,el('cTz').value);invalidateQuote();await loadCandidate()}catch(e){alert(e.message)}} function candTab(t){el('candHome').classList.toggle('hidden',t!=='home');el('candBooked').classList.toggle('hidden',t!=='booked');el('candBook').classList.toggle('hidden',t!=='book');el('candPassword').classList.toggle('hidden',t!=='password');if(t==='book')loadBooked();if(t==='booked')loadBookedTimes('candidateBooked')} async function loadBooked(){if(!el('bDate').value)return;try{const r=await call('getAvailabilityForDate',token,el('bDate').value);el('bookedList').innerHTML=r.booked.length?r.booked.map(x=>`<div class="booked">BOOKED — ${esc(withoutGmtOffset(x.from))} to ${esc(withoutGmtOffset(x.to))}</div>`).join(''):'<div class="msg ok">No booked interviews found for this date.</div>'}catch(e){el('bookedList').innerHTML=`<div class="msg err">${esc(e.message)}</div>`}}
+function candidateStatusBadge(value,kind){
+  const status=String(value||'').toUpperCase();
+  const labels=kind==='payment'?{
+    VERIFIED:['Paid & verified','verified'],
+    SUBMITTED:['Payment pending','pending'],
+    NOT_REQUIRED:['No payment required','not-required'],
+    FAILED:['Payment failed','failed']
+  }:kind==='refund'?{
+    REFUNDED:['Refunded','verified'],
+    REQUESTED:['Refund requested','pending'],
+    NOT_REQUIRED:['No refund','not-required']
+  }:{
+    CONFIRMED:['Confirmed','confirmed'],
+    CANCELLED:['Cancelled','cancelled']
+  };
+  const [label,tone]=labels[status]||[String(value||'Unknown').replace(/_/g,' '),'unknown'];
+  return `<span class="candidate-status-badge candidate-status-${tone}">${esc(label)}</span>`;
+}
+let candidateInterviewFilter='ALL';
+let candidateDateFilter={mode:'ALL',from:'',to:''};
+function candidateDayKey(value,timezone){
+  const date=new Date(value);if(!Number.isFinite(date.getTime()))return '';
+  const parts=new Intl.DateTimeFormat('en-US',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date);
+  const part=key=>parts.find(p=>p.type===key).value;
+  return `${part('year')}-${part('month')}-${part('day')}`;
+}
+function candidateShiftDay(day,offset){
+  const date=new Date(day+'T12:00:00Z');date.setUTCDate(date.getUTCDate()+offset);return date.toISOString().slice(0,10);
+}
+function candidateBookingDay(booking){
+  if(booking.startUTC)return candidateDayKey(booking.startUTC,home.profile.timezone);
+  const date=new Date(candidateDateTime(booking.start).date);
+  return Number.isFinite(date.getTime())?`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`:'';
+}
+function candidateMatchesDate(booking,now=new Date()){
+  const {mode,from,to}=candidateDateFilter;if(mode==='ALL')return true;
+  const day=candidateBookingDay(booking);
+  if(mode==='RANGE')return !!day&&day>=from&&day<=to;
+  const today=candidateDayKey(now,home.profile.timezone);
+  return day===candidateShiftDay(today,mode==='TOMORROW'?1:mode==='YESTERDAY'?-1:0);
+}
+function setCandidateDateFilter(mode){
+  candidateDateFilter.mode=mode;
+  if(mode==='RANGE'&&!candidateDateFilter.from){const today=candidateDayKey(new Date(),home.profile.timezone);candidateDateFilter.from=today;candidateDateFilter.to=today;}
+  renderCandidateHome();
+}
+function applyCandidateDateRange(){
+  const from=el('candidateDateFrom').value,to=el('candidateDateTo').value;
+  if(!from||!to){el('candidateDateError').textContent='Select both dates.';return;}
+  if(from>to){el('candidateDateError').textContent='End date must be on or after start date.';return;}
+  candidateDateFilter={mode:'RANGE',from,to};renderCandidateHome();
+}
+function candidateDateControls(){
+  return `<div class="candidate-date-filters" role="group" aria-label="Filter interviews by date">${[['ALL','All dates'],['TODAY','Today'],['TOMORROW','Tomorrow'],['YESTERDAY','Yesterday'],['RANGE','Range']].map(([mode,label])=>`<button type="button" class="small" aria-pressed="${candidateDateFilter.mode===mode}" onclick="setCandidateDateFilter('${mode}')">${label}</button>`).join('')}</div>`;
+}
+function candidateDateRangeControls(){
+  return candidateDateFilter.mode==='RANGE'?`<div class="candidate-date-range"><div><label for="candidateDateFrom">From</label><input type="date" id="candidateDateFrom" value="${esc(candidateDateFilter.from)}"></div><div><label for="candidateDateTo">To</label><input type="date" id="candidateDateTo" value="${esc(candidateDateFilter.to)}"></div><button type="button" class="small" onclick="applyCandidateDateRange()">Apply range</button><p id="candidateDateError" role="alert"></p></div>`:'';
+}
+let candidateInterviewSort={key:'date',direction:'descending'};
+function sortCandidateInterviews(key){
+  candidateInterviewSort={key,direction:candidateInterviewSort.key===key&&candidateInterviewSort.direction==='ascending'?'descending':'ascending'};
+  renderCandidateHome();
+}
+function candidateSortHeader(key,label){
+  const active=candidateInterviewSort.key===key,direction=active?candidateInterviewSort.direction:'none';
+  const arrows=`<svg class="sort-arrows" viewBox="0 0 16 20" aria-hidden="true"><path class="${direction==='ascending'?'selected':''}" d="M8 2 3 7h10z"/><path class="${direction==='descending'?'selected':''}" d="m8 18 5-5H3z"/></svg>`;
+  return `<th aria-sort="${direction}"><button type="button" class="candidate-sort-button" onclick="sortCandidateInterviews('${key}')" title="Sort by ${label}">${label}${arrows}</button></th>`;
+}
+function candidateSortValue(booking,key){
+  if(key==='charge')return Number(booking.charge)||0;
+  if(key==='date')return new Date(booking.startUTC||candidateDateTime(booking.start).date).getTime()||0;
+  if(key==='start'||key==='end'){
+    const time=candidateDateTime(booking[key]).time.match(/(\d{1,2}):(\d{2})\s*([AP]M)/i);
+    return time?(Number(time[1])%12+(time[3].toUpperCase()==='PM'?12:0))*60+Number(time[2]):0;
+  }
+  return String(booking[key]||'');
+}
+function sortedCandidateBookings(bookings){
+  const {key,direction}=candidateInterviewSort,sign=direction==='ascending'?1:-1;
+  return bookings.slice().sort((a,b)=>{const left=candidateSortValue(a,key),right=candidateSortValue(b,key);return sign*(typeof left==='number'?left-right:left.localeCompare(right,undefined,{numeric:true,sensitivity:'base'}));});
+}
+function setCandidateInterviewFilter(filter){candidateInterviewFilter=filter;renderCandidateHome();}
+function candidateDateTime(value){
+  const display=withoutGmtOffset(value);
+  const match=String(display||'').match(/^(.*?),?\s+(\d{1,2}:\d{2}\s*[AP]M)(.*)$/i);
+  return match?{date:match[1].replace(/,\s*$/,''),time:match[2]}:{date:display,time:'?'};
+}
+function candidateStatusFilter(status,kind){
+  const filter=kind+':'+status;
+  return candidateStatusBadge(status,kind).replace('<span ', '<button type="button" aria-pressed="'+(candidateInterviewFilter===filter)+'" onclick="setCandidateInterviewFilter(\''+filter+'\')" ').replace('</span>','</button>');
+}
+function renderCandidateHome(){
+  const p=home.profile;
+  const bookings=home.bookings.filter(b=>(candidateInterviewFilter==='ALL'||candidateInterviewFilter==='payment:'+b.paymentStatus||candidateInterviewFilter==='refund:'+b.refundStatus)&&candidateMatchesDate(b));
+  const rows=sortedCandidateBookings(bookings).map(b=>{const start=candidateDateTime(b.start),end=candidateDateTime(b.end);return `<tr><td><span class="candidate-booking-id">${esc(b.bookingId)}</span></td><td>${esc(b.type)}</td><td>${esc(start.date)}</td><td>${esc(start.time)}</td><td>${esc(end.time)}${end.date!==start.date?`<br><small>${esc(end.date)}</small>`:''}</td><td>${candidateStatusBadge(b.status,'booking')}</td><td>${candidateStatusBadge(b.paymentStatus,'payment')}</td><td>${candidateStatusBadge(b.refundStatus,'refund')}</td><td>$${b.charge}</td><td>${b.canCancel&&new Date(b.startUTC).getTime()>Date.now()?`<button data-cancel-start="${esc(b.startUTC)}" class="danger small" onclick="cancelBooking('${esc(b.bookingId)}')">Cancel</button>`:''}</td></tr>`;}).join('');
+  el('candHome').innerHTML=`<div class="card"><h2>Hello ${esc(p.name)}</h2><div class="grid candidate-profile-grid"><div><b>Candidate ID</b><br>${esc(p.candidateId)}<div class="time-format-preference"><span>Preferred time format</span><div role="group" aria-label="Preferred time format"><button type="button" data-time-format="12" onclick="setPreferredTimeFormat('12')">12 hours</button><button type="button" data-time-format="24" onclick="setPreferredTimeFormat('24')">24 hours</button></div></div></div><div><b>Account</b><br>${esc(p.type)}${p.type==='PERCENTAGE'?` • ${p.percentage}%`:''}</div><div><b>Timezone</b><select class="timezone-select" id="cTz" disabled>${[...new Set([...zones,p.timezone])].map(z=>`<option ${z===p.timezone?'selected':''}>${esc(z)}</option>`).join('')}</select><div class="timezone-edit-actions">${editControls('timezone',['cTz'],'saveTz()')}</div></div></div></div><div class="card candidate-interviews"><div class="candidate-filter-toolbar"><div class="candidate-status-legend" role="group" aria-label="Filter interviews by payment and refund status"><button type="button" class="candidate-status-badge candidate-status-unknown" aria-pressed="${candidateInterviewFilter==='ALL'}" onclick="setCandidateInterviewFilter('ALL')">All</button>${candidateStatusFilter('SUBMITTED','payment')}${candidateStatusFilter('VERIFIED','payment')}${candidateStatusFilter('NOT_REQUIRED','payment')}${candidateStatusFilter('REQUESTED','refund')}${candidateStatusFilter('REFUNDED','refund')}</div>${candidateDateControls()}</div>${candidateDateRangeControls()}<div class="scroll candidate-interviews-scroll"><table id="candidateInterviews"><tr>${candidateSortHeader('bookingId','ID')}${candidateSortHeader('type','Type')}${candidateSortHeader('date','Date')}${candidateSortHeader('start','Start')}${candidateSortHeader('end','End')}${candidateSortHeader('status','Booking status')}${candidateSortHeader('paymentStatus','Payment verification')}${candidateSortHeader('refundStatus','Refund status')}${candidateSortHeader('charge','Charge')}<th aria-label="Actions"></th></tr>${rows||`<tr><td colspan=10>${home.bookings.length?'No interviews match this filter.':'No interviews yet.'}</td></tr>`}</table></div></div>`;
+}
+async function saveTz(){try{await call('updateCandidateTimezone',token,el('cTz').value);invalidateQuote();await loadCandidate()}catch(e){alert(e.message)}} function candTab(t){document.querySelectorAll('#candidateApp .tabs [data-candidate-page]').forEach(button=>{const active=button.dataset.candidatePage===t;button.classList.toggle('active',active);button.setAttribute('aria-current',active?'page':'false');});el('candHome').classList.toggle('hidden',t!=='home');el('candBooked').classList.toggle('hidden',t!=='booked');el('candBook').classList.toggle('hidden',t!=='book');el('candPassword').classList.toggle('hidden',t!=='password');if(t==='book')loadBooked();if(t==='booked')loadBookedTimes('candidateBooked')} async function loadBooked(){if(!el('bDate').value)return;try{const r=await call('getAvailabilityForDate',token,el('bDate').value);el('bookedList').innerHTML=r.booked.length?r.booked.map(x=>`<div class="booked">BOOKED — ${esc(withoutGmtOffset(x.from))} to ${esc(withoutGmtOffset(x.to))}</div>`).join(''):'<div class="msg ok">No booked interviews found for this date.</div>'}catch(e){el('bookedList').innerHTML=`<div class="msg err">${esc(e.message)}</div>`}}
 function renderPasswordChange(prefix,title){return `<div class="card"><h2>${title}</h2><p class="muted">Enter your current password and choose a new password (8–1024 characters). You will need to sign in again after changing it.</p><div class="grid"><div><label for="${prefix}Current">Current password</label><input id="${prefix}Current" type="password" autocomplete="current-password" maxlength="1024"></div><div><label for="${prefix}New">New password</label><input id="${prefix}New" type="password" autocomplete="new-password" minlength="8" maxlength="1024"></div><div><label for="${prefix}Confirm">Confirm new password</label><input id="${prefix}Confirm" type="password" autocomplete="new-password" minlength="8" maxlength="1024"></div></div><div class="form-actions"><button onclick="changePassword('${prefix}')">Update password</button></div><div id="${prefix}Message" aria-live="polite"></div></div>`}
-async function changePassword(prefix){try{const current=el(prefix+'Current').value,next=el(prefix+'New').value,confirmNext=el(prefix+'Confirm').value;if(next!==confirmNext)throw new Error('New passwords do not match.');await call(role==='admin'?'adminChangePassword':'changeCandidatePassword',token,current,next);alert('Password changed successfully. Please sign in again with your new password.');showSignedOut()}catch(e){msg(prefix+'Message',e.message,true)}}
+async function changePassword(prefix){try{const current=el(prefix+'Current').value,next=el(prefix+'New').value,confirmNext=el(prefix+'Confirm').value;if(next!==confirmNext)throw new Error('New passwords do not match.');const wasAdmin=role==='admin';await call(wasAdmin?'adminChangePassword':'changeCandidatePassword',token,current,next);showSignedOut();show(wasAdmin?'adminLogin':'candidateLogin');msg(wasAdmin?'aMsg':'lMsg','Password changed successfully. Please sign in again with your new password.')}catch(e){msg(prefix+'Message',e.message,true)}}
 function renderUpiPayment(q){
   const id=q.upiId?`<p><b>UPI ID:</b> <span style="user-select:all">${esc(q.upiId)}</span></p>`:q.upiQrUrl?'<p class="muted">Scan the QR code below to pay.</p>':'<p class="muted">Contact Admin for the UPI payment details.</p>';
   const qr=q.upiQrUrl?`<figure style="margin:12px 0"><img src="${esc(q.upiQrUrl)}" alt="Admin UPI payment QR code" referrerpolicy="no-referrer" style="width:220px;max-width:100%;height:auto" onerror="this.hidden=true;this.nextElementSibling.textContent='QR image could not load. Use the UPI ID or contact Admin.'"><figcaption>Scan with your UPI app.</figcaption></figure>`:'';
@@ -891,10 +1094,10 @@ async function confirmBooking(pay){
 }
 async function cancelBooking(id){if(!confirm('Cancel this interview? If payment was submitted, a refund request will be created.'))return;try{await call('cancelCandidateBooking',token,id);await loadCandidate()}catch(e){alert(e.message)}}
 async function refreshAdmin(){adminData=await call('getAdminDashboard',token);el('topUser').textContent='Admin | '+adminBusinessTimezone()}
-const adminPageNames={dash:'Dashboard',booked:'Booked Times',bookings:'Bookings',candidates:'Candidates',payments:'Payments',refunds:'Refunds',availability:'Availability',settings:'Settings',create:'Create Booking'};
+const adminPageNames={dash:'Dashboard',booked:'Blocked Schedules',bookings:'Bookings',candidates:'Candidates',payments:'Payments',refunds:'Refunds',availability:'Availability',settings:'Settings',create:'Create Booking'};
 function toggleAdminMenu(force){const panel=el('adminMenuPanel'),toggle=document.querySelector('.admin-menu-toggle');if(!panel||!toggle)return;const open=typeof force==='boolean'?force:panel.classList.contains('hidden');panel.classList.toggle('hidden',!open);toggle.setAttribute('aria-expanded',String(open));}
 function selectAdminMenuPage(page){adminTab(page);toggleAdminMenu(false);}
-function adminTab(t){if(!adminData)return;const c=el('adminContent');if(t==='dash')c.innerHTML=renderDash();if(t==='booked')c.innerHTML=renderBookedTimes('adminBooked',adminBusinessTimezone());if(t==='bookings')c.innerHTML=renderBookings();if(t==='candidates')c.innerHTML=renderCandidates();if(t==='payments')c.innerHTML=renderPayments();if(t==='refunds')c.innerHTML=renderRefunds();if(t==='settings')c.innerHTML=renderSettings()+renderPasswordChange('adminPassword','Change Password');if(t==='availability')c.innerHTML=renderAvailability();if(t==='create')c.innerHTML=renderCreate();const current=el('adminMenuCurrent');if(current)current.textContent=adminPageNames[t]||'Admin';document.querySelectorAll('#adminMenuPanel [data-admin-page]').forEach(button=>button.classList.toggle('active',button.dataset.adminPage===t));}
+function adminTab(t){if(!adminData)return;const c=el('adminContent');if(t==='dash')c.innerHTML=renderDash();if(t==='booked')c.innerHTML=renderBookedTimes('adminBooked',adminBusinessTimezone());if(t==='bookings')c.innerHTML=renderBookings();if(t==='candidates')c.innerHTML=renderCandidates();if(t==='payments')c.innerHTML=renderPayments();if(t==='refunds')c.innerHTML=renderRefunds();if(t==='settings')c.innerHTML=renderSettings()+renderPasswordChange('adminPassword','Change Password');if(t==='availability')c.innerHTML=renderAvailability();if(t==='create')c.innerHTML=renderCreate();const current=el('adminMenuCurrent');if(current)current.textContent=adminPageNames[t]||'Admin';document.querySelectorAll('#adminApp [data-admin-page]').forEach(button=>{const active=button.dataset.adminPage===t;button.classList.toggle('active',active);button.setAttribute('aria-current',active?'page':'false');});}
 function adminBusinessTimezone(){return adminData?.settings?.BUSINESS_TIMEZONE||'America/New_York'}
 function editControls(key,fields,saveAction){
   const args=esc(JSON.stringify(fields));
@@ -1004,5 +1207,159 @@ async function logoutNow(){
   try{if(token)await call('logout',token)}
   catch(e){alert('Could not revoke your server session. Please try Logout again.');return;}
   showSignedOut();
-} async function restoreSession(){try{const raw=localStorage.getItem('interviewPortalSession');if(!raw)return;const x=JSON.parse(raw);token=x.token||'';role=x.role||'';if(!token)return;const validated=await call('validateSession',token);role=validated.role;saveSession();if(role==='candidate')await loadCandidate();else if(role==='admin'){el('landing').classList.add('hidden');el('adminApp').classList.remove('hidden');el('topUser').textContent='Admin';await refreshAdmin();adminTab('dash')}}catch(e){token='';role='';clearSession()}} restoreSession();
+} async function restoreSession(){try{const raw=localStorage.getItem('interviewPortalSession');if(!raw)return;const x=JSON.parse(raw);token=x.token||'';role=x.role||'';if(!token)return;const validated=await call('validateSession',token);role=validated.role;saveSession();if(role==='candidate')await loadCandidate();else if(role==='admin'){el('landing').classList.add('hidden');el('adminApp').classList.remove('hidden');el('topUser').textContent='Admin';await refreshAdmin();adminTab('dash')}}catch(e){token='';role='';clearSession()}}
+
+function preferredTimeFormatKey(){
+  const identity=typeof role!=='undefined'&&role==='candidate'&&typeof home!=='undefined'&&home?.profile?home.profile.candidateId:typeof role!=='undefined'&&role==='admin'?'admin':'visitor';
+  return 'interviewPortalTimeFormat_'+identity;
+}
+function preferredTimeFormat(){try{return localStorage.getItem(preferredTimeFormatKey())==='24'?'24':'12';}catch(e){return '12';}}
+function formatPreferredTime(value,format=preferredTimeFormat()){
+  return String(value??'').replace(/\b(\d{1,2}):(\d{2})\s*([AP]M)\b/gi,(match,h,m,period)=>format==='24'?String(Number(h)%12+(period.toUpperCase()==='PM'?12:0)).padStart(2,'0')+':'+m:match);
+}
+const originalTimeTexts=new WeakMap();
+function applyPreferredTimeFormat(){
+  const format=preferredTimeFormat();
+  document.querySelectorAll('[data-time-format]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.timeFormat===format)));
+  const walker=document.createTreeWalker(document.querySelector('main'),NodeFilter.SHOW_TEXT);
+  let node;while(node=walker.nextNode()){
+    if(node.parentElement?.closest('script,style,textarea,.picker-panel'))continue;
+    const original=originalTimeTexts.get(node)??node.nodeValue;
+    if(!/\b\d{1,2}:\d{2}\s*[AP]M\b/i.test(original))continue;
+    originalTimeTexts.set(node,original);
+    const text=formatPreferredTime(original,format);if(node.nodeValue!==text)node.nodeValue=text;
+  }
+}
+function setPreferredTimeFormat(format){
+  if(!['12','24'].includes(format))return;
+  try{localStorage.setItem(preferredTimeFormatKey(),format);}catch(e){alert('Browser storage is unavailable. Enable it to save your preferred time format.');return;}
+  closeFieldPicker();
+  document.querySelectorAll('input[type="time"]').forEach(syncPickerField);
+  applyPreferredTimeFormat();
+}
+
+// Styled pickers retain the original fields and dispatch their existing events.
+const pickerIcons={
+  select:'<path d="m5 9 7 7 7-7"/>',
+  date:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4m10-4v4M3 11h18"/>',
+  time:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
+};
+function pickerIcon(kind){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${pickerIcons[kind]}</svg>`;}
+function pickerDateValue(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
+function pickerTimeValue(hour,minute,period){return `${String(Number(hour)%12+(period==='PM'?12:0)).padStart(2,'0')}:${String(minute).padStart(2,'0')}`;}
+function pickerFieldLabel(field){
+  const label=field.parentElement.parentElement.querySelector('label');
+  return label?label.textContent.trim():(isTimezonePicker(field)?'Timezone':field.type==='date'?'Date':field.type==='time'?'Time':'Interview type');
+}
+function isTimezonePicker(field){return field.tagName==='SELECT'&&(/timezone$/i.test(field.id)||['rTz','cTz','sTZ'].includes(field.id));}
+function pickerSelectOptions(field,query=''){
+  return Array.from(field.options).map((option,index)=>({option,index})).filter(({option})=>option.textContent.toLowerCase().includes(query.trim().toLowerCase()));
+}
+function pickerOptionsMarkup(field,query=''){
+  const options=pickerSelectOptions(field,query);
+  return options.length?options.map(({option,index})=>`<button type="button" role="option" aria-selected="${option.value===field.value}" data-picker-option="${index}" ${option.disabled?'disabled':''}>${esc(option.textContent)}</button>`).join(''):'<p class="picker-options-empty" role="status">No matching timezones.</p>';
+}
+function syncPickerField(field){
+  const trigger=field.parentElement.querySelector('.picker-trigger');if(!trigger)return;
+  const kind=field.tagName==='SELECT'?'select':field.type;
+  let text=field.value;
+  if(kind==='select')text=field.selectedOptions[0]?.textContent||'';
+  if(kind==='date'&&field.value)text=new Date(field.value+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  if(kind==='time'&&field.value){const [h,m]=field.value.split(':');text=`${Number(h)%12||12}:${m} ${Number(h)<12?'AM':'PM'}`;}
+  trigger.innerHTML=`<span class="${text?'':'picker-placeholder'}">${esc(text||(kind==='date'?'Select date':kind==='time'?'Select time':'Select interview type'))}</span>${pickerIcon(kind)}`;
+  trigger.disabled=field.disabled;trigger.dataset.currentValue=field.value;
+  trigger.setAttribute('aria-label',`${pickerFieldLabel(field)}: ${text||'not selected'}`);
+}
+let activePicker=null;
+function closeFieldPicker(restoreFocus=false){
+  if(!activePicker)return;
+  const {trigger,panel}=activePicker;activePicker=null;panel.remove();trigger.setAttribute('aria-expanded','false');
+  if(restoreFocus&&trigger.isConnected)trigger.focus();
+}
+function setPickerValue(value){
+  if(!activePicker)return;
+  const field=activePicker.field;field.value=value;
+  field.dispatchEvent(new Event('input',{bubbles:true}));field.dispatchEvent(new Event('change',{bubbles:true}));
+  syncPickerField(field);closeFieldPicker(true);
+}
+function positionFieldPicker(){
+  if(!activePicker)return;
+  const {trigger,panel}=activePicker,rect=trigger.getBoundingClientRect();
+  panel.style.left=Math.max(12,Math.min(rect.left,window.innerWidth-panel.offsetWidth-12))+'px';
+  panel.style.top=Math.max(12,rect.bottom+8+panel.offsetHeight<=window.innerHeight-12?rect.bottom+8:rect.top-panel.offsetHeight-8)+'px';
+}
+function pickerCalendarDays(year,month){
+  const first=new Date(year,month,1),days=new Date(year,month+1,0).getDate();
+  return {offset:first.getDay(),dates:Array.from({length:days},(_,i)=>pickerDateValue(new Date(year,month,i+1)))};
+}
+function renderFieldPicker(){
+  const {field,panel,kind}=activePicker;
+  if(kind==='select'){
+    const timezone=isTimezonePicker(field);
+    panel.innerHTML=`${timezone?'<input type="search" class="picker-search" aria-label="Search timezones" placeholder="Search timezones..." autocomplete="off">':''}<div class="picker-options ${timezone?'picker-options-scroll':''}" role="listbox" aria-label="${timezone?'Timezone':'Interview type'}">${pickerOptionsMarkup(field)}</div>`;
+    if(timezone)panel.querySelector('.picker-search').addEventListener('input',event=>{panel.querySelector('.picker-options').innerHTML=pickerOptionsMarkup(field,event.target.value);positionFieldPicker();});
+  }else if(kind==='date'){
+    const month=activePicker.month,year=month.getFullYear(),monthIndex=month.getMonth(),calendar=pickerCalendarDays(year,monthIndex),today=pickerDateValue(new Date());
+    panel.innerHTML=`<div class="picker-heading"><button type="button" data-picker-month="-1" aria-label="Previous month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 5-7 7 7 7"/></svg></button><span>${month.toLocaleDateString('en-US',{month:'long',year:'numeric'})}</span><button type="button" data-picker-month="1" aria-label="Next month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 5 7 7-7 7"/></svg></button></div><div class="picker-calendar">${['Su','Mo','Tu','We','Th','Fr','Sa'].map(day=>`<span class="picker-weekday">${day}</span>`).join('')}${'<span></span>'.repeat(calendar.offset)}${calendar.dates.map((date,i)=>`<button type="button" data-picker-date="${date}" aria-label="${date}" aria-pressed="${date===field.value}" class="${date===today?'picker-today':''}" ${field.min&&date<field.min||field.max&&date>field.max?'disabled':''}>${i+1}</button>`).join('')}</div><div class="picker-footer"><button type="button" data-picker-clear>Clear</button><button type="button" data-picker-date="${today}" ${field.min&&today<field.min||field.max&&today>field.max?'disabled':''}>Today</button></div>`;
+  }else{
+    const {hour,minute,period}=activePicker;const use24=preferredTimeFormat()==='24',hour24=Number(hour)%12+(period==='PM'?12:0);
+    const column=(label,key,values,current)=>`<div><div class="picker-time-label">${label}</div><div class="picker-time-list">${values.map(value=>`<button type="button" data-picker-${key}="${value}" aria-label="${label} ${value}" aria-pressed="${String(current)===String(value)}">${key==='period'?value:String(value).padStart(2,'0')}</button>`).join('')}</div></div>`;
+    panel.innerHTML=`<div class="picker-heading"><span>Select time</span><span>${use24?String(hour24).padStart(2,'0'):hour}:${String(minute).padStart(2,'0')}${use24?'':' '+period}</span></div><div class="picker-time ${use24?'picker-time-24':''}">${use24?column('Hour','hour24',Array.from({length:24},(_,i)=>i),hour24):column('Hour','hour',Array.from({length:12},(_,i)=>i+1),hour)}${column('Minute','minute',Array.from({length:60},(_,i)=>i),minute)}${use24?'':column('Period','period',['AM','PM'],period)}</div><div class="picker-footer"><button type="button" data-picker-clear>Clear</button><button type="button" class="picker-apply" data-picker-apply>Apply time</button></div>`;
+    panel.querySelectorAll('.picker-time-list [aria-pressed="true"]').forEach(button=>{const list=button.parentElement;list.scrollTop=button.offsetTop-list.offsetTop-list.clientHeight/2+button.offsetHeight/2;});
+  }
+  positionFieldPicker();
+}
+function openFieldPicker(field,trigger){
+  if(activePicker?.field===field){closeFieldPicker(true);return;}
+  closeFieldPicker();syncPickerField(field);
+  const panel=document.createElement('div'),kind=field.tagName==='SELECT'?'select':field.type;
+  panel.className='picker-panel';panel.id='fieldPickerPanel';panel.setAttribute('role','dialog');panel.setAttribute('aria-label',pickerFieldLabel(field));
+  document.body.appendChild(panel);trigger.setAttribute('aria-expanded','true');
+  const initialDate=field.value&&kind==='date'?new Date(field.value+'T12:00:00'):new Date();
+  const [hours,minutes]=(kind==='time'&&field.value?field.value:'09:00').split(':').map(Number);
+  activePicker={field,trigger,panel,kind,month:new Date(initialDate.getFullYear(),initialDate.getMonth(),1),hour:hours%12||12,minute:minutes,period:hours<12?'AM':'PM'};
+  panel.addEventListener('click',event=>{
+    const button=event.target.closest('button');if(!button||button.disabled||!activePicker)return;
+    const data=button.dataset;
+    if(data.pickerOption!==undefined)setPickerValue(field.options[Number(data.pickerOption)].value);
+    else if(data.pickerDate)setPickerValue(data.pickerDate);
+    else if(data.pickerClear!==undefined)setPickerValue('');
+    else if(data.pickerApply!==undefined)setPickerValue(pickerTimeValue(activePicker.hour,activePicker.minute,activePicker.period));
+    else if(data.pickerHour24!==undefined){const h=Number(data.pickerHour24);activePicker.hour=h%12||12;activePicker.period=h<12?'AM':'PM';renderFieldPicker();panel.querySelector(`[data-picker-hour24="${h}"]`).focus();}
+    else if(data.pickerMonth){activePicker.month.setMonth(activePicker.month.getMonth()+Number(data.pickerMonth));renderFieldPicker();panel.querySelector(`[data-picker-month="${data.pickerMonth}"]`).focus();}
+    else{for(const key of ['hour','minute','period'])if(data['picker'+key[0].toUpperCase()+key.slice(1)]!==undefined){activePicker[key]=data['picker'+key[0].toUpperCase()+key.slice(1)];renderFieldPicker();panel.querySelector(`[data-picker-${key}="${activePicker[key]}"]`).focus();}}
+  });
+  panel.addEventListener('keydown',event=>{
+    if(event.key==='Escape'){event.preventDefault();closeFieldPicker(true);}
+    if(event.key==='Tab'){
+      const buttons=Array.from(panel.querySelectorAll('input:not(:disabled), button:not(:disabled)')),index=buttons.indexOf(document.activeElement);
+      if(event.shiftKey&&index===0){event.preventDefault();buttons[buttons.length-1].focus();}
+      else if(!event.shiftKey&&index===buttons.length-1){event.preventDefault();buttons[0].focus();}
+    }
+  });
+  renderFieldPicker();(panel.querySelector('.picker-search')||panel.querySelector('[aria-selected="true"], [aria-pressed="true"]')||panel.querySelector('button:not(:disabled)'))?.focus();
+}
+function enhancePickerFields(){
+  if(activePicker&&!activePicker.trigger.isConnected)closeFieldPicker();
+  document.querySelectorAll('input[type="date"], input[type="time"], #bType, #acType, #rTz, #cTz, #sTZ, select[id$="Timezone"]').forEach(field=>{
+    if(field.dataset.pickerEnhanced){const trigger=field.parentElement.querySelector('.picker-trigger');if(trigger&&trigger.disabled!==field.disabled)trigger.disabled=field.disabled;if(trigger&&trigger.dataset.currentValue!==field.value)syncPickerField(field);return;}
+    field.dataset.pickerEnhanced='true';
+    const wrapper=document.createElement('div'),trigger=document.createElement('button');
+    wrapper.className='picker-field';trigger.type='button';trigger.className='picker-trigger';
+    trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-expanded','false');trigger.setAttribute('aria-controls','fieldPickerPanel');
+    field.parentElement.insertBefore(wrapper,field);wrapper.appendChild(field);wrapper.appendChild(trigger);field.classList.add('picker-source');
+    // Associate existing labels with the visible trigger, including dynamically rendered forms.
+    trigger.id=(field.id||'picker_'+Math.random().toString(36).slice(2))+'_trigger';
+    const label=wrapper.parentElement.querySelector('label');if(label)label.htmlFor=trigger.id;
+    trigger.addEventListener('click',()=>openFieldPicker(field,trigger));
+    field.addEventListener('input',()=>syncPickerField(field));field.addEventListener('change',()=>syncPickerField(field));syncPickerField(field);
+  });
+}
+if(typeof MutationObserver!=='undefined'){
+  enhancePickerFields();applyPreferredTimeFormat();
+  const pickerObserver=new MutationObserver(()=>{enhancePickerFields();applyPreferredTimeFormat();});pickerObserver.observe(document.querySelector('main'),{childList:true,subtree:true,attributes:true,attributeFilter:['disabled']});
+  document.addEventListener('pointerdown',event=>{if(activePicker&&!activePicker.panel.contains(event.target)&&!activePicker.trigger.contains(event.target))closeFieldPicker();});
+  window.addEventListener('resize',()=>closeFieldPicker());window.addEventListener('scroll',event=>{if(activePicker&&(!event.target.nodeType||!activePicker.panel.contains(event.target)))closeFieldPicker();},true);
+}
+restoreSession();
 </script></body></html>

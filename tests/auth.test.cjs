@@ -155,6 +155,9 @@ assert.throws(()=>ctx.adminUpdateSettings(admin.token,{UPI_QR_URL:'javascript:al
 ctx.setSetting_('UPI_ID','CHANGE_ME@upi');ctx.setSetting_('UPI_QR_URL','');
 assert.equal(ctx.quoteBooking(fresh.token,data).upiId,'');
 const booking=ctx.submitCandidateBooking(fresh.token,data);assert.equal(events.length,1);
+const candidateBooking=ctx.getCandidateHome(fresh.token).bookings[0];
+assert.match(candidateBooking.start,/^Jan 07, 2030, 1:00 PM/);
+assert.match(candidateBooking.end,/^Jan 07, 2030, 1:30 PM/);
 const payment=ctx.rowsAsObjects_(sheets.get('Payments'))[0];ctx.adminVerifyPayment(admin.token,payment.PaymentID,'VERIFIED','');
 ctx.cancelCandidateBooking(fresh.token,booking.bookingId);
 const refund=ctx.rowsAsObjects_(sheets.get('Refunds'))[0];ctx.adminMarkRefunded(admin.token,refund.RefundID,'refund-utr','');

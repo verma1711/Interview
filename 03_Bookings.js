@@ -141,7 +141,9 @@ function withinWorkingHours_(start,end){
   }
   return {ok:false,reason:'Requested interview is outside Admin availability.'};
 }
-function candidateBookings_(c){ return rowsAsObjects_(sh_(APP.SHEETS.INTERVIEWS)).filter(x=>x.CandidateID===c.CandidateID).sort((a,b)=>new Date(b.StartUTC)-new Date(a.StartUTC)).map(x=>({bookingId:x.BookingID,type:x.InterviewType,start:formatInZone_(x.StartUTC,c.Timezone),end:formatInZone_(x.EndUTC,c.Timezone),startUTC:x.StartUTC,status:x.BookingStatus,paymentStatus:x.PaymentStatus,refundStatus:x.RefundStatus,charge:Number(x.FinalChargeUSD||0),canCancel:x.BookingStatus==='CONFIRMED'&&new Date()<new Date(x.StartUTC)})); }
+function candidateBookings_(c){
+  return rowsAsObjects_(sh_(APP.SHEETS.INTERVIEWS)).filter(x=>x.CandidateID===c.CandidateID).sort((a,b)=>new Date(b.StartUTC)-new Date(a.StartUTC)).map(x=>({bookingId:x.BookingID,type:x.InterviewType,start:formatInZone_(x.StartUTC,c.Timezone),end:formatInZone_(x.EndUTC,c.Timezone),startUTC:x.StartUTC,status:x.BookingStatus,paymentStatus:x.PaymentStatus,refundStatus:x.RefundStatus,charge:Number(x.FinalChargeUSD||0),canCancel:x.BookingStatus==='CONFIRMED'&&new Date()<new Date(x.StartUTC)}));
+}
 function cancelCandidateBooking(token,bookingId){return authLock_(()=>{const sess=requireSession_(token,'candidate'),b=findOne_(sh_(APP.SHEETS.INTERVIEWS),'BookingID',bookingId);if(!b||b.CandidateID!==sess.candidateId)throw new Error('Booking not found.');return cancelBookingInternal_(b,sess.candidateId);});}
 
 function createCalendarEvent_(bookingId,c,type,startIso,endIso,calendarName){

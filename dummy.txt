@@ -1,0 +1,5 @@
+Admin: admin@example.com / Admin123!
+Candidate: candidate@example.com / admin1234
+Percentage candidate: maya@example.com / Candidate123!
+
+All changes are in memory. Restart this server to reset. No real email, payments, Calendar events or Contacts are created. Reset codes appear in a local alert.
