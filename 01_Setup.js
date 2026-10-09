@@ -24,7 +24,7 @@ function setupInterviewPortal(adminEmail, adminPassword) {
     CURRENCY:'USD',CALENDAR_NAME:'Interview Bookings',OTP_MINUTES:'10'
   };
   Object.keys(defaults).forEach(k=>{if(!findOne_(sh_(APP.SHEETS.SETTINGS),'Key',k))setSetting_(k,defaults[k]);});
-  if(!PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD_HASH')) PropertiesService.getScriptProperties().setProperty('ADMIN_PASSWORD_HASH',hash_(adminPassword));
+  if(!PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD_HASH')&&!PropertiesService.getScriptProperties().getProperty('ADMIN_PASSWORD_CREDENTIAL')) saveAdminPassword_(adminPassword);
   seedWeeklyAvailability_();
   audit_('SYSTEM','SETUP','SYSTEM','PORTAL','Initial setup completed');
   return {ok:true,message:'Setup complete. Change UPI ID, business timezone and availability in Admin Settings.'};
@@ -86,7 +86,7 @@ function resetInterviewPortalForTesting_() {
     targets.forEach(s=>{const name=s.getName();ss.deleteSheet(s);deletedSheets.push(name);});
     const props=PropertiesService.getScriptProperties();
     Object.keys(props.getProperties()).forEach(key=>{
-      if(key==='ADMIN_PASSWORD_HASH'||key==='ADMIN_LOGIN_ATTEMPTS'||key==='ADMIN_LOCKED_UNTIL'||key.startsWith('BOOKING_WORK_')||key==='RESET_HMAC_SECRET'||key.startsWith('CANDIDATE_PASSWORD_')) props.deleteProperty(key);
+      if(key==='ADMIN_PASSWORD_RESET'||key==='ADMIN_PASSWORD_CREDENTIAL'||key==='AUTH_SESSION_CLEANUP_AT'||key==='ADMIN_PASSWORD_HASH'||key==='ADMIN_LOGIN_ATTEMPTS'||key==='ADMIN_LOCKED_UNTIL'||key.startsWith('BOOKING_WORK_')||key==='RESET_HMAC_SECRET'||key.startsWith('CANDIDATE_PASSWORD_')) props.deleteProperty(key);
     });
     return {ok:true,deletedSheets,message:'Portal data and authentication cleared. Run runInitialSetup() to recreate the portal sheets.'};
   });

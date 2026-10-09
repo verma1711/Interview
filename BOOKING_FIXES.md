@@ -5,7 +5,7 @@ This remains a Google Sheets-bound Apps Script application. The Node preview
 only supplies local mocks; it is not the production server. No layout, CSS,
 navigation or form controls were changed.
 
-Include all numbered server files, including 06_BookingIntegrity.js, when
+Include all numbered server files, including 06_BookingIntegrity.js and 07_AdminData.js, when
 updating Apps Script. These changes use the existing sheet columns and require
 no data reset. Existing IDs and references remain valid. New booking/payment/
 refund/rule IDs use a six-character suffix (INT-A3K9P2); new candidate IDs use
@@ -91,3 +91,12 @@ API references used for the implementation:
 - https://developers.google.com/apps-script/reference/calendar/calendar
 - https://developers.google.com/apps-script/reference/calendar/calendar-event
 - https://developers.google.com/apps-script/reference/spreadsheet/range
+
+Current admin improvements (2026-10-10)
+---------------------------------------
+Admin booking amount/reference corrections synchronize payment records and
+incomplete refunds. Payment status changes remain admin-only and audit the
+previous/new state and correction reason. Failed external jobs store attempt/error
+details and appear in the dashboard with admin Retry controls; owner editor retries
+remain available. See PROJECT_GUIDE.md for current paging/deployment
+and validation details.

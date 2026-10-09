@@ -37,7 +37,14 @@ assert.equal(refunds.length,1);
 assert.throws(()=>ctx.adminMarkRefunded(admin,refunds[0].RefundID,'ref-1',''),/Verify the payment/);
 const payment=ctx.findOne_(sheets.get('Payments'),'BookingID',booking.bookingId);
 ctx.adminVerifyPayment(admin,payment.PaymentID,'VERIFIED','');
+ctx.adminVerifyPayment(admin,payment.PaymentID,'FAILED','Correction');
+assert.equal(ctx.findOne_(sheets.get('InterviewsV3'),'BookingID',booking.bookingId).PaymentStatus,'FAILED');
+assert.equal(ctx.findOne_(sheets.get('Payments'),'PaymentID',payment.PaymentID).VerifiedAtUTC,'');
+ctx.adminVerifyPayment(admin,payment.PaymentID,'SUBMITTED','Review again');
+assert.equal(ctx.findOne_(sheets.get('Refunds'),'BookingID',booking.bookingId).Status,'REQUESTED');
+ctx.adminVerifyPayment(admin,payment.PaymentID,'VERIFIED','Reverified');
 ctx.adminMarkRefunded(admin,refunds[0].RefundID,'ref-1','');
+assert.throws(()=>ctx.adminVerifyPayment(admin,payment.PaymentID,'FAILED',''),/refunded payment/);
 assert.equal(ctx.findOne_(sheets.get('InterviewsV3'),'BookingID',booking.bookingId).RefundStatus,'REFUNDED');
 ctx.withinWorkingHours_=originalHours;
 ctx.setSetting_('BUSINESS_TIMEZONE','UTC');
@@ -48,7 +55,7 @@ assert.throws(()=>ctx.adminLogin('admin@example.com','Admin123!'),/Too many/);
 console.log('PASS booking locks, validation, short IDs, email recovery, refund verification, date blocks and admin throttling');
 
 // Execute the actual payment handler with a modal that removes its inputs.
-const html=fs.readFileSync('Index.html','utf8');
+const html=require('../local-preview/read-ui.cjs').readUi();
 const form={date:'2035-01-08',startTime:'13:00',endTime:'13:30',interviewType:'Technical',overnightConfirmed:false};
 let removed=false,captured;
 const fields={bDate:{value:form.date},bStart:{value:form.startTime},bEnd:{value:form.endTime},bType:{value:form.interviewType},bOvernightConfirmed:{checked:false},quoteBox:{innerHTML:''}};

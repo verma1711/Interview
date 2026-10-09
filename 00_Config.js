@@ -102,6 +102,7 @@ function requireSession_(token, role) {
   return s;
 }
 function newSession_(data) {
+  pruneAuthSessions_();
   const token=Utilities.getUuid()+Utilities.getUuid();
   const c=data.role==='candidate'?findOne_(candidateSheet_(),'CandidateID',data.candidateId):null;
   appendObject_(sh_(APP.SHEETS.SESSIONS),{TokenHash:hash_(token),Role:data.role,CandidateID:data.candidateId||'',Email:data.email,AuthVersion:c?Number(c.AuthVersion||0):'',ExpiresAtUTC:new Date(Date.now()+APP.SESSION_SECONDS*1000).toISOString()});

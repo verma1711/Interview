@@ -57,7 +57,7 @@ assert.deepEqual(Array.from(availability,r=>r.Weekday),['Sun','Mon','Tue','Wed',
 assert(availability.every(r=>r.RuleType==='WEEKLY'&&r.StartTime==='12:00'&&r.EndTime==='20:00'&&r.Enabled===true));
 for(const name of ['Candidates','InterviewsV3','Payments','Refunds','AuthSessions'])assert.equal(sheets.get(name).getLastRow(),1,name);
 assert.equal(ctx.rowsAsObjects_(sheets.get('Audit Log'))[0].Action,'SETUP');
-assert.equal(props.get('ADMIN_PASSWORD_HASH'),ctx.hash_('admin-password'));
+assert(!props.get('ADMIN_PASSWORD_HASH'));assert.equal(JSON.parse(props.get('ADMIN_PASSWORD_CREDENTIAL')).PasswordAlgorithm,'PBKDF2-HMAC-SHA256');
 assert.throws(()=>ctx.validateSession(oldToken),/Session expired/);
 assert.equal(ctx.validateSession(ctx.adminLogin('admin@example.com','admin-password').token).role,'admin');
 ctx.CalendarApp=savedCalendar;ctx.People=savedPeople;
@@ -164,14 +164,12 @@ const refund=ctx.rowsAsObjects_(sheets.get('Refunds'))[0];ctx.adminMarkRefunded(
 assert.equal(ctx.getCandidateHome(fresh.token).bookings[0].refundStatus,'REFUNDED');
 ctx.adminSaveAvailability(admin.token,['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(weekday=>({ruleType:'WEEKLY',weekday,startTime:'22:00',endTime:'02:00',enabled:true})));
 const overnightData={date:'2030-01-09',startTime:'23:00',endTime:'01:00',interviewType:'Overnight test',utr:'overnight-utr',amountPaid:50,overnightConfirmed:true};
-assert.throws(()=>ctx.quoteBooking(fresh.token,{...overnightData,overnightConfirmed:false}),/Confirm that this is an overnight booking/);
-const overnightQuote=ctx.quoteBooking(fresh.token,overnightData);
-assert.equal(overnightQuote.durationMinutes,120);
-assert.equal(overnightQuote.endUTC,'2030-01-09T19:30:00.000Z');
-const overnightBooking=ctx.submitCandidateBooking(fresh.token,overnightData);
-const overnightBookingRow=ctx.findOne_(sheets.get('InterviewsV3'),'BookingID',overnightBooking.bookingId);
-assert.equal(overnightBookingRow.StartUTC,'2030-01-09T17:30:00.000Z');
-assert.equal(overnightBookingRow.EndUTC,'2030-01-09T19:30:00.000Z');
+for(const overnightConfirmed of [false,true]){
+  assert.throws(()=>ctx.quoteBooking(fresh.token,{...overnightData,overnightConfirmed}),/End time must be later/);
+  const count=ctx.rowsAsObjects_(sheets.get('InterviewsV3')).length;
+  assert.throws(()=>ctx.submitCandidateBooking(fresh.token,{...overnightData,overnightConfirmed}),/End time must be later/);
+  assert.equal(ctx.rowsAsObjects_(sheets.get('InterviewsV3')).length,count);
+}
 assert.throws(()=>ctx.adminCreateBooking(admin.token,{candidateId:id,date:'2030-01-08',startTime:'23:00',endTime:'01:00',interviewType:'Admin test',override:true,overnightConfirmed:false}),/Confirm that this is an overnight booking/);
 const adminBooking=ctx.adminCreateBooking(admin.token,{candidateId:id,date:'2030-01-08',startTime:'23:00',endTime:'01:00',interviewType:'Admin test',override:true,overnightConfirmed:true});
 const adminBookingRow=ctx.findOne_(sheets.get('InterviewsV3'),'BookingID',adminBooking.bookingId);
@@ -188,7 +186,7 @@ assert.throws(()=>ctx.adminUpdateBooking(admin.token,{bookingId:adminBooking.boo
 const cancelledAt=ctx.findOne_(sheets.get('InterviewsV3'),'BookingID',adminBooking.bookingId).CancelledAtUTC;
 ctx.adminCancelBooking(admin.token,adminBooking.bookingId);
 assert.equal(ctx.findOne_(sheets.get('InterviewsV3'),'BookingID',adminBooking.bookingId).CancelledAtUTC,cancelledAt);
-assert.throws(()=>ctx.adminVerifyPayment(admin.token,payment.PaymentID,'FAILED',''),/already verified/);
+assert.throws(()=>ctx.adminVerifyPayment(admin.token,payment.PaymentID,'FAILED',''),/refunded payment/);
 assert.equal(ctx.findOne_(sheets.get('InterviewsV3'),'BookingID',adminBooking.bookingId).BookingStatus,'CANCELLED');
 assert.equal(ctx.migrateLegacyInterviews().imported,0);
 ctx.adminUpdateCandidate(admin.token,{candidateId:id,type:'REGULAR',active:false});
@@ -202,7 +200,7 @@ ctx.upgradeCandidateAuthentication();ctx.upgradeCandidateAuthentication();
 assert.deepEqual(old.data[0].slice(0,3),['Email','CandidateID','Custom']);assert.deepEqual(old.data[1],['old@example.com','AV-OLD','keep']);
 assert.equal(new Set(old.data[0]).size,old.data[0].length);sheets.set('Candidates',original);
 // Client script parses, and all RPC names have matching server endpoints.
-const html=fs.readFileSync('Index.html','utf8'),client=html.match(/<script>([\s\S]*?)<\/script>/)[1];new vm.Script(client);
+const html=require('../local-preview/read-ui.cjs').readUi(),client=html.match(/<script>([\s\S]*?)<\/script>/)[1];new vm.Script(client);
 for(const m of client.matchAll(/call\('([^']+)'/g))assert.equal(typeof ctx[m[1]],'function',m[1]);
 assert(client.includes('role=validated.role'));
 // Execute actual browser restoration against sheet-backed server sessions.
@@ -210,8 +208,8 @@ async function browserChecks(){
   const session=ctx.newSession_({role:'candidate',candidateId:id,email:'test@example.com'});
   const storage=new Map([['interviewPortalSession',JSON.stringify({token:session,role:'admin'})]]);
   const elements=new Map();
-  const element=id=>{if(!elements.has(id))elements.set(id,{value:'',innerHTML:'',textContent:'',add(){},addEventListener(){},classList:{items:new Set(),toggle(k,on){if(on)this.items.add(k);else this.items.delete(k);},add(k){this.items.add(k);},remove(k){this.items.delete(k);},contains(k){return this.items.has(k);}}});return elements.get(id);};
-  const browser=vm.createContext({console,Intl,Date,JSON,Promise,setTimeout,Option:function(){},alert(){},document:{getElementById:element,querySelector:()=>null,querySelectorAll:()=>[]},localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)}});
+  const element=id=>{if(!elements.has(id))elements.set(id,{value:'',innerHTML:'',textContent:'',insertAdjacentHTML(_,html){this.innerHTML+=html;},add(){},addEventListener(){},classList:{items:new Set(),toggle(k,on){if(on)this.items.add(k);else this.items.delete(k);},add(k){this.items.add(k);},remove(k){this.items.delete(k);},contains(k){return this.items.has(k);}}});return elements.get(id);};
+  const browser=vm.createContext({console,Intl,Date,JSON,Promise,setTimeout,clearTimeout,Option:function(){},alert(){},document:{getElementById:element,querySelector:()=>null,querySelectorAll:()=>[]},localStorage:{getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)}});
   vm.runInContext(client.replace(/restoreSession\(\);\s*$/,''),browser);
   browser.serverCall=async(fn,...args)=>ctx[fn](...args);
   vm.runInContext('call=serverCall',browser);
@@ -270,8 +268,13 @@ async function browserChecks(){
   console.log('PASS candidate/admin logout returns to welcome screen without reload and revokes sessions');
   storage.set('interviewPortalSession','malformed');await browser.restoreSession();assert(!storage.has('interviewPortalSession'));
   assert(html.includes("candTab('password')\">Change Password"));
+  assert(html.includes('data-admin-page="password" onclick="adminTab(\'password\')">Change Password'));
+  assert(html.includes('data-admin-page="password" onclick="selectAdminMenuPage(\'password\')">Change Password'));
+  assert(client.includes("password:'Change Password'"));
+  assert(client.includes("if(t==='password')c.innerHTML=renderPasswordChange('adminPassword','Change Password')"));
+  assert(client.includes("if(t==='settings')c.innerHTML=renderSettings();"));
   assert(html.includes("renderPasswordChange('adminPassword','Change Password')"));
-  assert(html.includes("role==='admin'?'adminChangePassword':'changeCandidatePassword'"));
+  assert(html.includes("wasAdmin?'adminChangePassword':'changeCandidatePassword'"));
   console.log('PASS browser refresh, server-authoritative role, revoked session and malformed storage');
   console.log('PASS admin password change verifies current password, enforces policy, replaces login password and revokes admin sessions');
 }

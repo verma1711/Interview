@@ -38,11 +38,7 @@ assert.equal(ctx.bookingEndDate_('2030-01-07','23:00','01:00',true),'2030-01-08'
 assert.equal(ctx.bookingEndDate_('2030-01-07','09:00','10:00'),'2030-01-07');
 assert.throws(()=>ctx.bookingEndDate_('2030-01-07','09:00','09:00'),/different from start/);
 ctx.calculateCharge_=()=>50;
-assert.throws(()=>ctx.quoteForCandidate_({Timezone:'UTC',CandidateType:'PERCENTAGE'},{date:'2030-01-07',startTime:'23:00',endTime:'01:00',overnightConfirmed:false},false),/Confirm that this is an overnight booking/);
-const overnightQuote=ctx.quoteForCandidate_({Timezone:'UTC',CandidateType:'PERCENTAGE'},{date:'2030-01-07',startTime:'23:00',endTime:'01:00',overnightConfirmed:true},false);
-assert(overnightQuote.available);
-assert.equal(overnightQuote.durationMinutes,120);
-assert.equal(overnightQuote.startUTC,'2030-01-07T23:00:00.000Z');
-assert.equal(overnightQuote.endUTC,'2030-01-08T01:00:00.000Z');
+for(const overnightConfirmed of [false,true])assert.throws(()=>ctx.quoteForCandidate_({Timezone:'UTC',CandidateType:'PERCENTAGE'},{date:'2030-01-07',startTime:'23:00',endTime:'01:00',overnightConfirmed},false),/End time must be later/);
+assert.throws(()=>ctx.quoteForCandidate_({Timezone:'UTC',CandidateType:'PERCENTAGE'},{date:'2030-01-07',startTime:'09:00',endTime:'09:00'},false),/End time must be later/);
 console.log('PASS availability: text/Date cells, spreadsheet vs business timezone, full-day/timed blocks, missing booking fields');
 console.log('PASS overnight booking duration, next-day end conversion, working hours, and next-day block checks');

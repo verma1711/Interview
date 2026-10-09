@@ -4,13 +4,13 @@ Candidate authentication upgrade
 The review covered all server files, Index.html, the manifest, setup, legacy
 import, candidate/admin creation and updates, booking, availability/timezones,
 payments/refunds, Calendar and People contacts. Authentication data now lives in
-the Google Sheet. Script Properties retain the existing admin credential, a
+the Google Sheet. Script Properties store the salted admin credential, a
 server-only recovery HMAC key, and old candidate hashes pending migration.
 
 Deployment
 ----------
 
-1. Upload the server files (including `05_AuthSecurity.js`), Index.html and the
+1. Upload the server files (including `05_AuthSecurity.js`, `06_BookingIntegrity.js` and `07_AdminData.js`), Index.html and the
    manifest to the existing Apps Script project.
 2. As the script owner, run `upgradeCandidateAuthentication()` from the editor.
    It appends missing authentication columns to Candidates and creates
@@ -77,8 +77,12 @@ Storage and behavior
   fifteen minutes. Successful recovery clears the login lock.
 - Setup/import entry points require matching active and effective Google users;
   anonymous candidate requests cannot invoke these maintenance operations.
-- The existing admin password scheme is retained for compatibility. This change
-  does not migrate admin credentials to the candidate password scheme.
+- Admin passwords now use the same salted PBKDF2 scheme in the
+  ADMIN_PASSWORD_CREDENTIAL Script Property. Existing ADMIN_PASSWORD_HASH
+  values migrate after a correct login without changing the password. New setup
+  uses PBKDF2 directly; failed logins do not migrate credentials.
+- Expired/revoked sessions are compacted at most daily on session creation;
+  active sessions and custom columns remain intact.
 
 Verification
 ------------
@@ -89,3 +93,9 @@ PBKDF2 against Node crypto, tests authentication/recovery/session edge cases,
 executes browser session restoration, validates client RPC names, and exercises
 booking/payment/refund/admin/calendar/contact paths using mocked Google APIs.
 No live Sheet or deployment was modified by these tests.
+
+## Admin email recovery
+
+Admin sign-in now offers Forgot password. requestAdminPasswordReset(email) sends a six-digit code to the configured ADMIN_EMAIL (not ADMIN_NOTIFICATION_EMAIL). Unknown addresses receive a generic success response without email delivery. ADMIN_PASSWORD_RESET contains the email, HMAC code digest, expiry, attempts and resend timestamp; plaintext codes never appear in production responses. Codes expire after ten minutes, allow five failed guesses, and requests are limited to once per minute. Delivery failure clears pending state so retry is possible.
+
+resetAdminPassword(email,code,newPassword) validates the code under the authentication lock, applies the existing password policy and PBKDF2 storage, clears admin login locks, and revokes admin sessions. Candidate sessions are preserved. A successful reset is single-use; signed-in admin password changes invalidate outstanding recovery codes. Owner testing reset deletes pending admin recovery. Deploy all numbered server files; older running previews require restarting to load the APIs (restart loses their temporary data). Local preview code notices are test-only, and tests do not verify live email delivery.

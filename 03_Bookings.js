@@ -26,7 +26,7 @@ function getPublicBookedTimes(dateStr,timezone){
       const start=new Date(b.StartUTC),end=new Date(b.EndUTC);
       const day=d=>new Intl.DateTimeFormat('en-GB',{timeZone:tz,day:'2-digit',month:'short',year:'numeric'}).format(d);
       const time=d=>new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'numeric',minute:'2-digit'}).format(d);
-      return {from:formatInZone_(b.StartUTC,tz),to:formatInZone_(b.EndUTC,tz),date:day(start),start:time(start),end:time(end)+(day(start)!==day(end)?' ('+day(end)+')':'')};
+      return {startUTC:b.StartUTC,endUTC:b.EndUTC,from:formatInZone_(b.StartUTC,tz),to:formatInZone_(b.EndUTC,tz),date:day(start),start:time(start),end:time(end)+(day(start)!==day(end)?' ('+day(end)+')':'')};
     });
   return {date,timezone:tz,booked};
 }
@@ -68,14 +68,15 @@ function paymentQrImageUrl_(value){
 function quoteForCandidate_(c,data,adminOverride){
   if(!data||!clean_(data.date)||!clean_(data.startTime)||!clean_(data.endTime)) throw new Error('Select a date, start time and end time before checking availability.');
   const date=clean_(data.date),startTime=clean_(data.startTime),endTime=clean_(data.endTime),tz=c.Timezone;
-  const start=zonedLocalToUtc_(date,startTime,tz),end=zonedLocalToUtc_(bookingEndDate_(date,startTime,endTime,data.overnightConfirmed===true),endTime,tz);
+  if(/^\d{2}:\d{2}$/.test(startTime)&&/^\d{2}:\d{2}$/.test(endTime)&&endTime<=startTime)throw new Error('End time must be later than start time. Choose times on the same day.');
+  const start=zonedLocalToUtc_(date,startTime,tz),end=zonedLocalToUtc_(date,endTime,tz);
   if(end<=start) throw new Error('End time must be after start time.');
   if(start.getTime()<=Date.now())throw new Error('Choose a future interview time.');
   const duration=minutesBetween_(start,end); const check=checkAvailability_(start,end,null,!!adminOverride); if(!check.ok) return {available:false,reason:check.reason};
   const calc=calculateCharge_(duration), paymentRequired=String(c.CandidateType).toUpperCase()==='REGULAR';
-  return {available:true,startUTC:start.toISOString(),endUTC:end.toISOString(),durationMinutes:duration,calculatedChargeUSD:calc,finalChargeUSD:calc,paymentRequired,candidateDisplay:`${formatInZone_(start.toISOString(),tz)} - ${formatInZone_(end.toISOString(),tz)}`,adminDisplay:`${formatBusinessTime_(start.toISOString())} - ${formatBusinessTime_(end.toISOString())}`};
+  return {available:true,timezone:tz,startUTC:start.toISOString(),endUTC:end.toISOString(),durationMinutes:duration,calculatedChargeUSD:calc,finalChargeUSD:calc,paymentRequired,candidateDisplay:`${formatInZone_(start.toISOString(),tz)} - ${formatInZone_(end.toISOString(),tz)}`,adminDisplay:`${formatBusinessTime_(start.toISOString())} - ${formatBusinessTime_(end.toISOString())}`};
 }
-function getAvailabilityForDate(token,dateStr){const sess=requireSession_(token,'candidate'),c=findOne_(candidateSheet_(),'CandidateID',sess.candidateId);return {timezone:c.Timezone,booked:getPublicBookedTimes(dateStr,c.Timezone).booked.map(b=>({from:b.from,to:b.to,status:'BOOKED'}))};}
+function getAvailabilityForDate(token,dateStr){const sess=requireSession_(token,'candidate'),c=findOne_(candidateSheet_(),'CandidateID',sess.candidateId);return {timezone:c.Timezone,booked:getPublicBookedTimes(dateStr,c.Timezone).booked.map(b=>({startUTC:b.startUTC,endUTC:b.endUTC,from:b.from,to:b.to,status:'BOOKED'}))};}
 function submitCandidateBooking(token,data){return authLock_(()=>submitCandidateBooking_(token,data));}
 function submitCandidateBooking_(token,data){
   const sess=requireSession_(token,'candidate'), c=findOne_(sh_(APP.SHEETS.CANDIDATES),'CandidateID',sess.candidateId), q=quoteForCandidate_(c,data,false); if(!q.available) throw new Error(q.reason);
@@ -116,8 +117,9 @@ function availabilityRules_(){
     return rule;
   });
 }
+function availabilityTimezone_(){return String(getSetting_('AVAILABILITY_TIMEZONE',businessTimezone_()));}
 function withinWorkingHours_(start,end){
-  const tz=String(getSetting_('BUSINESS_TIMEZONE','America/New_York')), startParts=partsInZone_(start,tz), endParts=partsInZone_(new Date(end.getTime()-1),tz);
+  const tz=availabilityTimezone_(), startParts=partsInZone_(start,tz), endParts=partsInZone_(new Date(end.getTime()-1),tz);
   const date=`${startParts.year}-${startParts.month}-${startParts.day}`, endDate=`${endParts.year}-${endParts.month}-${endParts.day}`;
   if(endDate!==date&&endDate!==addLocalDays_(date,1)) return {ok:false,reason:'Interview must end by the following local day.'};
   const intervalDates=endDate===date?[date]:[date,endDate];
@@ -142,7 +144,7 @@ function withinWorkingHours_(start,end){
   return {ok:false,reason:'Requested interview is outside Admin availability.'};
 }
 function candidateBookings_(c){
-  return rowsAsObjects_(sh_(APP.SHEETS.INTERVIEWS)).filter(x=>x.CandidateID===c.CandidateID).sort((a,b)=>new Date(b.StartUTC)-new Date(a.StartUTC)).map(x=>({bookingId:x.BookingID,type:x.InterviewType,start:formatInZone_(x.StartUTC,c.Timezone),end:formatInZone_(x.EndUTC,c.Timezone),startUTC:x.StartUTC,status:x.BookingStatus,paymentStatus:x.PaymentStatus,refundStatus:x.RefundStatus,charge:Number(x.FinalChargeUSD||0),canCancel:x.BookingStatus==='CONFIRMED'&&new Date()<new Date(x.StartUTC)}));
+  return rowsAsObjects_(sh_(APP.SHEETS.INTERVIEWS)).filter(x=>x.CandidateID===c.CandidateID).sort((a,b)=>new Date(b.StartUTC)-new Date(a.StartUTC)).map(x=>({bookingId:x.BookingID,type:x.InterviewType,start:formatInZone_(x.StartUTC,c.Timezone),end:formatInZone_(x.EndUTC,c.Timezone),startUTC:x.StartUTC,endUTC:x.EndUTC,status:x.BookingStatus,paymentStatus:x.PaymentStatus,refundStatus:x.RefundStatus,charge:Number(x.FinalChargeUSD||0),canCancel:x.BookingStatus==='CONFIRMED'&&new Date()<new Date(x.StartUTC)}));
 }
 function cancelCandidateBooking(token,bookingId){return authLock_(()=>{const sess=requireSession_(token,'candidate'),b=findOne_(sh_(APP.SHEETS.INTERVIEWS),'BookingID',bookingId);if(!b||b.CandidateID!==sess.candidateId)throw new Error('Booking not found.');return cancelBookingInternal_(b,sess.candidateId);});}
 

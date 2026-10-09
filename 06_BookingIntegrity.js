@@ -54,6 +54,7 @@ function runBookingWork_(key){
     } else if(job.kind==='refundEmail')notifyAdmin_('Refund requested','Booking '+b.BookingID+' was cancelled. Review its payment and refund records.');
     props.deleteProperty(key);
   } catch(e) {
+    job.attempts=Number(job.attempts||0)+1;job.lastAttemptUTC=nowIso_();job.lastError=String(e.message||e).slice(0,500);props.setProperty(key,JSON.stringify(job));
     console.error('Pending booking work '+key+': '+e.message);
     try{audit_('SYSTEM','EXTERNAL_WORK_FAILED','INTERVIEW',job.id,{kind:job.kind,error:e.message});}catch(ignored){}
   }
@@ -77,4 +78,19 @@ function cancelBookingInternal_(b,actor){
   queueBookingWork_(b.BookingID,'cancel',{});
   if(refund)queueBookingWork_(b.BookingID,'refundEmail',{});
   audit_(actor,'BOOKING_CANCEL','INTERVIEW',b.BookingID,{});return true;
+}
+
+function getBookingWorkStatus_(limit){
+  const props=PropertiesService.getScriptProperties().getProperties(),keys=Object.keys(props).filter(k=>k.startsWith('BOOKING_WORK_'));
+  const jobs=keys.map(key=>{try{const j=JSON.parse(props[key]);return {key,bookingId:j.id,kind:j.kind,attempts:Number(j.attempts||0),lastAttemptUTC:j.lastAttemptUTC||'',error:j.lastError||'Waiting to retry'};}catch(e){return {key,bookingId:'Unknown',kind:'invalid',attempts:0,lastAttemptUTC:'',error:'Invalid saved job. Owner review required.'};}});
+  jobs.sort((a,b)=>(Date.parse(a.lastAttemptUTC)||0)-(Date.parse(b.lastAttemptUTC)||0));
+  return {total:jobs.length,jobs:jobs.slice(0,limit||20)};
+}
+function adminRetryBookingWork(token,key){
+  return authLock_(()=>{
+    const sess=requireSession_(token,'admin');
+    if(key){if(!key.startsWith('BOOKING_WORK_')||!PropertiesService.getScriptProperties().getProperty(key))throw new Error('Retry job not found.');runBookingWork_(key);}
+    else getBookingWorkStatus_(10).jobs.forEach(j=>{if(j.kind!=='invalid')runBookingWork_(j.key);});
+    const status=getBookingWorkStatus_(20);audit_(sess.email,'EXTERNAL_WORK_RETRY','SYSTEM',key||'BATCH',{remaining:status.total});return status;
+  });
 }

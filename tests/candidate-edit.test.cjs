@@ -1,0 +1,22 @@
+﻿const assert=require('node:assert/strict');
+const {ctx,sheets}=require('../local-preview/mock-store.cjs');
+const admin=ctx.adminLogin('admin@example.com','Admin123!').token;
+const candidate=ctx.candidateByIdentifier_('candidate@example.com');
+const session=ctx.newSession_({role:'candidate',candidateId:candidate.CandidateID,email:candidate.Email});
+const base={candidateId:candidate.CandidateID,type:candidate.CandidateType,percentage:0,active:true};
+assert.throws(()=>ctx.adminUpdateCandidate(session,{...base,email:'new@example.com'}),/admin|authorized|Access/i);
+assert.throws(()=>ctx.adminUpdateCandidate(admin,{...base,email:'bad'}),/valid email/);
+assert.throws(()=>ctx.adminUpdateCandidate(admin,{...base,email:'maya@example.com'}),/already exists/);
+assert.throws(()=>ctx.adminUpdateCandidate(admin,{...base,email:'admin@example.com'}),/reserved/);
+assert.throws(()=>ctx.adminUpdateCandidate(admin,{...base,email:'new@example.com',phone:'123'}),/international phone/);
+assert.equal(ctx.candidateByIdentifier_('candidate@example.com').Email,'candidate@example.com');
+ctx.adminUpdateCandidate(admin,{...base,email:' Edited@Example.com ',phone:'+91 (98765) 01234'});
+const updated=ctx.candidateByIdentifier_('edited@example.com');
+assert.equal(updated.CandidateID,candidate.CandidateID);
+assert.equal(updated.PhoneE164,'+919876501234');
+assert.equal(updated.ResetHash,'');
+assert.throws(()=>ctx.getCandidateHome(session),/Session expired/);
+assert(!ctx.candidateByIdentifier_('candidate@example.com'));
+assert(ctx.rowsAsObjects_(sheets.get('Audit Log')).some(r=>r.Action==='CANDIDATE_UPDATE'));
+console.log('PASS candidate contact editing: admin access, atomic validation, unique email, phone normalization, session revocation and audit');
+

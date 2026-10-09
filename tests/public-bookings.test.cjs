@@ -5,7 +5,7 @@ let rows=[];ctx.sh_=()=>null;ctx.rowsAsObjects_=()=>rows;ctx.getSetting_=()=> 'A
 const row=(start,end,status='CONFIRMED')=>({StartUTC:start,EndUTC:end,BookingStatus:status,Name:'SECRET',Email:'private@example.com',BookingID:'PRIVATE',UTR:'PRIVATE'});
 rows=[row('2026-09-29T02:00:00Z','2026-09-29T02:30:00Z'),row('2026-09-29T04:00:00Z','2026-09-29T04:30:00Z'),row('2026-09-29T01:00:00Z','2026-09-29T01:30:00Z','CANCELLED')];
 let result=ctx.getPublicBookedTimes('2026-09-28','America/New_York');assert.equal(result.booked.length,1);
-assert.deepEqual(Object.keys(result.booked[0]),['from','to','date','start','end']);assert(!JSON.stringify(result).includes('PRIVATE'));assert.equal(result.booked[0].date,'28 Sept 2026');assert.equal(result.booked[0].start,'10:00 PM');assert.equal(result.booked[0].end,'10:30 PM');
+assert.deepEqual(Object.keys(result.booked[0]),['startUTC','endUTC','from','to','date','start','end']);assert(!JSON.stringify(result).includes('PRIVATE'));assert.equal(result.booked[0].date,'28 Sept 2026');assert.equal(result.booked[0].start,'10:00 PM');assert.equal(result.booked[0].end,'10:30 PM');
 assert.equal(ctx.getPublicBookedTimes('2026-09-29','Asia/Kolkata').booked.length,2);
 rows=[row('2026-03-09T03:30:00Z','2026-03-09T04:00:00Z')];
 assert.equal(ctx.getPublicBookedTimes('2026-03-08','America/New_York').booked.length,1);

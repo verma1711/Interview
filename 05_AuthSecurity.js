@@ -131,3 +131,34 @@ function newResetCode_() {
   let n; do {n=parseInt(Utilities.getUuid().replace(/-/g,'').slice(0,8),16);} while(n>=4294000000);
   return String(n%1000000).padStart(6,'0');
 }
+
+// Admin credentials share the candidate password implementation. A verified
+// legacy login migrates storage without changing the password.
+function saveAdminPassword_(password) {
+  const fields=passwordFields_(password), props=PropertiesService.getScriptProperties();
+  props.setProperty('ADMIN_PASSWORD_CREDENTIAL',JSON.stringify(fields));
+  props.deleteProperty('ADMIN_PASSWORD_HASH');
+}
+function verifyAdminPassword_(password) {
+  if(typeof password!=='string'||password.length>1024)return false;
+  const props=PropertiesService.getScriptProperties(),raw=props.getProperty('ADMIN_PASSWORD_CREDENTIAL');
+  if(raw){
+    const c=JSON.parse(raw);
+    return c.PasswordAlgorithm==='PBKDF2-HMAC-SHA256'&&Number(c.PasswordIterations)===PASSWORD_ITERATIONS&&!!c.PasswordSalt&&equalSecret_(derivePassword_(password,c.PasswordSalt,PASSWORD_ITERATIONS),c.PasswordHash);
+  }
+  const legacy=props.getProperty('ADMIN_PASSWORD_HASH');
+  if(!legacy||!equalSecret_(hash_(password),legacy))return false;
+  saveAdminPassword_(password);return true;
+}
+// Called under the authentication lock. Preserve custom columns and active sessions.
+function pruneAuthSessions_(){
+  const props=PropertiesService.getScriptProperties();
+  if(Date.now()-Number(props.getProperty('AUTH_SESSION_CLEANUP_AT')||0)<86400000)return;
+  const sheet=sh_(APP.SHEETS.SESSIONS),count=sheet.getLastRow()-1,h=headers_(sheet);
+  if(count>0){
+    const token=h.indexOf('TokenHash'),expiry=h.indexOf('ExpiresAtUTC');
+    const kept=sheet.getRange(2,1,count,h.length).getValues().filter(r=>r[token]&&Date.parse(r[expiry])>Date.now());
+    if(kept.length<count){while(kept.length<count)kept.push(h.map(()=>''));sheet.getRange(2,1,count,h.length).setValues(kept);}
+  }
+  props.setProperty('AUTH_SESSION_CLEANUP_AT',String(Date.now()));
+}

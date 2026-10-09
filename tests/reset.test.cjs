@@ -11,7 +11,7 @@ vm.runInContext(fs.readFileSync('01_Setup.js','utf8'),ctx);
 names.forEach(insert);insert('My legacy data');
 for(const key of ['ADMIN_PASSWORD_HASH','RESET_HMAC_SECRET','CANDIDATE_PASSWORD_AV-123','INITIAL_ADMIN_EMAIL','INITIAL_ADMIN_PASSWORD','OTHER'])props.set(key,'value');
 owner=false;assert.throws(()=>ctx.resetInterviewPortalForTesting(),/owner/);assert.equal(sheets.size,9);assert.equal(props.size,6);
-owner=true;assert.equal(ctx.resetInterviewPortalForTesting().deletedSheets.length,8);
+owner=true;props.set('ADMIN_PASSWORD_RESET','pending-code');assert.equal(ctx.resetInterviewPortalForTesting().deletedSheets.length,8);
 assert.deepEqual([...sheets.keys()],['My legacy data']);
 assert.deepEqual([...props.keys()],['INITIAL_ADMIN_EMAIL','INITIAL_ADMIN_PASSWORD','OTHER']);
 assert.equal(ctx.resetInterviewPortalForTesting().deletedSheets.length,0);

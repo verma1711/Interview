@@ -1,5 +1,5 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const html=fs.readFileSync('Index.html','utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const html=require('../local-preview/read-ui.cjs').readUi(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 new vm.Script(script);
 const ctx=vm.createContext({Date,Event:class {constructor(type,options){this.type=type;Object.assign(this,options);}}});
 const start=script.indexOf('const pickerIcons='),end=script.indexOf("if(typeof MutationObserver",start);
@@ -33,7 +33,7 @@ assert(!script.includes("const arrow=active?(direction==='ascending'?'?':'?'):'?
 console.log('PASS styled pickers: leap-year/month dates, midnight/noon conversion, original-field events and focus restoration; SVG sort arrows');
 
 const preferences=new Map();const formatCtx=vm.createContext({role:'candidate',home:{profile:{candidateId:'AV-FORMAT'}},localStorage:{getItem:key=>preferences.get(key)}});
-vm.runInContext(script.slice(script.indexOf('function preferredTimeFormatKey('),script.indexOf('const originalTimeTexts=')),formatCtx);
+vm.runInContext(script.slice(script.indexOf('function preferredTimeFormatKey('),script.indexOf('function applyPreferredTimeFormat(')),formatCtx);
 assert.equal(formatCtx.preferredTimeFormat(),'12');
 assert.equal(formatCtx.formatPreferredTime('12:00 AM to 12:30 PM','24'),'00:00 to 12:30');
 assert.equal(formatCtx.formatPreferredTime('Jan 1, 2035, 1:05 PM EST','24'),'Jan 1, 2035, 13:05 EST');
@@ -43,3 +43,22 @@ preferences.set(formatCtx.preferredTimeFormatKey(),'24');assert.equal(formatCtx.
 formatCtx.role='admin';assert.equal(formatCtx.preferredTimeFormat(),'12');
 formatCtx.role='candidate';formatCtx.home.profile.candidateId='AV-OTHER';assert.equal(formatCtx.preferredTimeFormat(),'12');
 console.log('PASS preferred time format: midnight/noon, dated text, default and separate candidate/admin preferences');
+
+assert.equal(formatCtx.formatDisplayDates('2035-01-09'),'09-01-35');
+assert.equal(formatCtx.formatDisplayDates('Jan 9, 2035, 1:05 PM'),'09-01-35, 1:05 PM');
+assert.equal(formatCtx.formatDisplayDates('9 Sept 2035'),'09-09-35');
+console.log('PASS DD-MM-YY display conversion with canonical source dates preserved');
+
+assert(!/\b(?:alert|confirm|prompt)\s*\(/.test(script),'client must not invoke native dialogs');
+assert(!/\b(?:alert|confirm|prompt)\s*\(/.test(fs.readFileSync('local-preview/shim.txt','utf8')),'preview must not invoke native dialogs');
+console.log('PASS no native browser dialogs in app or preview shim');
+
+// Time input triggers must follow the selected format without changing saved HH:mm values.
+let triggerFormat='12';ctx.preferredTimeFormat=()=>triggerFormat;ctx.esc=String;
+const timeTrigger={dataset:{},setAttribute(){}};
+const timeField={tagName:'INPUT',type:'time',value:'13:05',disabled:false,parentElement:{querySelector:()=>timeTrigger,parentElement:{querySelector:()=>({textContent:'Start'})}}};
+ctx.syncPickerField(timeField);assert(timeTrigger.innerHTML.includes('1:05 PM'));
+triggerFormat='24';ctx.syncPickerField(timeField);assert(timeTrigger.innerHTML.includes('13:05'));assert(!timeTrigger.innerHTML.includes('PM'));assert.equal(timeField.value,'13:05');
+timeField.value='00:00';ctx.syncPickerField(timeField);assert(timeTrigger.innerHTML.includes('00:00'));
+triggerFormat='12';ctx.syncPickerField(timeField);assert(timeTrigger.innerHTML.includes('12:00 AM'));
+console.log('PASS time-field triggers follow 12/24-hour format and preserve canonical values');

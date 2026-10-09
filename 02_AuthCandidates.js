@@ -7,7 +7,7 @@ function registerCandidate(data) {
   const phoneE164=(cc+phone.replace(/\D/g,'')).replace(/^\+?/, '+');
   const c=createCandidateInternal_({name,email,phone:phoneE164,countryCode:cc,timezone:tz,type:'REGULAR',password});
   try { c.ContactResourceName=syncGoogleContact_(c); const row=findOne_(sh_(APP.SHEETS.CANDIDATES),'CandidateID',c.CandidateID); updateObjectRow_(sh_(APP.SHEETS.CANDIDATES),row._row,{ContactResourceName:c.ContactResourceName}); } catch(e){ audit_('SYSTEM','CONTACT_SYNC_FAILED','CANDIDATE',c.CandidateID,e.message); }
-  const token=newSession_({role:'candidate',candidateId:c.CandidateID,email:c.Email}); audit_(c.CandidateID,'REGISTER','CANDIDATE',c.CandidateID,{email});
+  const token=authLock_(()=>newSession_({role:'candidate',candidateId:c.CandidateID,email:c.Email})); audit_(c.CandidateID,'REGISTER','CANDIDATE',c.CandidateID,{email});
   return {ok:true,candidateId:c.CandidateID,token,profile:publicCandidate_(c),message:'Registration complete.'};
 }
 function createCandidateInternal_(x) {
@@ -82,8 +82,8 @@ function adminChangePassword(token,currentPassword,newPassword){
   validatePassword_(newPassword);
   return authLock_(()=>{
     const sess=requireSession_(token,'admin'), props=PropertiesService.getScriptProperties();
-    if(typeof currentPassword!=='string'||currentPassword.length>1024||!equalSecret_(hash_(currentPassword),props.getProperty('ADMIN_PASSWORD_HASH'))) throw new Error('Current password is incorrect.');
-    props.setProperty('ADMIN_PASSWORD_HASH',hash_(newPassword));
+    if(!verifyAdminPassword_(currentPassword)) throw new Error('Current password is incorrect.');
+    saveAdminPassword_(newPassword);props.deleteProperty('ADMIN_PASSWORD_RESET');
     props.deleteProperty('ADMIN_LOGIN_ATTEMPTS');props.deleteProperty('ADMIN_LOCKED_UNTIL');
     audit_(sess.email,'PASSWORD_CHANGE','ADMIN',sess.email,'Password changed');
     rowsAsObjects_(sh_(APP.SHEETS.SESSIONS)).filter(s=>s.Role==='admin').forEach(s=>updateObjectRow_(sh_(APP.SHEETS.SESSIONS),s._row,{TokenHash:'',ExpiresAtUTC:''}));
@@ -94,7 +94,7 @@ function adminLogin(email,password){return authLock_(()=>{
   const props=PropertiesService.getScriptProperties();
   if(normEmail_(email)!==normEmail_(getSetting_('ADMIN_EMAIL','')))throw new Error('Invalid admin credentials.');
   if(Number(props.getProperty('ADMIN_LOCKED_UNTIL')||0)>Date.now())throw new Error('Too many login attempts. Try again in 15 minutes.');
-  if(typeof password!=='string'||password.length>1024||!equalSecret_(hash_(password),props.getProperty('ADMIN_PASSWORD_HASH'))){
+  if(!verifyAdminPassword_(password)){
     const attempts=Number(props.getProperty('ADMIN_LOGIN_ATTEMPTS')||0)+1;
     props.setProperty('ADMIN_LOGIN_ATTEMPTS',String(attempts>=5?0:attempts));
     if(attempts>=5)props.setProperty('ADMIN_LOCKED_UNTIL',String(Date.now()+900000));
@@ -111,3 +111,31 @@ function publicCandidate_(c){ return {candidateId:c.CandidateID,name:c.Name,emai
 function updateCandidateTimezone(token,tz){ const sess=requireSession_(token,'candidate'); if(!validateTimezone_(tz)) throw new Error('Invalid timezone.'); const c=findOne_(sh_(APP.SHEETS.CANDIDATES),'CandidateID',sess.candidateId); updateObjectRow_(sh_(APP.SHEETS.CANDIDATES),c._row,{Timezone:tz,UpdatedAtUTC:nowIso_()}); audit_(sess.candidateId,'TIMEZONE_CHANGE','CANDIDATE',sess.candidateId,tz); return true; }
 function syncGoogleContact_(c){ const person={names:[{givenName:c.Name}],emailAddresses:[{value:c.Email}],phoneNumbers:c.PhoneE164?[{value:c.PhoneE164}]:[],biographies:[{value:`Candidate ID: ${c.CandidateID}`} ]}; const res=People.People.createContact(person); return res.resourceName||''; }
 function escapeHtml_(s){ return String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+
+function requestAdminPasswordReset(email){return authLock_(()=>{
+  const address=normEmail_(email),expected=normEmail_(getSetting_('ADMIN_EMAIL',''));
+  if(!address||address!==expected)return {ok:true};
+  const props=PropertiesService.getScriptProperties(),previous=JSON.parse(props.getProperty('ADMIN_PASSWORD_RESET')||'{}');
+  if(Number(previous.sentAt||0)+60000>Date.now())throw new Error('Please wait one minute before requesting another code.');
+  const code=newResetCode_(),state={email:address,hash:resetDigest_('ADMIN:'+address,code),expires:Date.now()+APP.OTP_SECONDS*1000,attempts:0,sentAt:Date.now()};
+  props.setProperty('ADMIN_PASSWORD_RESET',JSON.stringify(state));
+  try{MailApp.sendEmail({to:expected,subject:'Admin password reset code',htmlBody:'<p>Your admin password reset code is <b>'+code+'</b>.</p><p>It expires in 10 minutes. If you did not request this, ignore this email.</p>'});}
+  catch(e){props.deleteProperty('ADMIN_PASSWORD_RESET');throw new Error('Unable to send reset email. Please try again.');}
+  return {ok:true};
+});}
+function resetAdminPassword(email,code,newPassword){
+  validatePassword_(newPassword);
+  return authLock_(()=>{
+    const props=PropertiesService.getScriptProperties(),state=JSON.parse(props.getProperty('ADMIN_PASSWORD_RESET')||'{}'),address=normEmail_(email);
+    const invalid=()=>{throw new Error('Invalid or expired reset code.');};
+    if(!state.hash||state.email!==address||address!==normEmail_(getSetting_('ADMIN_EMAIL',''))||!(state.expires>Date.now()))return invalid();
+    state.attempts=Number(state.attempts||0)+1;
+    if(state.attempts>5||!equalSecret_(state.hash,resetDigest_('ADMIN:'+address,clean_(code)))){
+      if(state.attempts>=5){delete state.hash;delete state.expires;}
+      props.setProperty('ADMIN_PASSWORD_RESET',JSON.stringify(state));return invalid();
+    }
+    saveAdminPassword_(newPassword);props.deleteProperty('ADMIN_PASSWORD_RESET');props.deleteProperty('ADMIN_LOGIN_ATTEMPTS');props.deleteProperty('ADMIN_LOCKED_UNTIL');
+    rowsAsObjects_(sh_(APP.SHEETS.SESSIONS)).filter(s=>s.Role==='admin').forEach(s=>updateObjectRow_(sh_(APP.SHEETS.SESSIONS),s._row,{TokenHash:'',ExpiresAtUTC:''}));
+    audit_(address,'PASSWORD_RESET','ADMIN',address,'Password reset');return {ok:true};
+  });
+}

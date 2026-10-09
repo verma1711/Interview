@@ -7,7 +7,7 @@ window.google={script:{get run(){
     return (...args)=>fetch('/rpc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fn:key,args})})
       .then(r=>r.json()).then(data=>{
         if(data.error){failure({message:data.error});return;}
-        if(data.resetCode)alert('LOCAL PREVIEW reset code: '+data.resetCode);
+        if(data.resetCode)appAlert('LOCAL PREVIEW reset code: '+data.resetCode);
         success(data.result);
       }).catch(e=>failure({message:e.message}));
   }});

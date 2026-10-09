@@ -817,19 +817,233 @@ header { width: 1365px; margin-left: auto; margin-right: auto; padding-left: 24p
 .picker-time.picker-time-24 { grid-template-columns: 1fr 1fr; }
 
 .candidate-profile-grid .time-format-preference { align-items: flex-start; flex-direction: column; gap: 6px; margin: 14px 0 0; }
-</style></head><body><div id="loader" class="loader hidden"><div class="spinner"></div><b>Please wait...</b></div><header><b>Interview Booking Portal</b><div id="topUser" class="muted"></div></header><main class="wrap">
+
+.admin-status-filter { display: inline-flex; padding: 0; min-height: 0; background: transparent; color: #59657a; box-shadow: none; border-radius: 999px; }
+.admin-status-filter:hover { transform: translateY(-1px); box-shadow: 0 3px 8px #3153d81a; }
+.admin-status-filter:first-child { padding: 4px 9px; border: 1px solid var(--line); font-size: 11px; }
+.admin-status-filter[aria-pressed="true"] { outline: 2px solid var(--b); outline-offset: 2px; }
+#adminContent table tbody tr { transition: background .16s ease; }
+#adminContent table tbody tr:hover { background: #f8faff; }
+.dashboard-metrics .card { border: 1px solid #e0e6f1; transition: transform .18s ease, box-shadow .18s ease; }
+.dashboard-metrics .card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px #3153d818; }
+.dashboard-metrics .card:nth-child(2) .metric { color: #137548; }
+.dashboard-metrics .card:nth-child(3) .metric { color: #8a5a00; }
+.dashboard-metrics .card:nth-child(4) .metric { color: #a83240; }
+#searchTable_bookings { min-width: 1480px; }
+#searchTable_bookings td:nth-child(1), #searchTable_bookings td:nth-child(3), #searchTable_bookings td:nth-child(4), #searchTable_bookings td:nth-child(5) { white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .dashboard-metrics .card, #adminContent table tbody tr { transition: none; } .dashboard-metrics .card:hover, .admin-status-filter:hover { transform: none; } }
+
+.dashboard-metric-link { background: #fff; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; color: var(--text); text-align: left; font-weight: 500; }
+.dashboard-metric-link .metric { color: #3153d8; }
+
+.header-tools { display: flex; align-items: center; gap: 18px; }
+.header-tools .time-format-preference { margin: 0; }
+.admin-search { display: flex !important; justify-content: flex-end; margin-bottom: 16px; }
+#adminContent .admin-search input { width: 420px; }
+.candidate-date-range { flex-wrap: wrap; margin-left: auto; width: 540px; }
+.candidate-date-range > p { flex: 0 0 100%; max-width: none !important; margin: 0; padding: 8px 12px; border-radius: 8px; color: #a83240; background: #fff1f2; }
+.candidate-date-range > p:empty { display: none; }
+.dashboard-bookings { position: relative; padding-top: 18px; }
+.dashboard-refresh { position: absolute; top: 18px; left: 28px; margin: 0 !important; width: 36px; height: 36px; padding: 7px !important; }
+.dashboard-refresh svg { width: 18px; height: 18px; }
+.dashboard-bookings .scroll { clear: both; }
+#adminContent th, #adminContent td { padding: 14px 12px; }
+.booking-candidate { min-width: 150px; }
+.booking-candidate span, .booking-candidate small { display: block; }
+.booking-candidate small { margin-top: 6px; color: var(--muted); }
+#searchTable_candidates { min-width: 1240px; }
+.candidate-email { min-width: 230px; white-space: nowrap; }
+.candidate-phone { min-width: 145px; white-space: nowrap; }
+#adminContent .scroll { margin-top: 10px; }
+
+#headerTimeFormat { display: flex !important; }
+#headerTimeFormat > div { padding: 4px; background: #f1f4fa; border-color: #dfe5f0; }
+#headerTimeFormat button { min-width: 76px; border-radius: 7px; }
+#headerTimeFormat button[aria-pressed="true"] { background: #3153d8; box-shadow: 0 2px 6px #3153d833; }
+.dashboard-bookings .dashboard-refresh { top: 18px; left: 24px; display: grid; place-items: center; width: 38px; height: 38px; min-height: 38px; border: 1px solid #dce5fa; border-radius: 11px; background: #f1f5ff; color: #3153d8; padding: 9px !important; box-shadow: none; }
+.dashboard-refresh:hover { background: #e5edff; border-color: #aabdff; transform: none; }
+.dashboard-refresh svg { width: 20px; height: 20px; transition: transform .3s ease; }
+.dashboard-refresh:hover svg { transform: rotate(45deg); }
+.payment-change { border: 1px solid #d5dfff !important; background: #edf2ff !important; color: #3153d8 !important; padding: 8px 14px !important; border-radius: 9px; }
+.payment-change:hover { background: #dfe8ff !important; box-shadow: 0 3px 9px #3153d81a; }
+.payment-status-editor { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 230px; padding: 12px; border: 1px solid #dae3f7; border-radius: 12px; background: #f8faff; }
+.payment-editor-label { flex: 0 0 100%; color: #59657a; font-size: 11px; font-weight: 650; }
+.payment-status-editor .picker-field { flex: 0 0 100%; }
+.payment-status-editor [role="alert"] { flex: 0 0 100%; }
+#searchTable_candidates .candidate-email input { min-width: 240px; }
+#searchTable_candidates .candidate-phone input { min-width: 175px; }
+#searchTable_candidates input:disabled { border-color: transparent; background: transparent; padding-left: 0; }
+@media (prefers-reduced-motion: reduce) { .dashboard-refresh svg { transition: none; } .dashboard-refresh:hover svg { transform: none; } }
+
+#searchTable_candidates { table-layout: fixed; min-width: 0; width:100%; }
+#searchTable_candidates input[type="number"] { width:100%!important; min-width:0; }
+#searchTable_candidates td:last-child [id^="actions_"] { flex-wrap:wrap; }
+#searchTable_candidates th, #searchTable_candidates td { vertical-align: middle; padding: 12px 10px; }
+#searchTable_candidates th { height: 48px; }
+#searchTable_candidates td { height: 68px; }
+#searchTable_candidates td:nth-child(1), #searchTable_candidates td:nth-child(2), #searchTable_candidates td:nth-child(7) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#searchTable_candidates .candidate-email, #searchTable_candidates .candidate-phone { min-width: 0; }
+#searchTable_candidates input, #searchTable_candidates .picker-trigger { height: 40px; min-height: 40px; margin: 0; font-size: 12px; }
+#searchTable_candidates .candidate-email input, #searchTable_candidates .candidate-phone input { width: 100%; min-width: 0; }
+#searchTable_candidates .picker-trigger:disabled { background: transparent; border-color: transparent; padding-left: 0; }
+#searchTable_candidates td:last-child { white-space: nowrap; }
+#searchTable_candidates td:last-child [id^="actions_"] { align-items: center; gap: 5px; }
+#searchTable_candidates td:last-child [id^="actions_"]:not(.hidden) { display: inline-flex; }
+#searchTable_candidates td:last-child button { min-height: 32px; padding: 6px 9px; }
+#searchTable_candidates [id^="candidateError_"]:empty { display: none; }
+
+.app-dialog { width: 420px; max-width: calc(100vw - 40px); padding: 28px; border: 1px solid #e0e6f1; border-radius: 18px; background: #fff; color: var(--text); box-shadow: 0 24px 80px #17254b40; }
+.app-dialog::backdrop { background: #18264466; backdrop-filter: blur(4px); }
+.app-dialog-icon { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 16px; border-radius: 12px; background: #edf2ff; color: #3153d8; font-size: 22px; font-weight: 700; }
+.app-dialog h2 { font-size: 20px; margin-bottom: 10px; }
+.app-dialog p { color: #59657a; line-height: 1.6; margin: 0 0 20px; overflow-wrap: anywhere; }
+.app-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; }
+
+.work-panel { border:1px solid #dbe3f3; background:linear-gradient(135deg,#fff,#f7f9ff); border-radius:18px; padding:22px; margin-top:18px; }
+.work-panel-heading { display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.work-panel-heading b { display:block; margin:5px 0; font-size:18px; color:#263859; }
+.work-panel p { margin:5px 0; color:#65718a; line-height:1.5; }
+.work-eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#a36713; }
+.work-retry { background:#3153d8; border-radius:11px; padding:11px 18px; box-shadow:0 5px 14px #3153d826; transition:transform .18s,box-shadow .18s; white-space:nowrap; }
+.work-retry:hover { transform:translateY(-2px); box-shadow:0 8px 20px #3153d83d; }
+.work-jobs { display:grid; gap:10px; margin-top:18px; }
+.work-job { display:flex; justify-content:space-between; align-items:center; gap:20px; background:#fff; border:1px solid #e3e8f3; padding:14px 16px; border-radius:12px; }
+.work-job p { overflow-wrap:anywhere; }
+.work-job small { color:#7e899e; }
+.work-kind { display:inline-block; margin-left:12px; font-size:12px; background:#eef2ff; color:#3153d8; padding:4px 9px; border-radius:20px; }
+.work-clear { display:flex; align-items:center; gap:14px; padding:16px 22px; }
+.work-icon { color:#14845a; background:#e3f5ed; width:36px; height:36px; border-radius:50%; display:grid; place-items:center; font-size:21px; }
+.admin-pagination { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:16px 6px; color:#65718a; font-size:13px; }
+.admin-pagination > div { display:flex; align-items:center; gap:14px; }
+.admin-pagination button:disabled { opacity:.45; cursor:default; }
+.payment-status-editor input { min-width:200px; }
+@media (prefers-reduced-motion: reduce) { .work-retry { transition:none; } .work-retry:hover { transform:none; } }
+
+.availability-source-editor { margin-top:20px; border-top:1px solid #e2e8f0; padding-top:16px; }
+.availability-source-editor > summary { cursor:pointer; color:#3153d8; font-weight:700; padding:8px 0; }
+.availability-source-editor[open] > summary { margin-bottom:12px; }
+.work-attention { border-color:#f1d39c; background:linear-gradient(120deg,#fffaf0,#fff); }
+.work-heading-copy { display:flex; align-items:center; gap:16px; }
+.work-alert-icon { width:44px; height:44px; flex-shrink:0; border-radius:14px; display:grid; place-items:center; background:#fff0ce; color:#a5620a; font-size:25px; font-weight:800; }
+.work-attention .work-job { border-color:#ece5d9; box-shadow:0 2px 6px #34405404; }
+.work-job-copy { flex:1; min-width:0; }
+.work-job-copy > small { display:block; margin-top:8px; }
+.work-error { margin-top:9px; font-size:12px; }
+.work-error summary { cursor:pointer; color:#576784; width:fit-content; border-radius:4px; }
+.work-error summary:hover { color:#3153d8; }
+.work-error summary:focus-visible { outline:2px solid #3153d8; outline-offset:3px; }
+.work-error p { background:#f7f8fb; padding:10px 12px; border-radius:8px; max-width:850px; }
+.work-check-note { font-size:12px; color:#946116; background:#fff4da; padding:8px 12px; border-radius:8px; }
+.work-clear { border-color:#d4eadd; background:#f5fbf7; }
+/* UI trial: compact profile, readable rows, optional filters and save notices. */
+.candidate-profile-card { padding:18px 22px; }
+.candidate-profile-card h2 { font-size:20px; margin:0 0 14px; }
+#candHome .candidate-profile-card .candidate-profile-grid { display:grid; grid-template-columns:180px 210px minmax(360px,1fr); align-items:center; gap:24px; }
+.candidate-profile-card .candidate-profile-grid > div { border:0; background:transparent; padding:0; }
+.candidate-profile-card .candidate-profile-grid b { display:block; color:#768299; font-size:11px; text-transform:uppercase; letter-spacing:.6px; margin-bottom:6px; }
+.candidate-profile-card .candidate-profile-grid > div > br { display:none; }
+.candidate-profile-card .candidate-profile-grid > div:last-child { display:grid; grid-template-columns:minmax(220px,1fr) auto; column-gap:12px; align-items:center; }
+.candidate-profile-card .candidate-profile-grid > div:last-child > b { grid-column:1/-1; }
+.candidate-profile-card .timezone-edit-actions { margin:0; }
+.candidate-profile-card .picker-field { margin:0; }
+#candidateInterviews td,#adminContent table td { vertical-align:middle; padding-top:15px; padding-bottom:15px; }
+#candidateInterviews tr:hover td,#adminContent table tr[data-search-index]:hover td { background:#f5f8ff; }
+#candidateInterviews tr:focus-within td,#adminContent table tr[data-search-index]:focus-within td { background:#eef3ff; }
+.next-day-note { display:inline-block; color:#79632c; background:#fff7e4; border-radius:5px; padding:3px 6px; margin-top:5px; font-size:10px; white-space:nowrap; }
+.more-filters { position:relative; }
+.more-filters summary { list-style:none; cursor:pointer; padding:8px 12px; border:1px solid #dce3ef; border-radius:20px; color:#65718a; font-size:11px; font-weight:650; background:white; }
+.more-filters summary::-webkit-details-marker { display:none; }
+.more-filters summary::after { content:' +'; margin-left:7px; }
+.more-filters[open] summary,.more-filters[data-active="true"] summary { border-color:#3153d8; color:#3153d8; background:#eef2ff; }
+.more-filters[open] summary::after { content:' -'; }
+.more-filters-panel { position:absolute; z-index:30; top:calc(100% + 8px); left:0; min-width:230px; padding:12px; display:flex; flex-direction:column; align-items:flex-start; gap:8px; border:1px solid #dce3ef; border-radius:12px; box-shadow:0 12px 30px #26385924; background:#fff; }
+.more-filters summary:focus-visible { outline:3px solid #b8c7ff; outline-offset:3px; }
+.empty-state { text-align:center; padding:30px 20px; color:#64718a; }
+.empty-state b { display:block; font-size:16px; color:#263859; margin-bottom:8px; }
+.empty-state p { margin:8px 0 16px; }
+.save-toast { position:fixed; bottom:25px; right:30px; z-index:11000; display:flex; align-items:center; gap:12px; padding:14px 18px; border:1px solid #bbdfcd; border-radius:12px; background:#f2fff8; color:#176143; box-shadow:0 8px 25px #26385924; font-size:13px; animation:toast-enter .18s ease-out; }
+.save-toast::before { content:'\2713'; font-weight:700; }
+.save-toast button { padding:0 3px; background:transparent; color:#176143; font-size:20px; }
+@keyframes toast-enter { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .save-toast { animation:none; } }
+
+
+/* Admin tables fit the fixed desktop canvas without nested scrollbars. */
+#adminContent .scroll { overflow:visible; }
+#adminContent .scroll table { width:100%; min-width:0!important; table-layout:fixed; }
+#adminContent .scroll th,#adminContent .scroll td { white-space:normal!important; overflow-wrap:anywhere; padding:12px 8px; }
+#adminContent .scroll input,#adminContent .scroll select,#adminContent .scroll .picker-field { min-width:0!important; max-width:100%; }
+#adminContent .booking-candidate { min-width:0; }
+#adminContent .payment-status-editor { min-width:0; }
+#adminContent .payment-status-editor input { min-width:0; width:100%; }
+#adminContent .scroll .picker-trigger { min-width:0; padding-inline:7px; }
+#adminContent .scroll .sort-label { white-space:normal; }
+.availability-card { padding:26px; }
+.availability-zone { display:grid; grid-template-columns:1fr 360px; gap:28px; align-items:center; background:linear-gradient(120deg,#f1f5ff,#f9fbff); border:1px solid #dce5ff; border-radius:15px; padding:20px 24px; margin-bottom:24px; }
+.availability-zone p { color:#586987; font-size:13px; margin:8px 0 0; }
+.availability-zone .work-eyebrow { color:#3153d8; }
+#adminContent .availability-card #avRows .av { grid-template-columns:150px 160px minmax(150px,1fr) minmax(150px,1fr) 100px; align-items:end; gap:18px; padding:18px 20px; border:1px solid #e0e7f2; box-shadow:none; background:#fafbfe; border-radius:14px; }
+#adminContent .availability-card #avRows .av > div:last-child { grid-column:auto; display:block; }
+#adminContent .availability-card #avRows .av > div:nth-child(7) { grid-column:auto; }
+#adminContent .availability-card #avRows .av .avBlockHint { grid-column:1/-1; grid-row:2; font-size:12px; padding:8px 0 0; }
+.availability-card .av-remove { min-height:42px; color:#af354b; background:#fff1f3; border:1px solid #ffd6de; }
+.availability-actions { display:flex; align-items:center; gap:10px; padding-top:20px; border-top:1px solid #e5eaf3; margin-top:22px; }
+.availability-actions button { min-height:42px; border-radius:10px; padding:10px 18px; }
+.availability-actions button:disabled { opacity:.45; cursor:default; box-shadow:none; transform:none; }
+.admin-attention { margin-top:20px; }
+.attention-heading { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+.attention-heading h3 { margin:5px 0 0; font-size:20px; }
+.attention-items { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.attention-item { display:flex; flex-direction:column; align-items:flex-start; gap:7px; padding:18px 20px; border:1px solid #f5dfb0; border-radius:14px; background:#fffaf0; color:#925b13; text-align:left; box-shadow:none; }
+.attention-number { font-size:28px; font-weight:800; }
+.attention-item small { font-size:12px; font-weight:400; color:#68758c; }
+.attention-refunds { background:#f1faf6; border-color:#cdeadd; color:#167152; }
+.attention-updates { background:#f3f5ff; border-color:#dce2ff; color:#3153d8; }
+.admin-attention .work-panel { box-shadow:none; margin-bottom:0; }
+#adminContent .admin-bookings-scroll { overflow-x:auto; border-radius:12px; scrollbar-width:thin; scrollbar-color:#a6b5db #f1f4fa; padding-bottom:8px; }
+#adminContent .admin-bookings-scroll #searchTable_bookings { min-width:1840px!important; width:1840px; table-layout:fixed; }
+#adminContent .admin-bookings-scroll:focus-visible { outline:2px solid #3153d8; outline-offset:3px; }
+#adminForgot { max-width:560px; margin-inline:auto; }
+.error-details { color:#65718a; font-size:12px; margin-top:14px; }
+.error-details summary { cursor:pointer; }
+.error-details pre { white-space:pre-wrap; overflow-wrap:anywhere; max-height:180px; overflow:auto; padding:10px; background:#f6f8fc; border-radius:8px; }
+#adminContent #searchTable_bookings th,#adminContent #searchTable_bookings td { padding:14px 12px; }
+#adminContent #searchTable_bookings td:nth-child(1),#adminContent #searchTable_bookings td:nth-child(3),#adminContent #searchTable_bookings td:nth-child(4),#adminContent #searchTable_bookings td:nth-child(5) { white-space:nowrap!important; }
+#searchTable_bookings td:last-child button { margin:3px 4px 3px 0; min-height:32px; }
+#searchTable_bookings td:last-child button + button { margin-left:0; }
+#searchTable_bookings .booking-candidate span { font-weight:600; line-height:1.5; }
+#searchTable_bookings .candidate-status-badge { max-width:100%; }
+.admin-search { align-items:center; gap:12px; }
+.excel-export { display:inline-flex; align-items:center; justify-content:center; gap:8px; background:#eaf7f0; color:#176d48; border:1px solid #bfe5d0; padding:10px 16px; border-radius:10px; box-shadow:none; white-space:nowrap; }
+.excel-export:hover { background:#daf1e4; border-color:#8dcba8; }
+.excel-export:disabled { opacity:.6; cursor:wait; }
+.dashboard-bookings > .excel-export { margin:0 0 14px 48px; }
+</style></head><body><div id="loader" class="loader hidden"><div class="spinner"></div><b>Please wait...</b></div><header><b>Interview Booking Portal</b><div class="header-tools"><div id="topUser" class="muted"></div><div id="headerTimeFormat" class="time-format-preference"><div role="group" aria-label="Preferred time format"><button type="button" data-time-format="12" onclick="setPreferredTimeFormat('12')">12 hours</button><button type="button" data-time-format="24" onclick="setPreferredTimeFormat('24')">24 hours</button></div></div></div></header><main class="wrap">
 <div id="landing"><div id="welcome" class="card"><h1>Interview Portal</h1><p class="muted">Choose how you want to continue.</p><div class="welcome-actions"><button class="welcome-login" onclick="show('candidateLogin')">Candidate Login</button><button class="secondary" onclick="show('register')">Register</button><button class="secondary" onclick="show('adminLogin')">Admin</button></div></div>
 <div class="card"><h2>Blocked schedules</h2><div class="grid"><div><label for="publicDate">Date</label><input id="publicDate" type="date" onchange="loadPublicBookings()"></div><div><label for="publicTimezone">Timezone</label><select id="publicTimezone" onchange="loadPublicBookings()"></select></div></div><div class="form-actions"><button onclick="loadPublicBookings()">Check blocked schedules</button></div><div id="publicBooked" aria-live="polite"><p class="muted">Select a date to see blocked schedules.</p></div></div></div>
 <div id="register" class="card hidden"><h2>Candidate Registration</h2><div class="grid"><div><label>Full name</label><input id="rName"></div><div><label>Email</label><input id="rEmail" type="email"></div><div><label>Country code</label><select id="rCountry"></select></div><div><label>Phone number</label><input id="rPhone" inputmode="tel"></div><div><label>Timezone</label><select id="rTz"></select></div><div><label>Password</label><input id="rPass" autocomplete="new-password" maxlength="1024" type="password" minlength="8"></div><div><label>Confirm password</label><input id="rPass2" autocomplete="new-password" maxlength="1024" type="password" minlength="8"></div></div><div class="row auth-actions"><button onclick="register()">Register</button><button class="secondary" onclick="show('landing')">Back</button></div><div id="rMsg"></div></div>
 <div id="candidateLogin" class="card hidden"><h2>Candidate Login</h2><label>Candidate ID or Email</label><input id="lId"><label>Password</label><input id="lPass" autocomplete="current-password" maxlength="1024" type="password"><div class="auth-actions"><button onclick="candidateSignIn()">Login</button><button class="secondary" onclick="showForgot()">Forgot Password</button><button class="secondary" onclick="show('landing')">Back</button></div><div id="lMsg"></div></div>
 <div id="forgot" class="card hidden"><h2>Reset Password</h2><label>Registered Email</label><input id="fEmail" type="email"><div class="auth-actions auth-actions-single"><button onclick="sendReset()">Send Reset Code</button></div><div id="resetBox" class="hidden"><label>6-digit code</label><input id="fOtp" inputmode="numeric" maxlength="6" autocomplete="one-time-code"><label>New password</label><input id="fPass" autocomplete="new-password" maxlength="1024" type="password"><label>Confirm new password</label><input id="fPass2" autocomplete="new-password" maxlength="1024" type="password"><div class="auth-actions auth-actions-single"><button onclick="doReset()">Reset Password</button></div></div><div id="fMsg"></div><div class="auth-actions auth-actions-single"><button class="secondary" onclick="show('candidateLogin')">Back to Login</button></div></div>
-<div id="adminLogin" class="card hidden"><h2>Admin Login</h2><label>Admin email</label><input id="aEmail" type="email"><label>Password</label><input id="aPass" type="password"><div class="row auth-actions"><button onclick="adminSignIn()">Login</button><button class="secondary" onclick="show('landing')">Back</button></div><div id="aMsg"></div></div>
+<div id="adminLogin" class="card hidden"><h2>Admin Login</h2><label>Admin email</label><input id="aEmail" type="email"><label>Password</label><input id="aPass" type="password"><div class="row auth-actions"><button onclick="adminSignIn()">Login</button><button class="secondary" onclick="showAdminForgot()">Forgot password?</button><button class="secondary" onclick="show('landing')">Back</button></div><div id="aMsg"></div></div>
 
-<div id="candidateApp" class="hidden"><div class="tabs"><button data-candidate-page="home" onclick="candTab('home')">Dashboard</button><button data-candidate-page="booked" onclick="candTab('booked')">Blocked Schedules</button><button data-candidate-page="book" onclick="candTab('book')">Book Interview</button><button data-candidate-page="password" onclick="candTab('password')">Change Password</button><button class="logout-button" onclick="logoutNow()"><span>Logout</span><svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H5v16h5"/><g class="logout-arrow"><path d="M10 12h10m-4-4 4 4-4 4"/></g></svg></button></div><div id="candHome"></div><div id="candBooked" class="hidden"></div><div id="candPassword" class="hidden"></div><div id="candBook" class="hidden card"><h2>Book Interview</h2><div class="grid"><div><label>Date</label><input id="bDate" type="date"></div><div><label>Start time</label><input id="bStart" type="time" oninput="updateOvernightConfirmation('b')" onchange="updateOvernightConfirmation('b')"></div><div><label>End time</label><input id="bEnd" type="time" oninput="updateOvernightConfirmation('b')" onchange="updateOvernightConfirmation('b')"><div id="bOvernightWrap" class="overnight-confirmation hidden"><label><input id="bOvernightConfirmed" type="checkbox"><span>This is an overnight booking and ends the next day</span></label></div></div><div><label>Interview type</label><select id="bType"><option>Technical</option><option>Coding</option><option>HR</option></select></div></div><div class="form-actions"><button onclick="quote()">Check availability & price</button></div><div id="quoteBox"></div><div class="card" style="margin-top:18px"><h3>Blocked schedules on selected date</h3><button class="secondary small" onclick="loadBooked()">Refresh</button><div id="bookedList"></div></div></div></div>
-<div id="adminApp" class="hidden"><div class="time-format-preference"><span>Preferred time format</span><div role="group" aria-label="Preferred time format"><button type="button" data-time-format="12" onclick="setPreferredTimeFormat('12')">12 hours</button><button type="button" data-time-format="24" onclick="setPreferredTimeFormat('24')">24 hours</button></div></div><div class="tabs"><button data-admin-page="dash" onclick="adminTab('dash')">Dashboard</button><button data-admin-page="booked" onclick="adminTab('booked')">Blocked Schedules</button><button data-admin-page="bookings" onclick="adminTab('bookings')">Bookings</button><button data-admin-page="candidates" onclick="adminTab('candidates')">Candidates</button><button data-admin-page="payments" onclick="adminTab('payments')">Payments</button><button data-admin-page="refunds" onclick="adminTab('refunds')">Refunds</button><button data-admin-page="availability" onclick="adminTab('availability')">Availability</button><button data-admin-page="settings" onclick="adminTab('settings')">Settings</button><button data-admin-page="create" onclick="adminTab('create')">Create Booking</button><button class="logout-button" onclick="logoutNow()"><span>Logout</span><svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H5v16h5"/><g class="logout-arrow"><path d="M10 12h10m-4-4 4 4-4 4"/></g></svg></button></div><div class="admin-mobile-nav"><button type="button" class="admin-menu-toggle" aria-expanded="false" aria-controls="adminMenuPanel" onclick="toggleAdminMenu()"><span class="admin-menu-icon" aria-hidden="true"><span></span><span></span><span></span></span><span id="adminMenuCurrent">Dashboard</span></button><div id="adminMenuPanel" class="admin-menu-panel hidden" role="menu"><button type="button" role="menuitem" data-admin-page="dash" onclick="selectAdminMenuPage('dash')">Dashboard</button><button type="button" role="menuitem" data-admin-page="booked" onclick="selectAdminMenuPage('booked')">Blocked Schedules</button><button type="button" role="menuitem" data-admin-page="bookings" onclick="selectAdminMenuPage('bookings')">Bookings</button><button type="button" role="menuitem" data-admin-page="candidates" onclick="selectAdminMenuPage('candidates')">Candidates</button><button type="button" role="menuitem" data-admin-page="payments" onclick="selectAdminMenuPage('payments')">Payments</button><button type="button" role="menuitem" data-admin-page="refunds" onclick="selectAdminMenuPage('refunds')">Refunds</button><button type="button" role="menuitem" data-admin-page="availability" onclick="selectAdminMenuPage('availability')">Availability</button><button type="button" role="menuitem" data-admin-page="settings" onclick="selectAdminMenuPage('settings')">Settings</button><button type="button" role="menuitem" data-admin-page="create" onclick="selectAdminMenuPage('create')">Create Booking</button></div><button class="logout-button" onclick="logoutNow()"><span>Logout</span><svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H5v16h5"/><g class="logout-arrow"><path d="M10 12h10m-4-4 4 4-4 4"/></g></svg></button></div><div id="adminContent"></div></div>
+<div id="adminForgot" class="card hidden"><h2>Reset admin password</h2><p class="muted">Enter your admin email to get a reset code.</p><label for="afEmail">Admin email</label><input id="afEmail" type="email" autocomplete="email"><div class="form-actions"><button onclick="sendAdminReset()">Send code</button><button class="secondary" onclick="cancelAdminRecovery()">Back to login</button></div><div id="adminResetBox" class="hidden"><label for="afCode">Email code</label><input id="afCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6"><label for="afPass">New password</label><input id="afPass" type="password" autocomplete="new-password" minlength="8" maxlength="1024"><label for="afPass2">Confirm new password</label><input id="afPass2" type="password" autocomplete="new-password" minlength="8" maxlength="1024"><div class="form-actions"><button onclick="doAdminReset()">Reset password</button></div></div><div id="afMsg" role="status"></div></div>
+<div id="candidateApp" class="hidden"><div class="tabs"><button data-candidate-page="home" onclick="candTab('home')">Dashboard</button><button data-candidate-page="booked" onclick="candTab('booked')">Blocked Schedules</button><button data-candidate-page="book" onclick="candTab('book')">Book Interview</button><button data-candidate-page="password" onclick="candTab('password')">Change Password</button><button class="logout-button" onclick="logoutNow()"><span>Logout</span><svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H5v16h5"/><g class="logout-arrow"><path d="M10 12h10m-4-4 4 4-4 4"/></g></svg></button></div><div id="candHome"></div><div id="candBooked" class="hidden"></div><div id="candPassword" class="hidden"></div><div id="candBook" class="hidden card"><div class="grid"><div><label>Date</label><input id="bDate" type="date"></div><div><label>Start time</label><input id="bStart" type="time" ></div><div><label>End time</label><input id="bEnd" type="time" aria-describedby="bTimeError"><div id="bTimeError" class="msg err hidden" role="alert"></div></div><div><label>Interview type</label><select id="bType"><option>Technical</option><option>Coding</option><option>HR</option></select></div></div><div class="form-actions"><button onclick="quote()">Check availability & price</button></div><div id="quoteBox"></div><div class="card" style="margin-top:18px"><h3>Blocked schedules on selected date</h3><button class="secondary small" onclick="loadBooked()">Refresh</button><div id="bookedList"></div></div></div></div>
+<div id="adminApp" class="hidden"><div class="tabs"><button data-admin-page="dash" onclick="adminTab('dash')">Dashboard</button><button data-admin-page="bookings" onclick="adminTab('bookings')">Bookings</button><button data-admin-page="candidates" onclick="adminTab('candidates')">Candidates</button><button data-admin-page="payments" onclick="adminTab('payments')">Payments</button><button data-admin-page="refunds" onclick="adminTab('refunds')">Refunds</button><button data-admin-page="availability" onclick="adminTab('availability')">Availability</button><button data-admin-page="settings" onclick="adminTab('settings')">Settings</button><button data-admin-page="password" onclick="adminTab('password')">Change Password</button><button data-admin-page="create" onclick="adminTab('create')">Create Booking</button><button class="logout-button" onclick="logoutNow()"><span>Logout</span><svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H5v16h5"/><g class="logout-arrow"><path d="M10 12h10m-4-4 4 4-4 4"/></g></svg></button></div><div class="admin-mobile-nav"><button type="button" class="admin-menu-toggle" aria-expanded="false" aria-controls="adminMenuPanel" onclick="toggleAdminMenu()"><span class="admin-menu-icon" aria-hidden="true"><span></span><span></span><span></span></span><span id="adminMenuCurrent">Dashboard</span></button><div id="adminMenuPanel" class="admin-menu-panel hidden" role="menu"><button type="button" role="menuitem" data-admin-page="dash" onclick="selectAdminMenuPage('dash')">Dashboard</button><button type="button" role="menuitem" data-admin-page="bookings" onclick="selectAdminMenuPage('bookings')">Bookings</button><button type="button" role="menuitem" data-admin-page="candidates" onclick="selectAdminMenuPage('candidates')">Candidates</button><button type="button" role="menuitem" data-admin-page="payments" onclick="selectAdminMenuPage('payments')">Payments</button><button type="button" role="menuitem" data-admin-page="refunds" onclick="selectAdminMenuPage('refunds')">Refunds</button><button type="button" role="menuitem" data-admin-page="availability" onclick="selectAdminMenuPage('availability')">Availability</button><button type="button" role="menuitem" data-admin-page="settings" onclick="selectAdminMenuPage('settings')">Settings</button><button type="button" role="menuitem" data-admin-page="password" onclick="selectAdminMenuPage('password')">Change Password</button><button type="button" role="menuitem" data-admin-page="create" onclick="selectAdminMenuPage('create')">Create Booking</button></div><button class="logout-button" onclick="logoutNow()"><span>Logout</span><svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4H5v16h5"/><g class="logout-arrow"><path d="M10 12h10m-4-4 4 4-4 4"/></g></svg></button></div><div id="adminContent"></div></div>
 </main><script>
 let token='',role='',home=null,adminData=null,currentQuote=null; const zones=['Asia/Kolkata','America/New_York','America/Chicago','America/Denver','America/Los_Angeles','America/Toronto','America/Vancouver','Europe/London','Europe/Dublin','Europe/Paris','Europe/Berlin','Europe/Amsterdam','Asia/Dubai','Asia/Singapore','Asia/Tokyo','Asia/Hong_Kong','Australia/Sydney','Australia/Melbourne','Pacific/Auckland']; const countries=[['India','+91'],['United States','+1'],['Canada','+1'],['United Kingdom','+44'],['Australia','+61'],['New Zealand','+64'],['UAE','+971'],['Singapore','+65'],['Germany','+49'],['France','+33'],['Ireland','+353'],['Netherlands','+31'],['Spain','+34'],['Italy','+39'],['Japan','+81'],['Hong Kong','+852'],['Saudi Arabia','+966'],['Pakistan','+92'],['Bangladesh','+880'],['Sri Lanka','+94'],['Nepal','+977'],['South Africa','+27']];
-function el(id){return document.getElementById(id)} function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))} function msg(id,t,bad=false){el(id).innerHTML=`<div class="msg ${bad?'err':'ok'}">${esc(t)}</div>`} let pendingCalls=0;function setLoading(on){pendingCalls+=on?1:-1;pendingCalls=Math.max(0,pendingCalls);el('loader').classList.toggle('hidden',pendingCalls===0)} function call(fn,...args){setLoading(true);return new Promise((res,rej)=>google.script.run.withSuccessHandler(x=>{setLoading(false);res(x)}).withFailureHandler(e=>{setLoading(false);rej(new Error(e.message||e))})[fn](...args))} function show(id){['landing','register','candidateLogin','forgot','adminLogin'].forEach(x=>el(x).classList.toggle('hidden',x!==id))} const detectedTimezone=Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Kolkata';if(!zones.includes(detectedTimezone))zones.push(detectedTimezone);zones.forEach(z=>el('rTz').add(new Option(z,z))); countries.forEach(c=>el('rCountry').add(new Option(`${c[0]} (${c[1]})`,c[1]))); el('rTz').value=detectedTimezone;
+function el(id){return document.getElementById(id)} function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))} function msg(id,t,bad=false){el(id).innerHTML=`<div class="msg ${bad?'err':'ok'}">${esc(t)}</div>`} let pendingCalls=0;function setLoading(on){pendingCalls+=on?1:-1;pendingCalls=Math.max(0,pendingCalls);el('loader').classList.toggle('hidden',pendingCalls===0)} function isLocalPreview(){
+  return typeof location!=='undefined'&&['127.0.0.1','localhost'].includes(location.hostname)&&typeof document!=='undefined'&&!!document.querySelector('main .local-preview-notice, main > .card:first-child')?.textContent.includes('LOCAL TEST DATA ONLY');
+}
+function call(fn,...args){
+  setLoading(true);
+  if(isLocalPreview())return fetch('/rpc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fn,args})}).then(async response=>{
+    if(!response.ok)throw new Error('The local server could not complete this request. Try again.');
+    const data=await response.json();if(data.error)throw new Error(data.error);
+    if(data.resetCode)appAlert('LOCAL PREVIEW reset code: '+data.resetCode);
+    return data.result;
+  }).finally(()=>setLoading(false));
+  return new Promise((res,rej)=>{try{google.script.run.withSuccessHandler(x=>{setLoading(false);res(x)}).withFailureHandler(e=>{setLoading(false);rej(new Error(e.message||e))})[fn](...args)}catch(e){setLoading(false);rej(e)}});
+} function show(id){['landing','register','candidateLogin','forgot','adminForgot','adminLogin'].forEach(x=>el(x).classList.toggle('hidden',x!==id))} const detectedTimezone=Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Kolkata';if(!zones.includes(detectedTimezone))zones.push(detectedTimezone);zones.forEach(z=>el('rTz').add(new Option(z,z))); countries.forEach(c=>el('rCountry').add(new Option(`${c[0]} (${c[1]})`,c[1]))); el('rTz').value=detectedTimezone;
 el('publicTimezone').innerHTML=businessTimezoneOptions(Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC');
 let publicRequest=0;
 const bookedTimeRequests={};
@@ -837,7 +1051,8 @@ function renderBookedTimes(prefix,timezone){return `<div class="card"><h2>Blocke
 const blockedScheduleViews={};
 function blockedScheduleValue(booking,key){
   if(key==='status')return 'Booked';
-  if(key==='date')return Date.parse(booking.date)||0;
+  if(key==='date')return Date.parse(booking.startUTC||booking.date)||0;
+  if(booking.startUTC)return Date.parse(key==='end'?booking.endUTC:booking.startUTC)||0;
   const time=String(booking[key]||''),endDate=time.match(/\(([^)]+)\)/);
   return Date.parse((endDate?endDate[1]:booking.date)+' '+time.replace(/\s*\([^)]+\)/,''))||0;
 }
@@ -854,7 +1069,7 @@ function renderBookedTimesResult(result,target='publicBooked'){
   const sort=blockedScheduleViews[target]?.sort||{key:'start',direction:'ascending'};
   blockedScheduleViews[target]={result,sort};
   const rows=result.booked.slice().sort((a,b)=>{const left=blockedScheduleValue(a,sort.key),right=blockedScheduleValue(b,sort.key);return (sort.direction==='ascending'?1:-1)*(typeof left==='number'?left-right:left.localeCompare(right));});
-  return `<p class="muted">Times in ${esc(result.timezone)}</p>`+(rows.length?`<div class="scroll"><table class="blocked-schedules-table"><thead><tr>${[['status','Status'],['date','Date'],['start','Start'],['end','End']].map(([key,label])=>blockedScheduleHeader(target,key,label,sort)).join('')}</tr></thead><tbody>${rows.map(b=>`<tr><td>Booked</td><td>${esc(b.date)}</td><td>${esc(b.start)}</td><td>${esc(b.end)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">No bookings on this date.</p>');
+  return `<p class="muted">Times in ${esc(result.timezone)}</p>`+(rows.length?`<div class="scroll"><table class="blocked-schedules-table"><thead><tr>${[['status','Status'],['date','Date'],['start','Start'],['end','End']].map(([key,label])=>blockedScheduleHeader(target,key,label,sort)).join('')}</tr></thead><tbody>${rows.map(b=>`<tr><td>Booked</td><td>${b.startUTC?timestampMarkup(b.startUTC,result.timezone,'date'):displayTextMarkup(b.date)}</td><td>${b.startUTC?timestampMarkup(b.startUTC,result.timezone):displayTextMarkup(b.start)}</td><td>${b.endUTC?timestampMarkup(b.endUTC,result.timezone)+(portalDateTime(b.endUTC,result.timezone).day!==portalDateTime(b.startUTC,result.timezone).day?'<br><small class="next-day-note">Next day &#183; '+timestampMarkup(b.endUTC,result.timezone,'date')+'</small>':''):displayTextMarkup(b.end)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">No bookings on this date.</p>');
 }
 
 async function loadBookedTimes(prefix){
@@ -895,10 +1110,34 @@ async function doReset(){
     msg('lMsg','Password reset successfully. Sign in with your new password.');show('candidateLogin');
   }catch(e){msg('fMsg',e.message,true)}
 }
-function saveSession(){try{localStorage.setItem('interviewPortalSession',JSON.stringify({token,role}))}catch(e){alert('Browser storage is blocked. Enable it to stay signed in after refresh.')}} function clearSession(){try{localStorage.removeItem('interviewPortalSession')}catch(e){}}
-async function adminSignIn(){try{const r=await call('adminLogin',el('aEmail').value,el('aPass').value);token=r.token;role='admin';saveSession();el('landing').classList.add('hidden');el('adminLogin').classList.add('hidden');el('adminApp').classList.remove('hidden');el('topUser').textContent='Admin';await refreshAdmin();adminTab('dash')}catch(e){msg('aMsg',e.message,true)}}
+let adminRecoveryEmail='';
+function showAdminForgot(){adminRecoveryEmail='';['afCode','afPass','afPass2'].forEach(id=>el(id).value='');el('afEmail').value=el('aEmail').value.trim();el('adminResetBox').classList.add('hidden');el('afMsg').innerHTML='';el('aPass').value='';show('adminForgot');}
+function cancelAdminRecovery(){adminRecoveryEmail='';['afCode','afPass','afPass2'].forEach(id=>el(id).value='');show('adminLogin');}
+async function sendAdminReset(){try{const email=el('afEmail').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw new Error('Enter your admin email.');await call('requestAdminPasswordReset',email);adminRecoveryEmail=email;el('adminResetBox').classList.remove('hidden');msg('afMsg','If this is your admin email, a code has been sent. It expires in 10 minutes.');}catch(e){msg('afMsg',adminApiUnavailable(e,'requestAdminPasswordReset')?'Admin password recovery needs the updated server code.':e.message,true);}}
+async function doAdminReset(){try{if(!adminRecoveryEmail)throw new Error('Request a reset code first.');if(el('afPass').value!==el('afPass2').value)throw new Error('Passwords do not match.');await call('resetAdminPassword',adminRecoveryEmail,el('afCode').value,el('afPass').value);el('aEmail').value=adminRecoveryEmail;el('aPass').value='';['afCode','afPass','afPass2'].forEach(id=>el(id).value='');adminRecoveryEmail='';clearSession();show('adminLogin');msg('aMsg','Password reset successfully. Sign in with your new password.');}catch(e){msg('afMsg',e.message,true);}}
+function saveSession(){try{localStorage.setItem('interviewPortalSession',JSON.stringify({token,role}))}catch(e){appAlert('Browser storage is blocked. Enable it to stay signed in after refresh.')}} function clearSession(){try{localStorage.removeItem('interviewPortalSession')}catch(e){}}
+async function adminSignIn(){try{const r=await call('adminLogin',el('aEmail').value,el('aPass').value);token=r.token;role='admin';saveSession();el('landing').classList.add('hidden');el('adminLogin').classList.add('hidden');el('adminApp').classList.remove('hidden');el('topUser').textContent='Admin';await refreshAdmin();await adminTab('dash')}catch(e){el('adminApp').classList.add('hidden');show('adminLogin');msg('aMsg',e.message,true)}}
 async function loadCandidate(){home=await call('getCandidateHome',token);['landing','candidateLogin','register','forgot','adminLogin'].forEach(x=>el(x).classList.add('hidden'));el('candidateApp').classList.remove('hidden');el('topUser').textContent=`${home.profile.candidateId} • ${home.profile.timezone}`;renderCandidateHome();el('candBooked').innerHTML=renderBookedTimes('candidateBooked',home.profile.timezone);el('candPassword').innerHTML=renderPasswordChange('candidatePassword','Change Password');candTab('home');}
 function withoutGmtOffset(value){return String(value??'').replace(/\s+GMT[+-]\d{1,2}(?::?\d{2})?/gi,'').trim()}
+
+// Display comes from UTC plus the viewer's timezone. Cached formatters avoid
+// repeated Intl construction; canonical timestamps remain untouched.
+const portalFormatters=new Map();
+function portalDateTime(iso,timezone,format=preferredTimeFormat()){
+  const key=timezone+':'+format;
+  if(!portalFormatters.has(key))portalFormatters.set(key,new Intl.DateTimeFormat('en-GB',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:format==='12'}));
+  const date=new Date(iso);if(!Number.isFinite(date.getTime()))return {date:'',time:'',day:''};
+  const parts=Object.fromEntries(portalFormatters.get(key).formatToParts(date).map(p=>[p.type,p.value]));
+  return {date:parts.day+'-'+parts.month+'-'+parts.year.slice(-2),time:parts.hour+':'+parts.minute+(parts.dayPeriod?' '+parts.dayPeriod.toUpperCase():''),day:parts.year+'-'+parts.month+'-'+parts.day};
+}
+function timestampMarkup(iso,timezone,part='time'){
+  const p=portalDateTime(iso,timezone),text=part==='full'?p.date+' '+p.time:p[part];
+  return `<span data-timestamp="${esc(iso)}" data-timezone="${esc(timezone)}" data-time-part="${part}">${esc(text)}</span>`;
+}
+function displayTextMarkup(text){return `<span data-display-text="${esc(text)}">${esc(formatDisplayDates(formatPreferredTime(text)))}</span>`;}
+function quoteTimeMarkup(q){return q.startUTC&&q.endUTC?timestampMarkup(q.startUTC,q.timezone||home.profile.timezone,'full')+' - '+timestampMarkup(q.endUTC,q.timezone||home.profile.timezone,'full')+' ('+esc(q.timezone||home.profile.timezone)+')':displayTextMarkup(q.candidateDisplay);}
+
+
 function candidateStatusBadge(value,kind){
   const status=String(value||'').toUpperCase();
   const labels=kind==='payment'?{
@@ -971,6 +1210,7 @@ function candidateSortValue(booking,key){
   if(key==='charge')return Number(booking.charge)||0;
   if(key==='date')return new Date(booking.startUTC||candidateDateTime(booking.start).date).getTime()||0;
   if(key==='start'||key==='end'){
+    const iso=booking[key==='end'?'endUTC':'startUTC'];if(iso){const p=portalDateTime(iso,home.profile.timezone,'24');const [hour,minute]=p.time.split(':').map(Number);return hour*60+minute;}
     const time=candidateDateTime(booking[key]).time.match(/(\d{1,2}):(\d{2})\s*([AP]M)/i);
     return time?(Number(time[1])%12+(time[3].toUpperCase()==='PM'?12:0))*60+Number(time[2]):0;
   }
@@ -986,6 +1226,11 @@ function candidateDateTime(value){
   const match=String(display||'').match(/^(.*?),?\s+(\d{1,2}:\d{2}\s*[AP]M)(.*)$/i);
   return match?{date:match[1].replace(/,\s*$/,''),time:match[2]}:{date:display,time:'?'};
 }
+function resetCandidateFilters(){candidateInterviewFilter='ALL';candidateDateFilter={mode:'ALL',from:'',to:''};renderCandidateHome();}
+function candidateExtraFilters(){
+  const active=['payment:NOT_REQUIRED','refund:REQUESTED','refund:REFUNDED'].includes(candidateInterviewFilter);
+  return `<details class="more-filters" data-active="${active}"><summary>More filters${active?' &#183; 1':''}</summary><div class="more-filters-panel">${candidateStatusFilter('NOT_REQUIRED','payment')}${candidateStatusFilter('REQUESTED','refund')}${candidateStatusFilter('REFUNDED','refund')}</div></details>`;
+}
 function candidateStatusFilter(status,kind){
   const filter=kind+':'+status;
   return candidateStatusBadge(status,kind).replace('<span ', '<button type="button" aria-pressed="'+(candidateInterviewFilter===filter)+'" onclick="setCandidateInterviewFilter(\''+filter+'\')" ').replace('</span>','</button>');
@@ -993,11 +1238,11 @@ function candidateStatusFilter(status,kind){
 function renderCandidateHome(){
   const p=home.profile;
   const bookings=home.bookings.filter(b=>(candidateInterviewFilter==='ALL'||candidateInterviewFilter==='payment:'+b.paymentStatus||candidateInterviewFilter==='refund:'+b.refundStatus)&&candidateMatchesDate(b));
-  const rows=sortedCandidateBookings(bookings).map(b=>{const start=candidateDateTime(b.start),end=candidateDateTime(b.end);return `<tr><td><span class="candidate-booking-id">${esc(b.bookingId)}</span></td><td>${esc(b.type)}</td><td>${esc(start.date)}</td><td>${esc(start.time)}</td><td>${esc(end.time)}${end.date!==start.date?`<br><small>${esc(end.date)}</small>`:''}</td><td>${candidateStatusBadge(b.status,'booking')}</td><td>${candidateStatusBadge(b.paymentStatus,'payment')}</td><td>${candidateStatusBadge(b.refundStatus,'refund')}</td><td>$${b.charge}</td><td>${b.canCancel&&new Date(b.startUTC).getTime()>Date.now()?`<button data-cancel-start="${esc(b.startUTC)}" class="danger small" onclick="cancelBooking('${esc(b.bookingId)}')">Cancel</button>`:''}</td></tr>`;}).join('');
-  el('candHome').innerHTML=`<div class="card"><h2>Hello ${esc(p.name)}</h2><div class="grid candidate-profile-grid"><div><b>Candidate ID</b><br>${esc(p.candidateId)}<div class="time-format-preference"><span>Preferred time format</span><div role="group" aria-label="Preferred time format"><button type="button" data-time-format="12" onclick="setPreferredTimeFormat('12')">12 hours</button><button type="button" data-time-format="24" onclick="setPreferredTimeFormat('24')">24 hours</button></div></div></div><div><b>Account</b><br>${esc(p.type)}${p.type==='PERCENTAGE'?` • ${p.percentage}%`:''}</div><div><b>Timezone</b><select class="timezone-select" id="cTz" disabled>${[...new Set([...zones,p.timezone])].map(z=>`<option ${z===p.timezone?'selected':''}>${esc(z)}</option>`).join('')}</select><div class="timezone-edit-actions">${editControls('timezone',['cTz'],'saveTz()')}</div></div></div></div><div class="card candidate-interviews"><div class="candidate-filter-toolbar"><div class="candidate-status-legend" role="group" aria-label="Filter interviews by payment and refund status"><button type="button" class="candidate-status-badge candidate-status-unknown" aria-pressed="${candidateInterviewFilter==='ALL'}" onclick="setCandidateInterviewFilter('ALL')">All</button>${candidateStatusFilter('SUBMITTED','payment')}${candidateStatusFilter('VERIFIED','payment')}${candidateStatusFilter('NOT_REQUIRED','payment')}${candidateStatusFilter('REQUESTED','refund')}${candidateStatusFilter('REFUNDED','refund')}</div>${candidateDateControls()}</div>${candidateDateRangeControls()}<div class="scroll candidate-interviews-scroll"><table id="candidateInterviews"><tr>${candidateSortHeader('bookingId','ID')}${candidateSortHeader('type','Type')}${candidateSortHeader('date','Date')}${candidateSortHeader('start','Start')}${candidateSortHeader('end','End')}${candidateSortHeader('status','Booking status')}${candidateSortHeader('paymentStatus','Payment verification')}${candidateSortHeader('refundStatus','Refund status')}${candidateSortHeader('charge','Charge')}<th aria-label="Actions"></th></tr>${rows||`<tr><td colspan=10>${home.bookings.length?'No interviews match this filter.':'No interviews yet.'}</td></tr>`}</table></div></div>`;
+  const rows=sortedCandidateBookings(bookings).map(b=>{const start=b.startUTC?portalDateTime(b.startUTC,p.timezone):candidateDateTime(b.start),end=b.endUTC?portalDateTime(b.endUTC,p.timezone):candidateDateTime(b.end);return `<tr><td><span class="candidate-booking-id">${esc(b.bookingId)}</span></td><td>${esc(b.type)}</td><td>${b.startUTC?timestampMarkup(b.startUTC,p.timezone,'date'):displayTextMarkup(start.date)}</td><td>${b.startUTC?timestampMarkup(b.startUTC,p.timezone):displayTextMarkup(start.time)}</td><td>${b.endUTC?timestampMarkup(b.endUTC,p.timezone):displayTextMarkup(end.time)}${formatDisplayDates(end.date)!==formatDisplayDates(start.date)?`<br><small><span class="next-day-note">Next day &#183; ${b.endUTC?timestampMarkup(b.endUTC,p.timezone,'date'):displayTextMarkup(end.date)}</span></small>`:''}</td><td>${candidateStatusBadge(b.status,'booking')}</td><td>${candidateStatusBadge(b.paymentStatus,'payment')}</td><td>${candidateStatusBadge(b.refundStatus,'refund')}</td><td>$${b.charge}</td><td>${b.canCancel&&new Date(b.startUTC).getTime()>Date.now()?`<button data-cancel-start="${esc(b.startUTC)}" class="danger small" onclick="cancelBooking('${esc(b.bookingId)}')">Cancel</button>`:''}</td></tr>`;}).join('');
+  el('candHome').innerHTML=`<div class="card candidate-profile-card"><h2>Hello ${esc(p.name)}</h2><div class="grid candidate-profile-grid"><div><b>Candidate ID</b><br>${esc(p.candidateId)}</div><div><b>Account</b><br>${esc(p.type)}${p.type==='PERCENTAGE'?` • ${p.percentage}%`:''}</div><div><b>Timezone</b><select class="timezone-select" id="cTz" disabled>${[...new Set([...zones,p.timezone])].map(z=>`<option ${z===p.timezone?'selected':''}>${esc(z)}</option>`).join('')}</select><div class="timezone-edit-actions">${editControls('timezone',['cTz'],'saveTz()')}</div></div></div></div><div class="card candidate-interviews"><div class="candidate-filter-toolbar"><div class="candidate-status-legend" role="group" aria-label="Filter interviews by payment and refund status"><button type="button" class="candidate-status-badge candidate-status-unknown" aria-pressed="${candidateInterviewFilter==='ALL'}" onclick="setCandidateInterviewFilter('ALL')">All</button>${candidateStatusFilter('SUBMITTED','payment')}${candidateStatusFilter('VERIFIED','payment')}${candidateExtraFilters()}</div>${candidateDateControls()}</div>${candidateDateRangeControls()}<div class="scroll candidate-interviews-scroll"><table id="candidateInterviews"><tr>${candidateSortHeader('bookingId','ID')}${candidateSortHeader('type','Type')}${candidateSortHeader('date','Date')}${candidateSortHeader('start','Start')}${candidateSortHeader('end','End')}${candidateSortHeader('status','Booking status')}${candidateSortHeader('paymentStatus','Payment verification')}${candidateSortHeader('refundStatus','Refund status')}${candidateSortHeader('charge','Charge')}<th aria-label="Actions"></th></tr>${rows||`<tr><td colspan=10><div class="empty-state"><b>${home.bookings.length?'No interviews match this filter.':'No interviews booked yet'}</b><p>${home.bookings.length?'Try another date or payment filter.':'Choose a time that works for you to get started.'}</p>${home.bookings.length?`<button class="secondary small" onclick="resetCandidateFilters()">Clear filters</button>`:`<button onclick="candTab('book')">Book Interview</button>`}</div></td></tr>`}</table></div></div>`;
 }
-async function saveTz(){try{await call('updateCandidateTimezone',token,el('cTz').value);invalidateQuote();await loadCandidate()}catch(e){alert(e.message)}} function candTab(t){document.querySelectorAll('#candidateApp .tabs [data-candidate-page]').forEach(button=>{const active=button.dataset.candidatePage===t;button.classList.toggle('active',active);button.setAttribute('aria-current',active?'page':'false');});el('candHome').classList.toggle('hidden',t!=='home');el('candBooked').classList.toggle('hidden',t!=='booked');el('candBook').classList.toggle('hidden',t!=='book');el('candPassword').classList.toggle('hidden',t!=='password');if(t==='book')loadBooked();if(t==='booked')loadBookedTimes('candidateBooked')} async function loadBooked(){if(!el('bDate').value)return;try{const r=await call('getAvailabilityForDate',token,el('bDate').value);el('bookedList').innerHTML=r.booked.length?r.booked.map(x=>`<div class="booked">BOOKED — ${esc(withoutGmtOffset(x.from))} to ${esc(withoutGmtOffset(x.to))}</div>`).join(''):'<div class="msg ok">No booked interviews found for this date.</div>'}catch(e){el('bookedList').innerHTML=`<div class="msg err">${esc(e.message)}</div>`}}
-function renderPasswordChange(prefix,title){return `<div class="card"><h2>${title}</h2><p class="muted">Enter your current password and choose a new password (8–1024 characters). You will need to sign in again after changing it.</p><div class="grid"><div><label for="${prefix}Current">Current password</label><input id="${prefix}Current" type="password" autocomplete="current-password" maxlength="1024"></div><div><label for="${prefix}New">New password</label><input id="${prefix}New" type="password" autocomplete="new-password" minlength="8" maxlength="1024"></div><div><label for="${prefix}Confirm">Confirm new password</label><input id="${prefix}Confirm" type="password" autocomplete="new-password" minlength="8" maxlength="1024"></div></div><div class="form-actions"><button onclick="changePassword('${prefix}')">Update password</button></div><div id="${prefix}Message" aria-live="polite"></div></div>`}
+async function saveTz(){try{await call('updateCandidateTimezone',token,el('cTz').value);invalidateQuote();await loadCandidate();showSaveToast('Timezone saved')}catch(e){appAlert(e)}} function candTab(t){document.querySelectorAll('#candidateApp .tabs [data-candidate-page]').forEach(button=>{const active=button.dataset.candidatePage===t;button.classList.toggle('active',active);button.setAttribute('aria-current',active?'page':'false');});el('candHome').classList.toggle('hidden',t!=='home');el('candBooked').classList.toggle('hidden',t!=='booked');el('candBook').classList.toggle('hidden',t!=='book');el('candPassword').classList.toggle('hidden',t!=='password');if(t==='book')loadBooked();if(t==='booked')loadBookedTimes('candidateBooked')} async function loadBooked(){if(!el('bDate').value)return;try{const r=await call('getAvailabilityForDate',token,el('bDate').value);el('bookedList').innerHTML=r.booked.length?r.booked.map(x=>`<div class="booked">BOOKED — ${x.startUTC?timestampMarkup(x.startUTC,r.timezone,'full'):displayTextMarkup(withoutGmtOffset(x.from))} to ${x.endUTC?timestampMarkup(x.endUTC,r.timezone,'full'):displayTextMarkup(withoutGmtOffset(x.to))}</div>`).join(''):'<div class="msg ok">No booked interviews found for this date.</div>'}catch(e){el('bookedList').innerHTML=`<div class="msg err">${esc(e.message)}</div>`}}
+function renderPasswordChange(prefix,title){return `<div class="card"><p class="muted">Enter your current password and choose a new password (8–1024 characters). You will need to sign in again after changing it.</p><div class="grid"><div><label for="${prefix}Current">Current password</label><input id="${prefix}Current" type="password" autocomplete="current-password" maxlength="1024"></div><div><label for="${prefix}New">New password</label><input id="${prefix}New" type="password" autocomplete="new-password" minlength="8" maxlength="1024"></div><div><label for="${prefix}Confirm">Confirm new password</label><input id="${prefix}Confirm" type="password" autocomplete="new-password" minlength="8" maxlength="1024"></div></div><div class="form-actions"><button onclick="changePassword('${prefix}')">Update password</button></div><div id="${prefix}Message" aria-live="polite"></div></div>`}
 async function changePassword(prefix){try{const current=el(prefix+'Current').value,next=el(prefix+'New').value,confirmNext=el(prefix+'Confirm').value;if(next!==confirmNext)throw new Error('New passwords do not match.');const wasAdmin=role==='admin';await call(wasAdmin?'adminChangePassword':'changeCandidatePassword',token,current,next);showSignedOut();show(wasAdmin?'adminLogin':'candidateLogin');msg(wasAdmin?'aMsg':'lMsg','Password changed successfully. Please sign in again with your new password.')}catch(e){msg(prefix+'Message',e.message,true)}}
 function renderUpiPayment(q){
   const id=q.upiId?`<p><b>UPI ID:</b> <span style="user-select:all">${esc(q.upiId)}</span></p>`:q.upiQrUrl?'<p class="muted">Scan the QR code below to pay.</p>':'<p class="muted">Contact Admin for the UPI payment details.</p>';
@@ -1016,7 +1261,7 @@ function openPaymentModal(q){
         <h3 id="paymentModalTitle">Pay for interview</h3>
         <button type="button" class="secondary small" onclick="closePaymentModal()">Close</button>
       </div>
-      <div class="msg ok"><b>Available</b><br>${esc(q.candidateDisplay)}<br>Duration: ${q.durationMinutes} min<br>Charge: $${esc(q.finalChargeUSD)}</div>
+      <div class="msg ok"><b>Available</b><br>${quoteTimeMarkup(q)}<br>Duration: ${q.durationMinutes} min<br>Charge: $${esc(q.finalChargeUSD)}</div>
       <div style="margin-top:14px">${renderUpiPayment(q)}</div>
       <p class="muted">After paying, enter the UTR and select “I’ve paid — submit for verification”. Your payment remains pending until Admin verifies it.</p>
       <div style="margin-top:14px">
@@ -1050,12 +1295,21 @@ function updateOvernightConfirmation(prefix){
   if(!overnight)checkbox.checked=false;
   return overnight;
 }
-function bookingFormData(){return {date:el('bDate').value,startTime:el('bStart').value,endTime:el('bEnd').value,interviewType:el('bType').value,overnightConfirmed:el('bOvernightConfirmed').checked};}
+function bookingFormData(){return {date:el('bDate').value,startTime:el('bStart').value,endTime:el('bEnd').value,interviewType:el('bType').value,overnightConfirmed:false};}
 function invalidateQuote(){currentQuote=null;el('quoteBox').innerHTML='';closePaymentModal();}
-['bDate','bStart','bEnd','bType','bOvernightConfirmed'].forEach(id=>{el(id).addEventListener('change',invalidateQuote);el(id).addEventListener('input',invalidateQuote);});
+function validateCandidateTimes(){
+  const start=el('bStart').value,end=el('bEnd').value;
+  const invalid=!!(start&&end&&end<=start),error=el('bTimeError');
+  error.textContent=invalid?'End time must be later than start time. Choose times on the same day.':'';
+  error.classList.toggle('hidden',!invalid);
+  el('bEnd').setAttribute('aria-invalid',String(invalid));
+  return !invalid;
+}
+['bDate','bStart','bEnd','bType'].forEach(id=>{const changed=()=>{invalidateQuote();validateCandidateTimes();};el(id).addEventListener('change',changed);el(id).addEventListener('input',changed);});
 async function quote(){
   try {
     invalidateQuote();
+    if(!validateCandidateTimes())return;
     const data=bookingFormData();
     const q=await call('quoteBooking',token,data);
     if(JSON.stringify(data)!==JSON.stringify(bookingFormData()))return;
@@ -1078,7 +1332,7 @@ async function confirmBooking(pay){
       date: el('bDate').value,
       startTime: el('bStart').value,
       endTime: el('bEnd').value,
-      overnightConfirmed: el('bOvernightConfirmed').checked,
+      overnightConfirmed: false,
       interviewType: el('bType').value,
       utr: pay ? (document.getElementById('payUtr') ? document.getElementById('payUtr').value : '') : '',
       amountPaid: pay ? (document.getElementById('payAmount') ? document.getElementById('payAmount').value : 0) : 0
@@ -1090,15 +1344,164 @@ async function confirmBooking(pay){
     el('quoteBox').innerHTML=`<div class="msg ok">Booking confirmed. ID: ${esc(r.bookingId)}${pay?'<br>Payment submitted and pending Admin verification.':''}</div>`;
     await loadCandidate();
     candTab('home');
-  } catch(e){if(document.querySelector('.modal'))alert(e.message);else el('quoteBox').innerHTML=`<div class="msg err">${esc(e.message)}</div>`;}
+  } catch(e){if(document.querySelector('.modal'))appAlert(e);else el('quoteBox').innerHTML=`<div class="msg err">${esc(e.message)}</div>`;}
 }
-async function cancelBooking(id){if(!confirm('Cancel this interview? If payment was submitted, a refund request will be created.'))return;try{await call('cancelCandidateBooking',token,id);await loadCandidate()}catch(e){alert(e.message)}}
-async function refreshAdmin(){adminData=await call('getAdminDashboard',token);el('topUser').textContent='Admin | '+adminBusinessTimezone()}
-const adminPageNames={dash:'Dashboard',booked:'Blocked Schedules',bookings:'Bookings',candidates:'Candidates',payments:'Payments',refunds:'Refunds',availability:'Availability',settings:'Settings',create:'Create Booking'};
+async function cancelBooking(id){if(!await appConfirm('Cancel this interview? If payment was submitted, a refund request will be created.'))return;try{await call('cancelCandidateBooking',token,id);await loadCandidate()}catch(e){appAlert(e)}}
+function adminApiUnavailable(error,fn){
+  const message=String(error?.message||error);
+  return /^Unsupported preview operation$/i.test(message)||/google\.script\.run.*is not a function/i.test(message)||(message.includes(fn)&&/not found|is not a function|not defined/i.test(message));
+}
+async function refreshAdmin(){
+  adminRequestVersion++;adminDraftRows.clear();
+  try{adminData=await call('getAdminOverview',token);}
+  catch(e){if(!adminApiUnavailable(e,'getAdminOverview'))throw e;adminData=await call('getAdminDashboard',token);}
+  el('topUser').textContent='Admin | '+adminBusinessTimezone();
+}
+const adminPageNames={dash:'Dashboard',booked:'Blocked Schedules',bookings:'Bookings',candidates:'Candidates',payments:'Payments',refunds:'Refunds',availability:'Availability',settings:'Settings',password:'Change Password',create:'Create Booking'};
 function toggleAdminMenu(force){const panel=el('adminMenuPanel'),toggle=document.querySelector('.admin-menu-toggle');if(!panel||!toggle)return;const open=typeof force==='boolean'?force:panel.classList.contains('hidden');panel.classList.toggle('hidden',!open);toggle.setAttribute('aria-expanded',String(open));}
 function selectAdminMenuPage(page){adminTab(page);toggleAdminMenu(false);}
-function adminTab(t){if(!adminData)return;const c=el('adminContent');if(t==='dash')c.innerHTML=renderDash();if(t==='booked')c.innerHTML=renderBookedTimes('adminBooked',adminBusinessTimezone());if(t==='bookings')c.innerHTML=renderBookings();if(t==='candidates')c.innerHTML=renderCandidates();if(t==='payments')c.innerHTML=renderPayments();if(t==='refunds')c.innerHTML=renderRefunds();if(t==='settings')c.innerHTML=renderSettings()+renderPasswordChange('adminPassword','Change Password');if(t==='availability')c.innerHTML=renderAvailability();if(t==='create')c.innerHTML=renderCreate();const current=el('adminMenuCurrent');if(current)current.textContent=adminPageNames[t]||'Admin';document.querySelectorAll('#adminApp [data-admin-page]').forEach(button=>{const active=button.dataset.adminPage===t;button.classList.toggle('active',active);button.setAttribute('aria-current',active?'page':'false');});}
+function paintAdminTab(t){if(!adminData)return;const c=el('adminContent');if(t==='dash')c.innerHTML=renderDash();if(t==='booked')c.innerHTML=renderBookedTimes('adminBooked',adminBusinessTimezone());if(t==='bookings')c.innerHTML=renderBookings();if(t==='candidates')c.innerHTML=renderCandidates();if(t==='payments')c.innerHTML=renderPayments();if(t==='refunds')c.innerHTML=renderRefunds();if(t==='settings')c.innerHTML=renderSettings();if(t==='password')c.innerHTML=renderPasswordChange('adminPassword','Change Password');if(t==='availability')c.innerHTML=renderAvailability();if(t==='create')c.innerHTML=renderCreate();const current=el('adminMenuCurrent');if(current)current.textContent=adminPageNames[t]||'Admin';document.querySelectorAll('#adminApp [data-admin-page]').forEach(button=>{const active=button.dataset.adminPage===t;button.classList.toggle('active',active);button.setAttribute('aria-current',active?'page':'false');});}
 function adminBusinessTimezone(){return adminData?.settings?.BUSINESS_TIMEZONE||'America/New_York'}
+
+let adminRequestVersion=0,adminCurrentPage='dash',adminSearchTimer;
+const adminDraftRows=new Map();
+function adminTab(t){if(!adminData)return;if(!adminData.remote)return paintAdminTab(t);return loadAdminTab(t);}
+function adminDraftId(kind,record){return kind==='bookings'?record?.bookingId:kind==='payments'?record?.PaymentID:kind==='refunds'?record?.RefundID:record?.candidateId;}
+function rememberAdminDrafts(kind){
+  document.querySelectorAll('#searchTable_'+kind+' [data-search-index]').forEach(row=>{
+    if(!row.querySelector('input:not([disabled]):not(.hidden), .payment-status-editor'))return;
+    const record=adminData[kind]?.[Number(row.dataset.searchIndex)],id=adminDraftId(kind,record);
+    if(id)adminDraftRows.set(kind+':'+id,row);
+  });
+}
+function restoreAdminDrafts(kind){
+  document.querySelectorAll('#searchTable_'+kind+' [data-search-index]').forEach(row=>{
+    const record=adminData[kind]?.[Number(row.dataset.searchIndex)],id=adminDraftId(kind,record),old=adminDraftRows.get(kind+':'+id);
+    if(old){old.dataset.searchIndex=row.dataset.searchIndex;row.replaceWith(old);}
+  });
+}
+async function loadAdminTab(t){
+  clearTimeout(adminSearchTimer);rememberAdminDrafts(adminCurrentPage==='dash'?'dashboard':adminCurrentPage);
+  const active=document.activeElement,searchFocus=active?.id?.startsWith('search_')?{id:active.id,start:active.selectionStart,end:active.selectionEnd}:null;
+  const version=++adminRequestVersion;adminCurrentPage=t;
+  const kind=t==='dash'?'dashboard':t,table=['dashboard','bookings','candidates','payments','refunds'].includes(kind);
+  try{
+    if(table){
+      rememberAdminDrafts(kind);
+      const state=adminViewState(kind),result=await call('getAdminPage',token,{kind,...state,size:50});
+      if(version!==adminRequestVersion||role!=='admin')return;
+      if(['payments','refunds'].includes(kind)){adminData.bookings=result.bookings;adminData.candidates=result.candidates;}
+      adminData[kind==='dashboard'?'bookings':kind]=result.items;
+      adminData.page=result;state.page=result.page;adminData.nowUTC=result.nowUTC;adminData.settings.BUSINESS_TIMEZONE=result.timezone;el('topUser').textContent='Admin | '+result.timezone;
+      paintAdminTab(t);restoreAdminDrafts(kind);el('adminContent').insertAdjacentHTML('beforeend',renderAdminPagination(kind,result));
+      if(searchFocus&&searchFocus.id==='search_'+kind){const input=el(searchFocus.id);input?.focus();input?.setSelectionRange(searchFocus.start,searchFocus.end);}
+    }else{
+      if(t==='create'){const choices=await call('getAdminCandidateChoices',token);if(version!==adminRequestVersion||role!=='admin')return;adminData.candidates=choices;}
+      paintAdminTab(t);
+    }
+  }catch(e){
+    if(version!==adminRequestVersion)return;
+    if(adminApiUnavailable(e,table?'getAdminPage':'getAdminCandidateChoices')){
+      try{const data=await call('getAdminDashboard',token);if(version!==adminRequestVersion||role!=='admin')return;adminData=data;paintAdminTab(t);return;}
+      catch(fallbackError){e=fallbackError;}
+    }
+    if(version===adminRequestVersion)el('adminContent').innerHTML=`<div class="card"><div class="msg err" role="alert">${esc(e.message)}<div class="form-actions"><button onclick="adminTab(adminCurrentPage)">Try again</button></div></div></div>`;
+  }
+}
+function renderAdminPagination(kind,p){
+  const first=p.total?(p.page-1)*p.size+1:0,last=Math.min(p.page*p.size,p.total);
+  return `<div class="admin-pagination"><span>${first}-${last} of ${p.total}</span><div><button class="secondary small" ${p.page<=1?'disabled':''} onclick="changeAdminPage('${kind}',-1)">Previous</button><span>Page ${p.page} of ${p.pages}</span><button class="secondary small" ${p.page>=p.pages?'disabled':''} onclick="changeAdminPage('${kind}',1)">Next</button></div></div>`;
+}
+function changeAdminPage(kind,offset){adminViewState(kind).page=Math.max(1,(adminViewState(kind).page||1)+offset);return loadAdminTab(kind==='dashboard'?'dash':kind);}
+function reloadAdminTable(kind){adminViewState(kind).page=1;return loadAdminTab(kind==='dashboard'?'dash':kind);}
+
+function renderBookingWorkPanel(){
+  const counts=adminData.counts||{},pending=counts.pendingPayments??(adminData.payments||[]).filter(p=>p.Status==='SUBMITTED').length,refunds=counts.refunds??(adminData.refunds||[]).filter(r=>r.Status==='REQUESTED').length,work=adminData.work;
+  return `<section class="card admin-attention" aria-label="Admin to do"><div class="attention-heading"><div><span class="work-eyebrow">Needs attention</span><h3>To do</h3></div><span class="muted">Choose an item to take action</span></div><div class="attention-items"><button class="attention-item" onclick="openAdminMetric('pendingPayments')"><span class="attention-number">${pending}</span><span>Pending payments</span><small>Review payments &#8594;</small></button><button class="attention-item attention-refunds" onclick="openAdminMetric('refunds')"><span class="attention-number">${refunds}</span><span>Refund requests</span><small>Review refunds &#8594;</small></button><div class="attention-item attention-updates"><span class="attention-number">${work?work.total:'&#8212;'}</span><span>Failed updates</span><small>${work?'Email and calendar updates':'Update status is unavailable'}</small></div></div>${renderFailedBookingWorkPanel()}</section>`;
+}
+function renderFailedBookingWorkPanel(){
+  const work=adminData.work;if(!work)return '';
+  if(!work.total)return '<div class="work-panel work-clear"><span class="work-icon" aria-hidden="true">&#10003;</span><div><b>Everything is up to date</b><p>No email or calendar updates are waiting.</p></div></div>';
+  return `<section class="card work-panel work-attention" aria-label="Updates needing attention"><div class="work-panel-heading"><div class="work-heading-copy"><span class="work-alert-icon" aria-hidden="true">!</span><div><span class="work-eyebrow">Needs attention</span><b>${work.total} update${work.total===1?'':'s'} waiting</b><p>Your bookings are saved. Try sending these emails or calendar updates again.</p></div></div><button class="work-retry" onclick="retryAdminWork()">&#8635; Try again</button></div><div class="work-jobs">${work.jobs.map(j=>`<div class="work-job"><div class="work-job-copy"><b>${esc(j.bookingId)}</b><span class="work-kind">${esc(({calendar:'Calendar update',cancel:'Calendar cancellation',email:'Booking email',refundEmail:'Refund email',invalid:'Needs checking'})[j.kind]||j.kind)}</span><small>${j.attempts} failed attempt${j.attempts===1?'':'s'}</small><details class="work-error"><summary>See what happened</summary><p>${esc(j.error)}</p></details></div>${j.kind!=='invalid'?`<button class="secondary small" onclick="retryAdminWork('${esc(j.key)}')">Try again</button>`:'<span class="work-check-note">Check this update</span>'}</div>`).join('')}</div>${work.total>work.jobs.length?'<p class="muted">Showing the first 20 updates. Try again handles up to 10 at a time.</p>':''}<div id="workRetryMessage" role="status"></div></section>`;
+}
+async function retryAdminWork(key){
+  const previous=adminData.work.total;
+  try{adminData.work=await call('adminRetryBookingWork',token,key);await adminTab('dash');const count=previous-adminData.work.total;const target=el('workRetryMessage');if(target)msg('workRetryMessage',count>0?count+' update(s) completed.':'The update is still waiting. Check the message and try again.',count<=0);}
+  catch(e){appAlert(e);}
+}
+
+
+const adminTableState={};
+function adminViewState(kind){return adminTableState[kind]||(adminTableState[kind]={status:'ALL',date:kind==='dashboard'?'TODAY':'ALL',from:'',to:'',sort:null,page:1,query:''});}
+function adminStatusBadge(value,kind){
+  const labels={CONFIRMED:'Confirmed',CANCELLED:'Cancelled',SUBMITTED:'Payment pending',VERIFIED:'Paid & verified',NOT_REQUIRED:kind==='refund'?'No refund':'No payment required',REQUESTED:'Refund requested',REFUNDED:'Refunded',FAILED:'Payment failed',REJECTED:'Rejected'};
+  const tone=['VERIFIED','REFUNDED'].includes(value)?'verified':['SUBMITTED','REQUESTED'].includes(value)?'pending':['FAILED','CANCELLED','REJECTED'].includes(value)?'failed':'not-required';
+  return `<span class="candidate-status-badge candidate-status-${tone}">${esc(labels[value]||value||'Unknown')}</span>`;
+}
+function adminRecordDay(kind,record){
+  const booking=['payments','refunds'].includes(kind)?adminData.bookings.find(b=>b.bookingId===record.BookingID):record;
+  const iso=booking?.startUTC;if(!iso||!Number.isFinite(Date.parse(iso)))return '';
+  return adminDayKey(iso,adminBusinessTimezone());
+}
+function adminDateMatches(kind,record){
+  const state=adminViewState(kind);if(state.date==='ALL')return true;
+  const day=adminRecordDay(kind,record);if(!day)return false;
+  if(state.date==='RANGE')return day>=state.from&&day<=state.to;
+  const today=adminDayKey(adminData.nowUTC||new Date(),adminBusinessTimezone());
+  const date=new Date(today+'T12:00:00Z');date.setUTCDate(date.getUTCDate()+(state.date==='TOMORROW'?1:state.date==='YESTERDAY'?-1:0));
+  return day===date.toISOString().slice(0,10);
+}
+function adminPrimaryStatuses(kind){return kind==='refunds'?['ALL','REQUESTED','REFUNDED']:kind==='bookings'?['ALL','CONFIRMED','SUBMITTED','VERIFIED']:['ALL','SUBMITTED','VERIFIED'];}
+function adminExtraFilters(kind,statuses){
+  const extra=statuses.filter(status=>!adminPrimaryStatuses(kind).includes(status));if(!extra.length)return '';
+  const active=extra.includes(adminViewState(kind).status);
+  return `<details class="more-filters" data-active="${active}"><summary>More filters${active?' &#183; 1':''}</summary><div class="more-filters-panel">${extra.map(status=>`<button type="button" class="admin-status-filter" aria-pressed="${adminViewState(kind).status===status}" onclick="setAdminStatusFilter('${kind}','${status}')">${adminStatusBadge(status,['REJECTED'].includes(status)?'refund':'payment')}</button>`).join('')}</div></details>`;
+}
+function adminControls(kind){
+  const state=adminViewState(kind),statuses=kind==='bookings'?['ALL','CONFIRMED','CANCELLED','SUBMITTED','VERIFIED','NOT_REQUIRED','FAILED','REQUESTED','REFUNDED']:kind==='payments'?['ALL','SUBMITTED','VERIFIED','FAILED']:kind==='refunds'?['ALL','REQUESTED','REFUNDED','REJECTED']:[];
+  return `<div class="candidate-filter-toolbar admin-filter-toolbar"><div class="candidate-status-legend" role="group" aria-label="Filter ${kind} by status">${statuses.filter(status=>adminPrimaryStatuses(kind).includes(status)).map(status=>`<button type="button" class="admin-status-filter" aria-pressed="${state.status===status}" onclick="setAdminStatusFilter('${kind}','${status}')">${status==='ALL'?'All':adminStatusBadge(status,['REQUESTED','REFUNDED','REJECTED'].includes(status)?'refund':'payment')}</button>`).join('')}${adminExtraFilters(kind,statuses)}</div><div class="candidate-date-filters" role="group" aria-label="Filter ${kind} by interview date">${[['ALL','All dates'],['TODAY','Today'],['TOMORROW','Tomorrow'],['YESTERDAY','Yesterday'],['RANGE','Range']].map(([mode,label])=>`<button type="button" class="small" aria-pressed="${state.date===mode}" onclick="setAdminDateFilter('${kind}','${mode}')">${label}</button>`).join('')}</div></div><div id="adminRange_${kind}" class="candidate-date-range ${state.date==='RANGE'?'':'hidden'}"><div><label for="adminFrom_${kind}">From</label><input id="adminFrom_${kind}" type="date" value="${esc(state.from)}"></div><div><label for="adminTo_${kind}">To</label><input id="adminTo_${kind}" type="date" value="${esc(state.to)}"></div><button type="button" class="small" onclick="applyAdminRange('${kind}')">Apply range</button><p id="adminRangeError_${kind}" role="alert"></p></div>`;
+}
+function setAdminStatusFilter(kind,status){adminViewState(kind).status=status;adminViewState(kind).upcoming=false;updateAdminTableFilters(kind);}
+function setAdminDateFilter(kind,mode){
+  const state=adminViewState(kind);state.date=mode;
+  if(mode==='RANGE'&&!state.from){state.from=adminDayKey(adminData.nowUTC||new Date(),adminBusinessTimezone());state.to=state.from;el('adminFrom_'+kind).value=state.from;el('adminTo_'+kind).value=state.to;}
+  if(kind==='dashboard'){if(adminData.remote)reloadAdminTable(kind);else el('adminContent').innerHTML=renderDash();return;}
+  el('adminRange_'+kind).classList.toggle('hidden',mode!=='RANGE');updateAdminTableFilters(kind);
+}
+function applyAdminRange(kind){
+  const from=el('adminFrom_'+kind).value,to=el('adminTo_'+kind).value,error=el('adminRangeError_'+kind);
+  if(!from||!to||from>to){error.textContent='Select a valid start and end date.';return;}
+  Object.assign(adminViewState(kind),{date:'RANGE',from,to});error.textContent='';
+  if(adminData.remote)reloadAdminTable(kind);else if(kind==='dashboard')el('adminContent').innerHTML=renderDash();else updateAdminTableFilters(kind);
+}
+function updateAdminTableFilters(kind){
+  if(adminData.remote)return reloadAdminTable(kind);
+  filterAdminRecords(kind,el('search_'+kind)?.value||'');
+  document.querySelectorAll(`[onclick^="setAdminStatusFilter('${kind}'"], [onclick^="setAdminDateFilter('${kind}'"]`).forEach(button=>{const args=button.getAttribute('onclick').match(/'([^']+)'/g);const value=args[1].slice(1,-1);button.setAttribute('aria-pressed',String(button.getAttribute('onclick').startsWith('setAdminStatus')?adminViewState(kind).status===value:adminViewState(kind).date===value));});
+}
+function adminSortColumn(kind,column){
+  if(adminData.remote){const state=adminViewState(kind);state.sort={column,ascending:state.sort?.column===column?!state.sort.ascending:true};return reloadAdminTable(kind);}
+  const table=document.querySelector(kind==='dashboard'?'.dashboard-bookings table':'#searchTable_'+kind);if(!table)return;
+  const state=adminViewState(kind);state.sort={column,ascending:state.sort?.column===column?!state.sort.ascending:true};
+  const rows=Array.from(table.querySelectorAll('[data-search-index]'));
+  const value=row=>{const record=adminData[kind==='dashboard'?'bookings':kind][Number(row.dataset.searchIndex)],cell=row.cells[column],key=cell?.dataset.sortKey;
+    if(key==='date'||key==='start'||key==='end')return Date.parse(record[key==='end'?'endUTC':'startUTC'])||0;
+    if(key&&key!=='text')return Number(record[key])||0;
+    if(kind==='candidates'){const field=['candidateId','name','email','phone','type','percentage','timezone'][column];if(field)return field==='percentage'?Number(record[field])||0:String(record[field]||'');}
+    return cell?.textContent.trim()||'';};
+  rows.sort((a,b)=>{const x=value(a),y=value(b);return (state.sort.ascending?1:-1)*(typeof x==='number'?x-y:x.localeCompare(y,undefined,{numeric:true,sensitivity:'base'}));});
+  rows.forEach(row=>row.parentElement.appendChild(row));
+  table.querySelectorAll('tr:first-child th').forEach((th,i)=>{const direction=i===column?(state.sort.ascending?'ascending':'descending'):'none';th.setAttribute('aria-sort',direction);th.querySelectorAll('.sort-arrows path').forEach((p,n)=>p.classList.toggle('selected',direction===(n===0?'ascending':'descending')));});
+}
+function enhanceAdminTables(){
+  for(const kind of ['dashboard','bookings','candidates','payments','refunds']){
+    const table=document.querySelector(kind==='dashboard'?'.dashboard-bookings table':'#searchTable_'+kind);if(!table||table.dataset.sortEnhanced)continue;
+    table.dataset.sortEnhanced='true';table.querySelectorAll('tr:first-child th').forEach((th,column)=>{const label=th.textContent.trim();if(['Actions','Action'].includes(label))return;
+      th.setAttribute('aria-sort','none');th.innerHTML=`<button type="button" class="candidate-sort-button" onclick="adminSortColumn('${kind}',${column})">${esc(label)}<svg class="sort-arrows" viewBox="0 0 16 20" aria-hidden="true"><path d="M8 2 3 7h10z"/><path d="m8 18 5-5H3z"/></svg></button>`;});
+    const prior=adminViewState(kind).sort;if(prior&&adminData.remote){table.querySelectorAll('tr:first-child th').forEach((th,i)=>{const direction=i===prior.column?(prior.ascending?'ascending':'descending'):'none';th.setAttribute('aria-sort',direction);th.querySelectorAll('.sort-arrows path').forEach((p,n)=>p.classList.toggle('selected',direction===(n===0?'ascending':'descending')));});}else if(prior){adminViewState(kind).sort=null;adminSortColumn(kind,prior.column);if(!prior.ascending)adminSortColumn(kind,prior.column);}
+    if(kind!=='dashboard'&&!adminData.remote)filterAdminRecords(kind,el('search_'+kind)?.value||'');
+  }
+}
 function editControls(key,fields,saveAction){
   const args=esc(JSON.stringify(fields));
   return `<button id="edit_${key}" class="small" onclick="toggleFields('${key}',${args},true)">Edit</button> <span id="actions_${key}" class="hidden"><button class="small" onclick="${esc(saveAction)}">Save</button> <button class="secondary small" onclick="toggleFields('${key}',${args},false)">Cancel</button></span>`;
@@ -1108,7 +1511,72 @@ function toggleFields(key,fields,editing){
   el('edit_'+key).classList.toggle('hidden',editing);
   el('actions_'+key).classList.toggle('hidden',!editing);
 }
-function adminSearchBar(kind){return `<div class="admin-search"><label for="search_${kind}">Search ${kind}</label><input id="search_${kind}" type="search" placeholder="Search by name, email, date, status, amount or reference" oninput="filterAdminRecords('${kind}',this.value)"></div>`}
+function exportExcelButton(kind){return `<button type="button" class="excel-export" data-export-kind="${kind}" onclick="exportAdminExcel('${kind}',this)">Export Excel</button>`;}
+function excelXml(value){return String(value??'').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));}
+function excelColumn(index){let name='';for(index++;index;index=Math.floor((index-1)/26))name=String.fromCharCode(65+(index-1)%26)+name;return name;}
+function excelZip(files){
+  const encoder=new TextEncoder(),parts=[],directory=[];let offset=0;
+  const bytes=(length,write)=>{const data=new Uint8Array(length);write(new DataView(data.buffer));return data;};
+  for(const [path,text] of Object.entries(files)){
+    const name=encoder.encode(path),data=encoder.encode(text);let crc=0xffffffff;
+    for(const b of data){crc^=b;for(let bit=0;bit<8;bit++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}crc=(crc^0xffffffff)>>>0;
+    const local=bytes(30,v=>{v.setUint32(0,0x04034b50,true);v.setUint16(4,20,true);v.setUint16(6,0x800,true);v.setUint16(12,33,true);v.setUint32(14,crc,true);v.setUint32(18,data.length,true);v.setUint32(22,data.length,true);v.setUint16(26,name.length,true);});
+    const central=bytes(46,v=>{v.setUint32(0,0x02014b50,true);v.setUint16(4,20,true);v.setUint16(6,20,true);v.setUint16(8,0x800,true);v.setUint16(14,33,true);v.setUint32(16,crc,true);v.setUint32(20,data.length,true);v.setUint32(24,data.length,true);v.setUint16(28,name.length,true);v.setUint32(42,offset,true);});
+    parts.push(local,name,data);directory.push(central,name);offset+=local.length+name.length+data.length;
+  }
+  const size=directory.reduce((n,b)=>n+b.length,0),count=Object.keys(files).length;
+  const end=bytes(22,v=>{v.setUint32(0,0x06054b50,true);v.setUint16(8,count,true);v.setUint16(10,count,true);v.setUint32(12,size,true);v.setUint32(16,offset,true);});
+  return new Blob([...parts,...directory,end],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+}
+function makeExcelWorkbook(headers,rows,title){
+  const ns='http://schemas.openxmlformats.org/spreadsheetml/2006/main',last=excelColumn(headers.length-1)+(rows.length+1);
+  const sheetRows=[headers,...rows].map((values,r)=>'<row r="'+(r+1)+'">'+values.map((value,c)=>{const ref=excelColumn(c)+(r+1);return typeof value==='number'&&Number.isFinite(value)?`<c r="${ref}"><v>${value}</v></c>`:`<c r="${ref}" t="inlineStr"${r===0?' s="1"':''}><is><t xml:space="preserve">${excelXml(value)}</t></is></c>`;}).join('')+'</row>').join('');
+  const columns=headers.map((h,c)=>{const width=Math.min(45,Math.max(16,String(h).length+3,...rows.slice(0,200).map(r=>String(r[c]??'').length+2)));return `<col min="${c+1}" max="${c+1}" width="${width}" customWidth="1"/>`;}).join('');
+  return excelZip({
+    '[Content_Types].xml':'<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>',
+    '_rels/.rels':'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',
+    'xl/workbook.xml':`<workbook xmlns="${ns}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="${excelXml(title)}" sheetId="1" r:id="rId1"/></sheets></workbook>`,
+    'xl/_rels/workbook.xml.rels':'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>',
+    'xl/styles.xml':`<styleSheet xmlns="${ns}"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFEAF0FF"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`,
+    'xl/worksheets/sheet1.xml':`<worksheet xmlns="${ns}"><dimension ref="A1:${last}"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${columns}</cols><sheetData>${sheetRows}</sheetData><autoFilter ref="A1:${last}"/></worksheet>`
+  });
+}
+function adminExcelData(kind,items,bookings,candidates,timezone,format){
+  const date=(iso,part)=>iso?portalDateTime(iso,timezone,format)[part]:'';
+  const bm=new Map(bookings.map(b=>[b.bookingId,b])),cm=new Map(candidates.map(c=>[c.candidateId,c]));
+  if(kind==='candidates')return {headers:['Candidate ID','Name','Email','Phone','Account type','Percentage','Timezone','Active'],rows:items.map(c=>[c.candidateId,c.name,c.email,c.phone,c.type,Number(c.percentage||0),c.timezone,c.active?'Yes':'No'])};
+  if(kind==='bookings'||kind==='dashboard')return {headers:['Booking ID','Candidate ID','Candidate name','Interview type','Start date','Start','End date','End','Timezone','Duration (minutes)','Charge (USD)','Paid (USD)','Payment status','Booking status','Refund status','Reference'],rows:items.map(b=>[b.bookingId,b.candidateId,b.name,b.type,date(b.startUTC,'date'),date(b.startUTC,'time'),date(b.endUTC,'date'),date(b.endUTC,'time'),timezone,Number(b.duration||0),Number(b.finalCharge||0),Number(b.amountPaid||0),b.paymentStatus,b.status,b.refundStatus,b.utr||''])};
+  const payment=kind==='payments';return {headers:[payment?'Payment ID':'Refund ID','Booking ID','Candidate ID','Candidate name','Start date','Start','End date','End','Timezone',payment?'Expected (USD)':'Refund amount (USD)',...(payment?['Submitted (USD)']:[]),'Status','Reference'],rows:items.map(r=>{const b=bm.get(r.BookingID),c=cm.get(r.CandidateID||b?.candidateId);return [r[payment?'PaymentID':'RefundID'],r.BookingID,r.CandidateID||b?.candidateId||'',c?.name||b?.name||'',date(b?.startUTC,'date'),date(b?.startUTC,'time'),date(b?.endUTC,'date'),date(b?.endUTC,'time'),timezone,Number(r[payment?'ExpectedAmountUSD':'AmountUSD']||0),...(payment?[Number(r.SubmittedAmountUSD||0)]:[]),r.Status,r[payment?'UTR':'RefundUTR']||''];})};
+}
+async function exportAdminExcel(kind,button){
+  if(role!=='admin')return;
+  const state=JSON.parse(JSON.stringify(adminViewState(kind))),format=preferredTimeFormat(),items=[],bookings=[],candidates=[];let timezone=adminBusinessTimezone();
+  if(button){button.disabled=true;button.textContent='Exporting...';}
+  try{
+    if(adminData.remote){
+      let pages=1,total;const seen=new Set();
+      for(let page=1;page<=pages;page++){
+        const result=await call('getAdminPage',token,{kind,...state,page,size:100});
+        if(page===1){total=result.total;if(total>10000)throw new Error('More than 10,000 records match. Narrow your filters before exporting.');pages=result.pages;timezone=result.timezone;}
+        if(result.total!==total||result.timezone!==timezone)throw new Error('Records changed while exporting. Please try again.');
+        for(const r of result.items){const id=adminDraftId(kind==='dashboard'?'bookings':kind,r);if(seen.has(id))throw new Error('Records changed while exporting. Please try again.');seen.add(id);items.push(r);}
+        bookings.push(...result.bookings);candidates.push(...result.candidates);
+      }
+      if(items.length!==total)throw new Error('Records changed while exporting. Please try again.');
+    }else{
+      const source=kind==='dashboard'?adminData.bookings:adminData[kind];
+      items.push(...source.filter(r=>{const statuses=kind==='bookings'||kind==='dashboard'?[r.status,r.paymentStatus,r.refundStatus]:[r.Status];return (kind!=='dashboard'||r.status==='CONFIRMED')&&(state.status==='ALL'||statuses.includes(state.status))&&(kind==='candidates'||adminDateMatches(kind,r))&&(!state.upcoming||r.status==='CONFIRMED'&&Date.parse(r.startUTC)>Date.parse(adminData.nowUTC||new Date()))&&adminRecordMatches(kind,r,state.query||'');}));
+      const keys={dashboard:['name','date','start','end','duration'],bookings:['bookingId','name','date','start','end','type','finalCharge','amountPaid','paymentStatus','status','refundStatus'],candidates:['candidateId','name','email','phone','type','percentage','timezone'],payments:['PaymentID','BookingID','ExpectedAmountUSD','SubmittedAmountUSD','UTR','Status'],refunds:['RefundID','BookingID','AmountUSD','Status']},key=keys[kind][state.sort?.column]||(kind==='bookings'?'start':kind==='dashboard'?'start':keys[kind][0]),ascending=state.sort?state.sort.ascending!==false:kind!=='bookings';
+      const value=r=>['date','start','end'].includes(key)?Date.parse(r[key==='end'?'endUTC':'startUTC']):['duration','finalCharge','amountPaid','percentage','ExpectedAmountUSD','SubmittedAmountUSD','AmountUSD'].includes(key)?Number(r[key]||0):String(r[key]||'');items.sort((a,b)=>{const x=value(a),y=value(b);return (ascending?1:-1)*(typeof x==='number'?x-y:x.localeCompare(y,undefined,{numeric:true,sensitivity:'base'}));});
+      if(items.length>10000)throw new Error('More than 10,000 records match. Narrow your filters before exporting.');bookings.push(...adminData.bookings);candidates.push(...adminData.candidates);
+    }
+    if(role!=='admin')throw new Error('Sign in as admin before exporting.');
+    const data=adminExcelData(kind,items,bookings,candidates,timezone,format),blob=makeExcelWorkbook(data.headers,data.rows,kind==='dashboard'?'Dashboard':kind[0].toUpperCase()+kind.slice(1));
+    const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=kind+'-'+portalDateTime(new Date().toISOString(),timezone,'24').day+'.xlsx';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);showSaveToast(items.length+' records exported');
+  }catch(e){appAlert(e);}finally{if(button){button.disabled=false;button.textContent='Export Excel';}}
+}
+
+function adminSearchBar(kind){return `<div class="admin-search">${exportExcelButton(kind)}<input id="search_${kind}" type="search" value="${esc(adminViewState(kind).query||'')}" aria-label="Search ${kind}" placeholder="Search by name, email, date, status, amount or reference" oninput="filterAdminRecords('${kind}',this.value)"></div>`}
 function adminRecordMatches(kind,record,query){
   const booking=kind==='payments'||kind==='refunds'?(adminData.bookings||[]).find(b=>b.bookingId===record.BookingID):null;
   const candidateId=record.candidateId||record.CandidateID||booking?.candidateId;
@@ -1117,14 +1585,19 @@ function adminRecordMatches(kind,record,query){
   return query.trim().toLowerCase().split(/\s+/).every(term=>text.includes(term));
 }
 function filterAdminRecords(kind,query){
+  adminViewState(kind).query=query;
+  if(adminData.remote){adminViewState(kind).query=query;clearTimeout(adminSearchTimer);adminSearchTimer=setTimeout(()=>reloadAdminTable(kind),300);return;}
   let count=0;
   el('searchTable_'+kind).querySelectorAll('[data-search-index]').forEach(row=>{
-    const matches=adminRecordMatches(kind,adminData[kind][Number(row.dataset.searchIndex)],query);
+    const record=adminData[kind][Number(row.dataset.searchIndex)],state=adminViewState(kind);
+    const status=kind==='bookings'?[record.status,record.paymentStatus,record.refundStatus]:[record.Status];
+    const matches=adminRecordMatches(kind,record,query)&&(state.status==='ALL'||status.includes(state.status))&&adminDateMatches(kind,record)&&(!state.upcoming||record.status==='CONFIRMED'&&Date.parse(record.startUTC)>Date.parse(adminData.nowUTC||new Date()));
     row.classList.toggle('hidden',!matches);if(matches)count++;
   });
   el('searchEmpty_'+kind).classList.toggle('hidden',count!==0);
 }
 function adminDayKey(value,tz){
+  if(!Number.isFinite(Date.parse(value)))return '';
   const parts=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(value));
   const p=Object.fromEntries(parts.map(x=>[x.type,x.value]));return p.year+'-'+p.month+'-'+p.day;
 }
@@ -1133,14 +1606,26 @@ function todaysAdminBookings(selectedDate){
   return adminData.bookings.filter(b=>b.status==='CONFIRMED'&&Number.isFinite(new Date(b.startUTC).getTime())&&adminDayKey(b.startUTC,tz)===today).sort((a,b)=>new Date(a.startUTC)-new Date(b.startUTC));
 }
 function renderTodayBookings(selectedDate){
-  const tz=adminBusinessTimezone(),today=selectedDate||adminDayKey(adminData.nowUTC||new Date(),tz);
+  const tz=adminBusinessTimezone(),state=adminViewState('dashboard'),baseDay=adminDayKey(adminData.nowUTC||new Date(),tz);
+  const displayDay=new Date(baseDay+'T12:00:00Z');displayDay.setUTCDate(displayDay.getUTCDate()+(state.date==='TOMORROW'?1:state.date==='YESTERDAY'?-1:0));
+  const today=selectedDate||(state.date==='RANGE'?state.from:displayDay.toISOString().slice(0,10));
   const time=iso=>new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'numeric',minute:'2-digit'}).format(new Date(iso));
-  const rows=todaysAdminBookings(today).map(b=>`<tr><td>${esc(b.name)}</td><td>${esc(adminDayKey(b.startUTC,tz))}</td><td>${esc(time(b.startUTC))}</td><td>${esc(time(b.endUTC))}${adminDayKey(b.endUTC,tz)!==today?' ('+esc(adminDayKey(b.endUTC,tz))+')':''}</td><td>${esc(b.duration)} min</td></tr>`).join('');
-  return `<div class="card dashboard-bookings"><div class="dashboard-heading"><h2>Confirmed bookings</h2><div class="dashboard-date"><label for="dashboardDate">Date</label><input id="dashboardDate" type="date" value="${esc(today)}" onchange="selectDashboardDate(this.value)"></div></div><p class="muted dashboard-timezone">Times in ${esc(tz)}</p><button class="secondary small dashboard-refresh" onclick="refreshAdminDashboard()">Refresh</button><div class="scroll"><table><tr><th>Candidate name</th><th>Date</th><th>Start</th><th>End</th><th>Duration</th></tr>${rows||'<tr><td colspan="5">No confirmed bookings for this date.</td></tr>'}</table></div></div>`;
+  const selected=selectedDate?todaysAdminBookings(today):adminData.bookings.filter(b=>b.status==='CONFIRMED'&&Number.isFinite(Date.parse(b.startUTC))&&adminDateMatches('dashboard',b)).sort((a,b)=>adminData.remote?0:Date.parse(a.startUTC)-Date.parse(b.startUTC));
+  const rows=selected.map(b=>`<tr data-search-index="${adminData.bookings.indexOf(b)}"><td>${esc(b.name)}</td><td data-sort-key="date">${timestampMarkup(b.startUTC,tz,'date')}</td><td data-sort-key="start">${timestampMarkup(b.startUTC,tz)}</td><td data-sort-key="end">${timestampMarkup(b.endUTC,tz)}${adminDayKey(b.endUTC,tz)!==adminDayKey(b.startUTC,tz)?'<br><small class="next-day-note">Next day &#183; '+timestampMarkup(b.endUTC,tz,'date')+'</small>':''}</td><td data-sort-key="duration">${esc(b.duration)} min</td></tr>`).join('');
+  return `<div class="card dashboard-bookings">${exportExcelButton('dashboard')}${adminControls('dashboard')}<button class="secondary small dashboard-refresh" aria-label="Refresh dashboard" title="Refresh" onclick="refreshAdminDashboard()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15-6l3 3M21 3v6h-6M21 12a9 9 0 0 1-15 6l-3-3M3 21v-6h6"/></svg></button><div class="scroll"><table><tr><th>Candidate name</th><th>Date</th><th>Start</th><th>End</th><th>Duration</th></tr>${rows||'<tr><td colspan="5">No confirmed bookings for this date.</td></tr>'}</table></div></div>`;
 }
-function selectDashboardDate(date){el('adminContent').innerHTML=renderDash(date)}
-async function refreshAdminDashboard(){const date=el('dashboardDate').value;try{await refreshAdmin();selectDashboardDate(date)}catch(e){alert(e.message)}}
-function renderDash(selectedDate){let x=adminData.counts;return `<div class="grid dashboard-metrics"><div class="card"><div class="metric">${x.candidates}</div><div>Candidates</div></div><div class="card"><div class="metric">${x.upcoming}</div><div>Upcoming</div></div><div class="card"><div class="metric">${x.pendingPayments}</div><div>Pending payments</div></div><div class="card"><div class="metric">${x.refunds}</div><div>Refund requests</div></div></div>${renderTodayBookings(selectedDate)}`}
+function selectDashboardDate(date){if(!date)return;Object.assign(adminViewState('dashboard'),{date:'RANGE',from:date,to:date});el('adminContent').innerHTML=renderDash(date)}
+async function refreshAdminDashboard(){try{await refreshAdmin();await adminTab('dash')}catch(e){appAlert(e)}}
+function openAdminMetric(kind){
+  const page=kind==='upcoming'?'bookings':kind==='pendingPayments'?'payments':kind==='refunds'?'refunds':'candidates';
+  const state=adminViewState(page);Object.assign(state,{status:kind==='pendingPayments'?'SUBMITTED':kind==='refunds'?'REQUESTED':kind==='upcoming'?'CONFIRMED':'ALL',date:'ALL',page:1,query:'',upcoming:kind==='upcoming'});
+  adminTab(page);
+}
+function renderDash(selectedDate){
+  const x=adminData.counts;
+  return `<div class="grid dashboard-metrics">${[['candidates','Candidates'],['upcoming','Upcoming'],['pendingPayments','Pending payments'],['refunds','Refund requests']].map(([key,label])=>`<button type="button" class="card dashboard-metric-link" onclick="openAdminMetric('${key}')" aria-label="View ${label.toLowerCase()} (${esc(x[key])})"><span class="metric">${esc(x[key])}</span><span>${label}</span></button>`).join('')}</div>${renderTodayBookings(selectedDate)}${renderBookingWorkPanel()}`;
+}
+
 function bookingAmountCell(b,prefix,value){
   const amount=esc(Number(value||0).toFixed(2));
   if(b.status!=='CONFIRMED')return '$'+amount;
@@ -1167,19 +1652,63 @@ function editBooking(id,editing){
   el('edit_'+id).classList.toggle('hidden',editing);
   ['save','discard'].forEach(prefix=>el(prefix+'_'+id).classList.toggle('hidden',!editing));
 }
-function renderBookings(){return `<div class="card"><h2>Bookings — all times shown in ${esc(adminBusinessTimezone())}</h2>${adminSearchBar('bookings')}<div class="scroll"><table id="searchTable_bookings"><tr><th>ID</th><th>Candidate</th><th>Time (${esc(adminBusinessTimezone())})</th><th>Type</th><th>Charge</th><th>Paid</th><th>Payment</th><th>Status</th><th>Actions</th></tr>${adminData.bookings.map((b,i)=>`<tr data-search-index="${i}"><td>${b.bookingId}</td><td>${esc(b.candidateId)}<br>${esc(b.name)}</td><td>${esc(withoutGmtOffset(b.startAdmin))}<br>${esc(withoutGmtOffset(b.endAdmin))}</td><td>${esc(b.type)}</td><td>${bookingAmountCell(b,'fc',b.finalCharge)}</td><td>${bookingAmountCell(b,'ap',b.amountPaid)}</td><td>${esc(b.paymentStatus)}</td><td>${esc(b.status)}</td><td>${bookingActions(b)}</td></tr>`).join('')}</table></div><p id="searchEmpty_bookings" class="muted hidden">No matching records.</p></div>`}
-async function saveBooking(id){await call('adminUpdateBooking',token,{bookingId:id,finalCharge:el('fc_'+id).value,amountPaid:el('ap_'+id).value});await refreshAdmin();adminTab('bookings')} async function adminCancel(id){if(confirm('Cancel booking and remove calendar event?')){await call('adminCancelBooking',token,id);await refreshAdmin();adminTab('bookings')}}
-function renderCandidates(){return `<div class="card"><h2>Candidates</h2>${adminSearchBar('candidates')}<div class="scroll"><table id="searchTable_candidates"><tr><th>ID</th><th>Name</th><th>Email/Phone</th><th>Type</th><th>%</th><th>Timezone</th><th>Actions</th></tr>${adminData.candidates.map((c,i)=>`<tr data-search-index="${i}"><td>${c.candidateId}</td><td>${esc(c.name)}</td><td>${esc(c.email)}<br>${esc(c.phone)}</td><td><select id="ct_${c.candidateId}" disabled><option ${c.type==='REGULAR'?'selected':''}>REGULAR</option><option ${c.type==='PERCENTAGE'?'selected':''}>PERCENTAGE</option></select></td><td><input disabled type="number" min="0" max="100" id="cp_${c.candidateId}" value="${c.percentage}" style="width:70px"></td><td>${esc(c.timezone)}</td><td>${editControls("candidate_"+c.candidateId,["ct_"+c.candidateId,"cp_"+c.candidateId],"saveCandidate('"+c.candidateId+"')")}</td></tr>`).join('')}</table></div><p id="searchEmpty_candidates" class="muted hidden">No matching records.</p></div>`} async function saveCandidate(id){try{await call('adminUpdateCandidate',token,{candidateId:id,type:el('ct_'+id).value,percentage:el('cp_'+id).value,active:adminData.candidates.find(c=>c.candidateId===id).active});await refreshAdmin();adminTab('candidates')}catch(e){alert(e.message)}}
-function renderPayments(){return `<div class="card"><h2>Payments</h2>${adminSearchBar('payments')}<div class="scroll"><table id="searchTable_payments"><tr><th>ID</th><th>Booking</th><th>Expected</th><th>Submitted</th><th>UTR</th><th>Status</th><th>Action</th></tr>${adminData.payments.map((p,i)=>`<tr data-search-index="${i}"><td>${p.PaymentID}</td><td>${p.BookingID}</td><td>$${p.ExpectedAmountUSD}</td><td>$${p.SubmittedAmountUSD}</td><td>${esc(p.UTR)}</td><td>${esc(p.Status)}</td><td>${p.Status==='VERIFIED'?'<span class="muted">Verified</span>':`<button class="small" onclick="payAction('${p.PaymentID}','VERIFIED')">Verify</button> <button class="danger small" onclick="payAction('${p.PaymentID}','FAILED')">Failed</button>`}</td></tr>`).join('')}</table></div><p id="searchEmpty_payments" class="muted hidden">No matching records.</p></div>`} async function payAction(id,s){await call('adminVerifyPayment',token,id,s,'');await refreshAdmin();adminTab('payments')}
-function renderRefunds(){return `<div class="card"><h2>Refunds</h2>${adminSearchBar('refunds')}<div class="scroll"><table id="searchTable_refunds"><tr><th>ID</th><th>Booking</th><th>Amount</th><th>Status</th><th>Action</th></tr>${adminData.refunds.map((r,i)=>`<tr data-search-index="${i}"><td>${r.RefundID}</td><td>${r.BookingID}</td><td>$${r.AmountUSD}</td><td>${r.Status}</td><td>${r.Status==='REQUESTED'?`<button class="small" onclick="refund('${r.RefundID}')">Mark Refunded</button>`:''}</td></tr>`).join('')}</table></div><p id="searchEmpty_refunds" class="muted hidden">No matching records.</p></div>`} async function refund(id){const u=prompt('Refund UTR/reference:');if(u===null)return;await call('adminMarkRefunded',token,id,u,'');await refreshAdmin();adminTab('refunds')}
+function adminBookingTime(b,key){
+  const iso=key==='end'?b.endUTC:b.startUTC;if(!iso||!Number.isFinite(Date.parse(iso)))return withoutGmtOffset(key==='end'?b.endAdmin:b.startAdmin)||'';
+  const date=adminDayKey(iso,adminBusinessTimezone());if(key==='date')return date;
+  const time=new Intl.DateTimeFormat('en-US',{timeZone:adminBusinessTimezone(),hour:'numeric',minute:'2-digit'}).format(new Date(iso));
+  return time+(key==='end'&&date!==adminDayKey(b.startUTC,adminBusinessTimezone())?' ('+date+')':'');
+}
+function renderBookings(){return `<div class="card">${adminSearchBar('bookings')}${adminControls('bookings')}<div class="scroll admin-bookings-scroll" tabindex="0" role="region" aria-label="Bookings table, scroll horizontally to view all columns"><table id="searchTable_bookings"><colgroup><col style="width:150px"><col style="width:210px"><col style="width:110px"><col style="width:90px"><col style="width:150px"><col style="width:120px"><col style="width:100px"><col style="width:100px"><col style="width:180px"><col style="width:140px"><col style="width:170px"><col style="width:220px"></colgroup><tr><th>ID</th><th>Candidate</th><th>Date</th><th>Start</th><th>End</th><th>Type</th><th>Charge</th><th>Paid</th><th>Payment</th><th>Status</th><th>Refund</th><th>Actions</th></tr>${adminData.bookings.map((b,i)=>`<tr data-search-index="${i}"><td>${b.bookingId}</td><td class="booking-candidate"><span>${esc(b.name)}</span><small>${esc(b.candidateId)}</small></td><td data-sort-key="date">${timestampMarkup(b.startUTC,adminBusinessTimezone(),'date')}</td><td data-sort-key="start">${timestampMarkup(b.startUTC,adminBusinessTimezone())}</td><td data-sort-key="end">${timestampMarkup(b.endUTC,adminBusinessTimezone())}${adminDayKey(b.endUTC,adminBusinessTimezone())!==adminDayKey(b.startUTC,adminBusinessTimezone())?'<br><small class="next-day-note">Next day &#183; '+timestampMarkup(b.endUTC,adminBusinessTimezone(),'date')+'</small>':''}</td><td>${esc(b.type)}</td><td data-sort-key="finalCharge">${bookingAmountCell(b,'fc',b.finalCharge)}</td><td data-sort-key="amountPaid">${bookingAmountCell(b,'ap',b.amountPaid)}</td><td>${adminStatusBadge(b.paymentStatus,'payment')}</td><td>${adminStatusBadge(b.status,'booking')}</td><td>${adminStatusBadge(b.refundStatus,'refund')}</td><td>${bookingActions(b)}</td></tr>`).join('')}</table></div><p id="searchEmpty_bookings" class="muted hidden">No matching records.</p></div>`}
+async function saveBooking(id){await call('adminUpdateBooking',token,{bookingId:id,finalCharge:el('fc_'+id).value,amountPaid:el('ap_'+id).value});await refreshAdmin();await adminTab('bookings');showSaveToast('Booking changes saved')} async function adminCancel(id){if(await appConfirm('Cancel booking and remove calendar event?')){await call('adminCancelBooking',token,id);await refreshAdmin();await adminTab('bookings')}}
+function renderCandidates(){return `<div class="card">${adminSearchBar('candidates')}<div class="scroll"><table id="searchTable_candidates"><colgroup><col style="width:8%"><col style="width:11%"><col style="width:21%"><col style="width:15%"><col style="width:14%"><col style="width:6%"><col style="width:12%"><col style="width:13%"></colgroup><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Type</th><th>%</th><th>Timezone</th><th>Actions</th></tr>${adminData.candidates.map((c,i)=>`<tr data-search-index="${i}"><td>${c.candidateId}</td><td>${esc(c.name)}</td><td class="candidate-email"><input disabled type="email" id="ce_${c.candidateId}" aria-label="Candidate email" value="${esc(c.email)}"></td><td class="candidate-phone"><input disabled type="tel" id="cphone_${c.candidateId}" aria-label="Phone with country code" value="${esc(c.phone)}"></td><td><select id="ct_${c.candidateId}" disabled><option ${c.type==='REGULAR'?'selected':''}>REGULAR</option><option ${c.type==='PERCENTAGE'?'selected':''}>PERCENTAGE</option></select></td><td><input disabled type="number" min="0" max="100" id="cp_${c.candidateId}" value="${c.percentage}" style="width:70px"></td><td>${esc(c.timezone)}</td><td>${editControls("candidate_"+c.candidateId,["ct_"+c.candidateId,"cp_"+c.candidateId,"ce_"+c.candidateId,"cphone_"+c.candidateId],"saveCandidate('"+c.candidateId+"')")}<div id="candidateError_${c.candidateId}" role="alert"></div></td></tr>`).join('')}</table></div><p id="searchEmpty_candidates" class="muted hidden">No matching records.</p></div>`} async function saveCandidate(id){try{await call('adminUpdateCandidate',token,{candidateId:id,type:el('ct_'+id).value,percentage:el('cp_'+id).value,email:el('ce_'+id).value,phone:el('cphone_'+id).value,active:adminData.candidates.find(c=>c.candidateId===id).active});await refreshAdmin();await adminTab('candidates');showSaveToast('Candidate details saved')}catch(e){msg('candidateError_'+id,e.message,true)}}
+function editPaymentStatus(id){
+  const p=adminData.payments.find(p=>p.PaymentID===id),row=document.querySelector(`#searchTable_payments [data-search-index="${adminData.payments.indexOf(p)}"]`);if(!row)return;
+  row.cells[row.cells.length-1].innerHTML=`<div class="payment-status-editor"><select id="paymentStatus_${esc(id)}" aria-label="Payment status"><option value="VERIFIED">Paid &amp; verified</option><option value="SUBMITTED">Payment pending</option><option value="FAILED">Payment failed</option></select><button class="small" onclick="savePaymentStatus('${esc(id)}')">Save</button><button class="secondary small" onclick="cancelPaymentStatus('${esc(id)}')">Cancel</button><div id="paymentError_${esc(id)}" role="alert"></div></div>`;
+  el('paymentStatus_'+id).value=p.Status;
+}
+function cancelPaymentStatus(id){
+  adminDraftRows.delete('payments:'+id);
+  const index=adminData.payments.findIndex(p=>p.PaymentID===id),p=adminData.payments[index],row=document.querySelector('#searchTable_payments [data-search-index="'+index+'"]');
+  if(!p||!row)return;
+  row.cells[row.cells.length-1].innerHTML=`<button class="secondary small payment-change" onclick="editPaymentStatus('${esc(id)}')">Change</button>`;
+}
+async function savePaymentStatus(id){try{const p=adminData.payments.find(p=>p.PaymentID===id),next=el('paymentStatus_'+id).value;const reason=next!==p.Status?'Admin corrected payment status from '+p.Status+' to '+next+'.':'';await call('adminVerifyPayment',token,id,next,reason);await refreshAdmin();await adminTab('payments');showSaveToast('Payment status saved');}catch(e){msg('paymentError_'+id,e.message,true);}}
+function renderPayments(){return `<div class="card">${adminSearchBar('payments')}${adminControls('payments')}<div class="scroll"><table id="searchTable_payments"><tr><th>ID</th><th>Booking</th><th>Expected</th><th>Submitted</th><th>UTR</th><th>Status</th><th>Action</th></tr>${adminData.payments.map((p,i)=>`<tr data-search-index="${i}"><td>${p.PaymentID}</td><td>${p.BookingID}</td><td data-sort-key="ExpectedAmountUSD">${p.ExpectedAmountUSD}</td><td data-sort-key="SubmittedAmountUSD">${p.SubmittedAmountUSD}</td><td>${esc(p.UTR)}</td><td>${adminStatusBadge(p.Status,'payment')}</td><td>${['VERIFIED','FAILED'].includes(p.Status)?`<button class="secondary small payment-change" onclick="editPaymentStatus('${p.PaymentID}')">Change</button>`:`<button class="small" onclick="payAction('${p.PaymentID}','VERIFIED')">Verify</button> <button class="danger small" onclick="payAction('${p.PaymentID}','FAILED')">Failed</button>`}</td></tr>`).join('')}</table></div><p id="searchEmpty_payments" class="muted hidden">No matching records.</p></div>`} async function payAction(id,s){await call('adminVerifyPayment',token,id,s,'');await refreshAdmin();await adminTab('payments');showSaveToast('Payment status saved')}
+function renderRefunds(){return `<div class="card">${adminSearchBar('refunds')}${adminControls('refunds')}<div class="scroll"><table id="searchTable_refunds"><tr><th>ID</th><th>Booking</th><th>Amount</th><th>Status</th><th>Action</th></tr>${adminData.refunds.map((r,i)=>`<tr data-search-index="${i}"><td>${r.RefundID}</td><td>${r.BookingID}</td><td data-sort-key="AmountUSD">${r.AmountUSD}</td><td>${adminStatusBadge(r.Status,'refund')}</td><td>${r.Status==='REQUESTED'?`<button class="small" onclick="refund('${r.RefundID}')">Mark Refunded</button>`:''}</td></tr>`).join('')}</table></div><p id="searchEmpty_refunds" class="muted hidden">No matching records.</p></div>`} async function refund(id){const u=await appPrompt('Refund UTR/reference:');if(u===null)return;await call('adminMarkRefunded',token,id,u,'');await refreshAdmin();await adminTab('refunds')}
 function businessTimezoneOptions(current){
   let available=zones;
   try{if(typeof Intl.supportedValuesOf==='function')available=Intl.supportedValuesOf('timeZone');}catch(e){}
   const selected=String(current||'America/New_York');
   return [...new Set([...available,...zones,'UTC',selected])].sort().map(tz=>`<option value="${esc(tz)}" ${tz===selected?'selected':''}>${esc(tz.replace(/_/g,' '))}</option>`).join('');
 }
-function renderSettings(){let s=adminData.settings;return `<div class="card"><h2>Settings</h2><div class="grid"><div><label>Business timezone</label><select disabled id="sTZ" aria-label="Business timezone">${businessTimezoneOptions(s.BUSINESS_TIMEZONE)}</select></div><div><label>Buffer before (min)</label><input disabled id="sBB" value="${s.BUFFER_BEFORE_MINUTES}"></div><div><label>Buffer after (min)</label><input disabled id="sBA" value="${s.BUFFER_AFTER_MINUTES}"></div><div><label>UPI ID</label><input disabled id="sUPI" value="${esc(s.UPI_ID)}"></div><div><label for="sQR">UPI QR image or Google Drive link (optional)</label><input disabled id="sQR" type="url" value="${esc(s.UPI_QR_URL||'')}" placeholder="https://drive.google.com/file/d/.../view"><p class="muted">Paste your QR image file link from Drive. Set sharing to Anyone with the link - Viewer.</p></div><div><label>Short threshold min</label><input disabled id="sST" value="${s.PRICE_SHORT_THRESHOLD_MINUTES}"></div><div><label>Short price USD</label><input disabled id="sSP" value="${s.PRICE_SHORT_USD}"></div><div><label>Long price USD</label><input disabled id="sLP" value="${s.PRICE_LONG_USD}"></div><div><label>Calendar name</label><input disabled id="sCAL" value="${esc(s.CALENDAR_NAME)}"></div></div>${editControls('settings',['sTZ','sBB','sBA','sUPI','sQR','sST','sSP','sLP','sCAL'],'saveSettings()')}<p class="muted">Pricing works per started 60-minute block: up to the short threshold uses short price; above it uses long price. Example defaults: 30=$50, 40=$70, 90=$120, 100=$140.</p></div>`} async function saveSettings(){try{await call('adminUpdateSettings',token,{BUSINESS_TIMEZONE:el('sTZ').value,BUFFER_BEFORE_MINUTES:el('sBB').value,BUFFER_AFTER_MINUTES:el('sBA').value,UPI_ID:el('sUPI').value,UPI_QR_URL:el('sQR').value.trim(),PRICE_SHORT_THRESHOLD_MINUTES:el('sST').value,PRICE_SHORT_USD:el('sSP').value,PRICE_LONG_USD:el('sLP').value,CALENDAR_NAME:el('sCAL').value});await refreshAdmin();adminTab('settings')}catch(e){alert(e.message)}}
-function renderAvailability(){return `<div class="card"><h2>Availability</h2><p class="muted">Business timezone: ${esc(adminData.settings.BUSINESS_TIMEZONE)}. WEEKLY rules define working hours. BLOCK with a date and blank times blocks the full day.</p><div id="avRows">${adminData.availability.map((r,i)=>avRow(r,i)).join('')}</div><button class="secondary" onclick="addAv()">Add Rule</button> <button onclick="saveAv()">Save Availability</button></div>`} function avRow(r,i){return `<div class="grid card av"><div><label>Type</label><select class="avType" onchange="updateAvailabilityFields(this)"><option ${r.RuleType==='WEEKLY'?'selected':''}>WEEKLY</option><option ${r.RuleType==='BLOCK'?'selected':''}>BLOCK</option></select></div><div class="avWeekdayField ${r.RuleType==='BLOCK'?'hidden':''}"><label>Weekday</label><select class="avDay" ${r.RuleType==='BLOCK'?'disabled':''}>${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<option ${d===r.Weekday?'selected':''}>${d}</option>`).join('')}</select></div><div class="avDateField ${r.RuleType==='WEEKLY'?'hidden':''}"><label>Date</label><input class="avDate" ${r.RuleType==='WEEKLY'?'disabled':''} type="date" value="${esc(r.Date)}"></div><div><label>Start</label><input class="avStart" type="time" value="${esc(r.StartTime)}"></div><div><label>End</label><input class="avEnd" type="time" value="${esc(r.EndTime)}"></div><div class="avBlockHint muted ${r.RuleType==='WEEKLY'?'hidden':''}">Leave Start and End blank to block the whole day.</div><div><label>Note</label><input class="avNote" value="${esc(r.Note)}"></div><div><button class="av-remove small" onclick="this.closest('.av').remove()">Remove</button></div></div>`} function updateAvailabilityFields(select){
+function renderSettings(){let s=adminData.settings;return `<div class="card"><div class="grid"><div><label>Business timezone</label><select disabled id="sTZ" aria-label="Business timezone">${businessTimezoneOptions(s.BUSINESS_TIMEZONE)}</select></div><div><label>Buffer before (min)</label><input disabled id="sBB" value="${s.BUFFER_BEFORE_MINUTES}"></div><div><label>Buffer after (min)</label><input disabled id="sBA" value="${s.BUFFER_AFTER_MINUTES}"></div><div><label>UPI ID</label><input disabled id="sUPI" value="${esc(s.UPI_ID)}"></div><div><label for="sQR">UPI QR image or Google Drive link (optional)</label><input disabled id="sQR" type="url" value="${esc(s.UPI_QR_URL||'')}" placeholder="https://drive.google.com/file/d/.../view"><p class="muted">Paste your QR image file link from Drive. Set sharing to Anyone with the link - Viewer.</p></div><div><label>Short threshold min</label><input disabled id="sST" value="${s.PRICE_SHORT_THRESHOLD_MINUTES}"></div><div><label>Short price USD</label><input disabled id="sSP" value="${s.PRICE_SHORT_USD}"></div><div><label>Long price USD</label><input disabled id="sLP" value="${s.PRICE_LONG_USD}"></div><div><label>Calendar name</label><input disabled id="sCAL" value="${esc(s.CALENDAR_NAME)}"></div></div>${editControls('settings',['sTZ','sBB','sBA','sUPI','sQR','sST','sSP','sLP','sCAL'],'saveSettings()')}<p class="muted">Pricing works per started 60-minute block: up to the short threshold uses short price; above it uses long price. Example defaults: 30=$50, 40=$70, 90=$120, 100=$140.</p></div>`} async function saveSettings(){try{await call('adminUpdateSettings',token,{BUSINESS_TIMEZONE:el('sTZ').value,BUFFER_BEFORE_MINUTES:el('sBB').value,BUFFER_AFTER_MINUTES:el('sBA').value,UPI_ID:el('sUPI').value,UPI_QR_URL:el('sQR').value.trim(),PRICE_SHORT_THRESHOLD_MINUTES:el('sST').value,PRICE_SHORT_USD:el('sSP').value,PRICE_LONG_USD:el('sLP').value,CALENDAR_NAME:el('sCAL').value});await refreshAdmin();await adminTab('settings');showSaveToast('Settings saved')}catch(e){appAlert(e)}}
+function availabilitySourceTimezone(){return adminData.settings?.AVAILABILITY_TIMEZONE||adminBusinessTimezone();}
+function availabilityAddDays(date,days){const d=new Date(date+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10);}
+function availabilityLocalUTC(date,time,zone){
+  const target=date+'T'+time,guess=Date.parse(target+':00Z');
+  const fmt=new Intl.DateTimeFormat('en-CA',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+  const key=ms=>{const p=Object.fromEntries(fmt.formatToParts(new Date(ms)).map(x=>[x.type,x.value]));return p.year+'-'+p.month+'-'+p.day+'T'+p.hour+':'+p.minute;};
+  const offsets=new Set();for(let h=-36;h<=36;h+=6){const ms=guess+h*3600000;offsets.add(Date.parse(key(ms)+':00Z')-ms);}
+  const matches=[...offsets].map(offset=>guess-offset).filter(ms=>key(ms)===target);
+  if(matches.length!==1)throw new Error('Clock change on this date. Check the saved hours.');
+  return new Date(matches[0]).toISOString();
+}
+function renderAvailabilityPreview(referenceDate){
+  const source=availabilitySourceTimezone(),zone=adminBusinessTimezone(),today=referenceDate||portalDateTime(adminData.nowUTC||new Date().toISOString(),source,'24').day;
+  const weekday=new Date(today+'T12:00:00Z').getUTCDay(),sunday=availabilityAddDays(today,-weekday);
+  return '<div class="scroll"><table><thead><tr><th>Rule</th><th>Start date</th><th>Start</th><th>End date</th><th>End</th></tr></thead><tbody>'+adminData.availability.map(r=>{
+    try{
+      const date=r.RuleType==='WEEKLY'?availabilityAddDays(sunday,['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(r.Weekday)):r.Date;
+      const fullDay=!r.StartTime&&!r.EndTime,endDate=fullDay||r.EndTime<r.StartTime?availabilityAddDays(date,1):date;
+      const start=availabilityLocalUTC(date,fullDay?'00:00':r.StartTime,source),end=availabilityLocalUTC(endDate,fullDay?'00:00':r.EndTime,source);
+      return '<tr><td>'+esc(r.RuleType==='WEEKLY'?'Working hours':'Blocked')+(r.Enabled===false?' (off)':'')+'</td><td>'+timestampMarkup(start,zone,'date')+'</td><td>'+timestampMarkup(start,zone)+'</td><td>'+timestampMarkup(end,zone,'date')+'</td><td>'+timestampMarkup(end,zone)+'</td></tr>';
+    }catch(e){return '<tr><td>'+esc(r.RuleType)+'</td><td colspan="4">'+esc(e.message)+'</td></tr>';}
+  }).join('')+'</tbody></table></div>';
+}
+function renderAvailability(){
+  const source=availabilitySourceTimezone();
+  return `<div class="card availability-card"><div class="availability-zone"><div><span class="work-eyebrow">Working hours</span><p>These hours follow only the business timezone below.</p></div><div><label for="avTimezone">Business timezone</label><select id="avTimezone" disabled>${businessTimezoneOptions(source)}</select></div></div><div id="avRows">${adminData.availability.map((r,i)=>lockedAvailabilityRow(r,i)).join('')}</div><div class="availability-actions"><button id="avAdd" class="secondary" disabled onclick="addAv()">+ Add Rule</button><button id="avEdit" onclick="editAvailability()">Edit</button><button id="avSave" class="hidden" onclick="saveAv()">Save Availability</button><button id="avCancel" class="secondary hidden" onclick="cancelAvailabilityEdit()">Cancel</button></div><div id="avMessage" role="status"></div></div>`;
+} function avRow(r,i){return `<div class="grid card av" data-enabled="${r.Enabled===false?'false':'true'}"><div><label>Type</label><select class="avType" onchange="updateAvailabilityFields(this)"><option ${r.RuleType==='WEEKLY'?'selected':''}>WEEKLY</option><option ${r.RuleType==='BLOCK'?'selected':''}>BLOCK</option></select></div><div class="avWeekdayField ${r.RuleType==='BLOCK'?'hidden':''}"><label>Weekday</label><select class="avDay" ${r.RuleType==='BLOCK'?'disabled':''}>${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<option ${d===r.Weekday?'selected':''}>${d}</option>`).join('')}</select></div><div class="avDateField ${r.RuleType==='WEEKLY'?'hidden':''}"><label>Date</label><input class="avDate" ${r.RuleType==='WEEKLY'?'disabled':''} type="date" value="${esc(r.Date)}"></div><div><label>Start</label><input class="avStart" type="time" value="${esc(r.StartTime)}"></div><div><label>End</label><input class="avEnd" type="time" value="${esc(r.EndTime)}"></div><div class="avBlockHint muted ${r.RuleType==='WEEKLY'?'hidden':''}">Leave Start and End blank to block the whole day.</div><input class="avNote" type="hidden" value="${esc(r.Note||'')}"><div><button class="av-remove small" onclick="this.closest('.av').remove()">Remove</button></div></div>`} function updateAvailabilityFields(select){
   const row=select.closest('.av'),block=select.value==='BLOCK';
   row.querySelector('.avWeekdayField').classList.toggle('hidden',block);
   row.querySelector('.avDay').disabled=block;
@@ -1187,14 +1716,47 @@ function renderAvailability(){return `<div class="card"><h2>Availability</h2><p 
   row.querySelector('.avDate').disabled=!block;
   row.querySelector('.avBlockHint').classList.toggle('hidden',!block);
 }
-function addAv(){el('avRows').insertAdjacentHTML('beforeend',avRow({RuleType:'BLOCK',Weekday:'Mon',Date:'',StartTime:'',EndTime:'',Note:''},Date.now()))} async function saveAv(){let rules=[...document.querySelectorAll('.av')].map(x=>({ruleType:x.querySelector('.avType').value,weekday:x.querySelector('.avType').value==='WEEKLY'?x.querySelector('.avDay').value:'',date:x.querySelector('.avType').value==='BLOCK'?x.querySelector('.avDate').value:'',startTime:x.querySelector('.avStart').value,endTime:x.querySelector('.avEnd').value,note:x.querySelector('.avNote').value,enabled:true}));await call('adminSaveAvailability',token,rules);await refreshAdmin();adminTab('availability')}
+function lockedAvailabilityRow(r,i){return avRow(r,i).replace(/<(input|select|button)\b/g,'<$1 disabled');}
+function editAvailability(){
+  el('avTimezone').disabled=false;
+  document.querySelectorAll('#avRows input,#avRows select,#avRows button').forEach(field=>field.disabled=false);
+  document.querySelectorAll('#avRows .avType').forEach(updateAvailabilityFields);
+  el('avAdd').disabled=false;
+  el('avEdit').classList.add('hidden');el('avSave').classList.remove('hidden');el('avCancel').classList.remove('hidden');
+  enhancePickerFields();
+}
+function cancelAvailabilityEdit(){el('adminContent').innerHTML=renderAvailability();enhancePickerFields();}
+function addAv(){if(el('avEdit')&&!el('avEdit').classList.contains('hidden'))return;el('avRows').insertAdjacentHTML('beforeend',avRow({RuleType:'BLOCK',Weekday:'Mon',Date:'',StartTime:'',EndTime:'',Note:''},Date.now()))} async function saveAv(){
+  if(!el('avEdit').classList.contains('hidden'))return;
+  try{
+    const zone=el('avTimezone').value,source=availabilitySourceTimezone();
+    if(zone!==source&&!adminData.availabilityTimezoneEditable)throw new Error('This preview is running older server code. Update the server before changing the availability timezone.');
+    const rules=[...document.querySelectorAll('.av')].map(x=>({ruleType:x.querySelector('.avType').value,weekday:x.querySelector('.avType').value==='WEEKLY'?x.querySelector('.avDay').value:'',date:x.querySelector('.avType').value==='BLOCK'?x.querySelector('.avDate').value:'',startTime:x.querySelector('.avStart').value,endTime:x.querySelector('.avEnd').value,note:x.querySelector('.avNote').value,enabled:x.dataset.enabled!=='false'}));
+    await call('adminSaveAvailability',token,rules,source,zone);await refreshAdmin();await adminTab('availability');showSaveToast('Availability saved');
+  }catch(e){msg('avMessage',e.message,true);}
+}
 function bookingCandidateOptions(query,selected=''){
   const q=query.trim().toLowerCase();
   const candidates=(adminData?.candidates||[]).filter(c=>c.active!==false&&[c.candidateId,c.name,c.email].some(v=>String(v||'').toLowerCase().includes(q)));
   return '<option value="">'+(candidates.length?'Select a candidate':'No matching candidates')+'</option>'+candidates.map(c=>`<option value="${esc(c.candidateId)}" ${c.candidateId===selected?'selected':''}>${esc(c.name)} (${esc(c.candidateId)})</option>`).join('');
 }
 
-function renderCreate(){return `<div class="card"><h2>Admin Create Booking</h2><div class="grid"><div><label for="acId">Candidate</label><select id="acId">${bookingCandidateOptions('')}</select></div><div><label>Date</label><input id="acDate" type="date"></div><div><label>Start</label><input id="acStart" type="time" oninput="updateOvernightConfirmation('ac')" onchange="updateOvernightConfirmation('ac')"></div><div><label>End</label><input id="acEnd" type="time" oninput="updateOvernightConfirmation('ac')" onchange="updateOvernightConfirmation('ac')"><div id="acOvernightWrap" class="overnight-confirmation hidden"><label><input id="acOvernightConfirmed" type="checkbox"><span>This is an overnight booking and ends the next day</span></label></div></div><div><label>Business timezone</label><input id="acTz" readonly value="${esc(adminBusinessTimezone())}"></div><div><label>Interview type</label><select id="acType"><option>Technical</option><option>Coding</option><option>HR</option></select></div><div><label>Final charge override (optional)</label><input id="acCharge" type="number"></div><div><label><input id="acOverride" type="checkbox" style="width:auto"> Override availability/buffer</label></div></div><button onclick="adminCreate()">Create Booking</button><div id="acMsg"></div></div>`} async function adminCreate(){try{if(!el('acId').value)throw new Error('Select a candidate before creating a booking.');const r=await call('adminCreateBooking',token,{candidateId:el('acId').value,date:el('acDate').value,startTime:el('acStart').value,endTime:el('acEnd').value,timezone:el('acTz').value,interviewType:el('acType').value,finalCharge:el('acCharge').value,override:el('acOverride').checked,overnightConfirmed:el('acOvernightConfirmed').checked});msg('acMsg','Created '+r.bookingId);await refreshAdmin()}catch(e){msg('acMsg',e.message,true)}}
+function adminBookingTimePayload(date,startTime,endTime,overnightConfirmed,sourceZone){
+  const serverZone=adminBusinessTimezone();
+  if(sourceZone===serverZone)return {date,startTime,endTime,timezone:serverZone,overnightConfirmed};
+  if(endTime===startTime)throw new Error('End time must be different from start time.');
+  if(endTime<startTime&&!overnightConfirmed)throw new Error('Confirm that this is an overnight booking to continue.');
+  const endDate=endTime<startTime?availabilityAddDays(date,1):date;
+  const startUTC=availabilityLocalUTC(date,startTime,sourceZone),endUTC=availabilityLocalUTC(endDate,endTime,sourceZone);
+  if(Date.parse(endUTC)<=Date.parse(startUTC))throw new Error('End must be after start.');
+  const start=portalDateTime(startUTC,serverZone,'24'),end=portalDateTime(endUTC,serverZone,'24');
+  // Validate the round trip: reject DST ambiguity rather than silently shifting a booking.
+  if(availabilityLocalUTC(start.day,start.time,serverZone)!==startUTC||availabilityLocalUTC(end.day,end.time,serverZone)!==endUTC)throw new Error('These times cross a clock change. Choose another time.');
+  const nextDay=end.day!==start.day;
+  if(nextDay&&end.day!==availabilityAddDays(start.day,1)||nextDay&&end.time>=start.time)throw new Error('This interval cannot be represented safely. Choose a shorter interview.');
+  return {date:start.day,startTime:start.time,endTime:end.time,timezone:serverZone,overnightConfirmed:nextDay};
+}
+function renderCreate(){return `<div class="card"><div class="grid"><div><label for="acId">Candidate</label><select id="acId">${bookingCandidateOptions('')}</select></div><div><label>Date</label><input id="acDate" type="date"></div><div><label>Start</label><input id="acStart" type="time" oninput="updateOvernightConfirmation('ac')" onchange="updateOvernightConfirmation('ac')"></div><div><label>End</label><input id="acEnd" type="time" oninput="updateOvernightConfirmation('ac')" onchange="updateOvernightConfirmation('ac')"><div id="acOvernightWrap" class="overnight-confirmation hidden"><label><input id="acOvernightConfirmed" type="checkbox"><span>This is an overnight booking and ends the next day</span></label></div></div><div><label>Business timezone</label><input id="acTz" readonly value="${esc(availabilitySourceTimezone())}"></div><div><label>Interview type</label><select id="acType"><option>Technical</option><option>Coding</option><option>HR</option></select></div><div><label>Final charge override (optional)</label><input id="acCharge" type="number"></div><div><label><input id="acOverride" type="checkbox" style="width:auto"> Override availability/buffer</label></div></div><button onclick="adminCreate()">Create Booking</button><div id="acMsg"></div></div>`} async function adminCreate(){try{if(!el('acId').value)throw new Error('Select a candidate before creating a booking.');const r=await call('adminCreateBooking',token,{candidateId:el('acId').value,date:el('acDate').value,startTime:el('acStart').value,endTime:el('acEnd').value,...adminBookingTimePayload(el('acDate').value,el('acStart').value,el('acEnd').value,el('acOvernightConfirmed').checked,el('acTz').value),interviewType:el('acType').value,finalCharge:el('acCharge').value,override:el('acOverride').checked});msg('acMsg','Created '+r.bookingId);await refreshAdmin()}catch(e){msg('acMsg',e.message,true)}}
 function showSignedOut(){
   invalidateQuote();token='';role='';home=null;adminData=null;clearSession();clearRecovery();
   ['candidateApp','adminApp'].forEach(id=>el(id).classList.add('hidden'));
@@ -1205,9 +1767,16 @@ function showSignedOut(){
 }
 async function logoutNow(){
   try{if(token)await call('logout',token)}
-  catch(e){alert('Could not revoke your server session. Please try Logout again.');return;}
+  catch(e){appAlert('Could not revoke your server session. Please try Logout again.');return;}
   showSignedOut();
-} async function restoreSession(){try{const raw=localStorage.getItem('interviewPortalSession');if(!raw)return;const x=JSON.parse(raw);token=x.token||'';role=x.role||'';if(!token)return;const validated=await call('validateSession',token);role=validated.role;saveSession();if(role==='candidate')await loadCandidate();else if(role==='admin'){el('landing').classList.add('hidden');el('adminApp').classList.remove('hidden');el('topUser').textContent='Admin';await refreshAdmin();adminTab('dash')}}catch(e){token='';role='';clearSession()}}
+} async function restoreSession(){try{const raw=localStorage.getItem('interviewPortalSession');if(!raw)return;const x=JSON.parse(raw);token=x.token||'';role=x.role||'';if(!token)return;const validated=await call('validateSession',token);role=validated.role;saveSession();if(role==='candidate')await loadCandidate();else if(role==='admin'){el('landing').classList.add('hidden');el('adminApp').classList.remove('hidden');el('topUser').textContent='Admin';await refreshAdmin();await adminTab('dash')}}catch(e){token='';role='';clearSession()}}
+
+
+let saveToastTimer;
+function showSaveToast(message='Changes saved'){
+  let notice=el('saveToast');if(!notice){notice=document.createElement('div');notice.id='saveToast';notice.className='save-toast';notice.setAttribute('role','status');notice.setAttribute('aria-live','polite');document.body.appendChild(notice);}
+  notice.innerHTML=`<span>${esc(message)}</span><button type="button" aria-label="Dismiss notification" onclick="el('saveToast').classList.add('hidden')">&times;</button>`;notice.classList.remove('hidden');clearTimeout(saveToastTimer);saveToastTimer=setTimeout(()=>notice.classList.add('hidden'),4000);
+}
 
 function preferredTimeFormatKey(){
   const identity=typeof role!=='undefined'&&role==='candidate'&&typeof home!=='undefined'&&home?.profile?home.profile.candidateId:typeof role!=='undefined'&&role==='admin'?'admin':'visitor';
@@ -1217,22 +1786,24 @@ function preferredTimeFormat(){try{return localStorage.getItem(preferredTimeForm
 function formatPreferredTime(value,format=preferredTimeFormat()){
   return String(value??'').replace(/\b(\d{1,2}):(\d{2})\s*([AP]M)\b/gi,(match,h,m,period)=>format==='24'?String(Number(h)%12+(period.toUpperCase()==='PM'?12:0)).padStart(2,'0')+':'+m:match);
 }
-const originalTimeTexts=new WeakMap();
+function formatDisplayDates(value){
+  const iso=String(value).replace(/\b(\d{4})-(\d{2})-(\d{2})\b/g,(_,y,m,d)=>d+'-'+m+'-'+y.slice(-2));
+  const months={jan:'01',feb:'02',mar:'03',apr:'04',may:'05',jun:'06',jul:'07',aug:'08',sep:'09',oct:'10',nov:'11',dec:'12'};
+  return iso.replace(/\b([A-Za-z]{3,9})\s+(\d{1,2}),?\s+(\d{4})\b/g,(match,m,d,y)=>months[m.slice(0,3).toLowerCase()]?d.padStart(2,'0')+'-'+months[m.slice(0,3).toLowerCase()]+'-'+y.slice(-2):match).replace(/\b(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})\b/g,(match,d,m,y)=>months[m.slice(0,3).toLowerCase()]?d.padStart(2,'0')+'-'+months[m.slice(0,3).toLowerCase()]+'-'+y.slice(-2):match);
+}
 function applyPreferredTimeFormat(){
   const format=preferredTimeFormat();
+  const preference=el('headerTimeFormat');if(preference)preference.classList.remove('hidden');
   document.querySelectorAll('[data-time-format]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.timeFormat===format)));
-  const walker=document.createTreeWalker(document.querySelector('main'),NodeFilter.SHOW_TEXT);
-  let node;while(node=walker.nextNode()){
-    if(node.parentElement?.closest('script,style,textarea,.picker-panel'))continue;
-    const original=originalTimeTexts.get(node)??node.nodeValue;
-    if(!/\b\d{1,2}:\d{2}\s*[AP]M\b/i.test(original))continue;
-    originalTimeTexts.set(node,original);
-    const text=formatPreferredTime(original,format);if(node.nodeValue!==text)node.nodeValue=text;
-  }
+  document.querySelectorAll('[data-timestamp]').forEach(node=>{
+    const p=portalDateTime(node.dataset.timestamp,node.dataset.timezone,format),part=node.dataset.timePart,text=part==='full'?p.date+' '+p.time:p[part];
+    if(node.textContent!==text)node.textContent=text;
+  });
+  document.querySelectorAll('[data-display-text]').forEach(node=>{const text=formatDisplayDates(formatPreferredTime(node.dataset.displayText,format));if(node.textContent!==text)node.textContent=text;});
 }
 function setPreferredTimeFormat(format){
   if(!['12','24'].includes(format))return;
-  try{localStorage.setItem(preferredTimeFormatKey(),format);}catch(e){alert('Browser storage is unavailable. Enable it to save your preferred time format.');return;}
+  try{localStorage.setItem(preferredTimeFormatKey(),format);}catch(e){appAlert('Browser storage is unavailable. Enable it to save your preferred time format.');return;}
   closeFieldPicker();
   document.querySelectorAll('input[type="time"]').forEach(syncPickerField);
   applyPreferredTimeFormat();
@@ -1264,8 +1835,8 @@ function syncPickerField(field){
   const kind=field.tagName==='SELECT'?'select':field.type;
   let text=field.value;
   if(kind==='select')text=field.selectedOptions[0]?.textContent||'';
-  if(kind==='date'&&field.value)text=new Date(field.value+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  if(kind==='time'&&field.value){const [h,m]=field.value.split(':');text=`${Number(h)%12||12}:${m} ${Number(h)<12?'AM':'PM'}`;}
+  if(kind==='date'&&field.value)text=formatDisplayDates(field.value);
+  if(kind==='time'&&field.value){const [h,m]=field.value.split(':');text=preferredTimeFormat()==='24'?`${h.padStart(2,'0')}:${m}`:`${Number(h)%12||12}:${m} ${Number(h)<12?'AM':'PM'}`;}
   trigger.innerHTML=`<span class="${text?'':'picker-placeholder'}">${esc(text||(kind==='date'?'Select date':kind==='time'?'Select time':'Select interview type'))}</span>${pickerIcon(kind)}`;
   trigger.disabled=field.disabled;trigger.dataset.currentValue=field.value;
   trigger.setAttribute('aria-label',`${pickerFieldLabel(field)}: ${text||'not selected'}`);
@@ -1296,7 +1867,7 @@ function renderFieldPicker(){
   const {field,panel,kind}=activePicker;
   if(kind==='select'){
     const timezone=isTimezonePicker(field);
-    panel.innerHTML=`${timezone?'<input type="search" class="picker-search" aria-label="Search timezones" placeholder="Search timezones..." autocomplete="off">':''}<div class="picker-options ${timezone?'picker-options-scroll':''}" role="listbox" aria-label="${timezone?'Timezone':'Interview type'}">${pickerOptionsMarkup(field)}</div>`;
+    panel.innerHTML=`${timezone?'<input type="search" class="picker-search" aria-label="Search timezones" placeholder="Search timezones..." autocomplete="off">':''}<div class="picker-options ${timezone?'picker-options-scroll':''}" role="listbox" aria-label="${timezone?'Timezone':esc(pickerFieldLabel(field))}">${pickerOptionsMarkup(field)}</div>`;
     if(timezone)panel.querySelector('.picker-search').addEventListener('input',event=>{panel.querySelector('.picker-options').innerHTML=pickerOptionsMarkup(field,event.target.value);positionFieldPicker();});
   }else if(kind==='date'){
     const month=activePicker.month,year=month.getFullYear(),monthIndex=month.getMonth(),calendar=pickerCalendarDays(year,monthIndex),today=pickerDateValue(new Date());
@@ -1341,7 +1912,7 @@ function openFieldPicker(field,trigger){
 }
 function enhancePickerFields(){
   if(activePicker&&!activePicker.trigger.isConnected)closeFieldPicker();
-  document.querySelectorAll('input[type="date"], input[type="time"], #bType, #acType, #rTz, #cTz, #sTZ, select[id$="Timezone"]').forEach(field=>{
+  document.querySelectorAll('input[type="date"], input[type="time"], #bType, #acType, #rTz, #cTz, #sTZ, select[id$="Timezone"], #adminContent select').forEach(field=>{
     if(field.dataset.pickerEnhanced){const trigger=field.parentElement.querySelector('.picker-trigger');if(trigger&&trigger.disabled!==field.disabled)trigger.disabled=field.disabled;if(trigger&&trigger.dataset.currentValue!==field.value)syncPickerField(field);return;}
     field.dataset.pickerEnhanced='true';
     const wrapper=document.createElement('div'),trigger=document.createElement('button');
@@ -1357,9 +1928,35 @@ function enhancePickerFields(){
 }
 if(typeof MutationObserver!=='undefined'){
   enhancePickerFields();applyPreferredTimeFormat();
-  const pickerObserver=new MutationObserver(()=>{enhancePickerFields();applyPreferredTimeFormat();});pickerObserver.observe(document.querySelector('main'),{childList:true,subtree:true,attributes:true,attributeFilter:['disabled']});
+  const pickerObserver=new MutationObserver(()=>{enhanceAdminTables();enhancePickerFields();applyPreferredTimeFormat();});pickerObserver.observe(document.querySelector('main'),{childList:true,subtree:true,attributes:true,attributeFilter:['disabled']});
   document.addEventListener('pointerdown',event=>{if(activePicker&&!activePicker.panel.contains(event.target)&&!activePicker.trigger.contains(event.target))closeFieldPicker();});
   window.addEventListener('resize',()=>closeFieldPicker());window.addEventListener('scroll',event=>{if(activePicker&&(!event.target.nodeType||!activePicker.panel.contains(event.target)))closeFieldPicker();},true);
 }
+
+let appDialogQueue=Promise.resolve();
+function appDialog(message,{kind='alert',title=kind==='confirm'?'Please confirm':kind==='prompt'?'Enter details':'Notice',accept=kind==='confirm'?'Confirm':'OK',details=''}={}){
+  const run=()=>new Promise(resolve=>{
+    const previous=document.activeElement,dialog=document.createElement('dialog');dialog.className='app-dialog';
+    dialog.setAttribute('aria-labelledby','appDialogTitle');dialog.setAttribute('aria-describedby','appDialogMessage');
+    dialog.innerHTML=`<form method="dialog"><div class="app-dialog-icon" aria-hidden="true">${kind==='confirm'?'!':kind==='prompt'?'#':'i'}</div><h2 id="appDialogTitle">${esc(title)}</h2><p id="appDialogMessage">${esc(message)}</p>${details?`<details class="error-details"><summary>Error details</summary><pre>${esc(details)}</pre></details>`:''}${kind==='prompt'?'<label for="appDialogInput">Reference</label><input id="appDialogInput" autocomplete="off" required>':''}<div class="app-dialog-actions">${kind!=='alert'?'<button type="button" class="secondary" data-dialog-cancel>Cancel</button>':''}<button type="submit" value="accept">${esc(accept)}</button></div></form>`;
+    document.body.appendChild(dialog);
+    dialog.querySelector('[data-dialog-cancel]')?.addEventListener('click',()=>dialog.close('cancel'));
+    dialog.addEventListener('close',()=>{const accepted=dialog.returnValue==='accept',value=kind==='prompt'?(accepted?dialog.querySelector('input').value.trim():null):kind==='confirm'?accepted:undefined;dialog.remove();if(previous?.isConnected)previous.focus();resolve(value);},{once:true});
+    dialog.showModal();(dialog.querySelector('input')||dialog.querySelector('[data-dialog-cancel]')||dialog.querySelector('button')).focus();
+  });
+  const result=appDialogQueue.then(run);appDialogQueue=result.catch(()=>{});return result;
+}
+function appAlert(message){
+  const error=message&&typeof message==='object'?message:null;
+  return appDialog(error?.message||message,{details:error?.stack?String(error.stack).replace(/https?:\/\/[^\s)]+/g,url=>url.split('?')[0]):''});
+}
+function isExtensionError(error){
+  const stack=String(error?.stack||'');
+  return /(?:chrome|moz|safari-web)-extension:\/\//.test(stack)&&!(typeof location!=='undefined'&&stack.includes(location.origin+location.pathname));
+}
+function appConfirm(message){return appDialog(message,{kind:'confirm'});}
+function appPrompt(message){return appDialog(message,{kind:'prompt',title:'Refund reference',accept:'Save'});}
+if(typeof window!=='undefined'&&window.addEventListener)window.addEventListener('unhandledrejection',event=>{if(isExtensionError(event.reason)){console.warn('Browser extension error:',event.reason);return;}event.preventDefault();appAlert(event.reason||'The action could not be completed. Please try again.');});
+
 restoreSession();
 </script></body></html>

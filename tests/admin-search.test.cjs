@@ -1,10 +1,12 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const html=fs.readFileSync('Index.html','utf8'),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const html=require('../local-preview/read-ui.cjs').readUi(),script=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 new vm.Script(script);
 assert(html.includes("candTab('booked')\">Blocked Schedules"));
-assert(html.includes("adminTab('booked')\">Blocked Schedules"));
-assert(html.includes('data-admin-page="booked"'));
+assert(!html.includes("adminTab('booked')\">Blocked Schedules"));
+assert(!html.includes('data-admin-page="booked"'));
 const bookedUi=vm.createContext({businessTimezoneOptions:timezone=>`<option selected>${timezone}</option>`,esc:value=>String(value??'')});
+vm.runInContext(script.slice(script.indexOf('// Display comes from UTC'),script.indexOf('function candidateStatusBadge(')),bookedUi);
+bookedUi.preferredTimeFormat=()=> '12';bookedUi.formatDisplayDates=s=>s;bookedUi.formatPreferredTime=s=>s;
 const bookedUiStart=script.indexOf('function renderBookedTimes('),bookedUiEnd=script.indexOf('\nasync function loadBookedTimes',bookedUiStart);
 vm.runInContext(script.slice(bookedUiStart,bookedUiEnd),bookedUi);
 const candidateBookedView=bookedUi.renderBookedTimes('candidateBooked','America/New_York');
@@ -16,6 +18,7 @@ const data={candidates:[{candidateId:'AV-1',name:'Anurag Verma',email:'test@exam
 const row={dataset:{searchIndex:'0'},classList:{toggle(_,hidden){row.hidden=hidden;}},unsavedValue:'75'};
 const empty={classList:{toggle(_,hidden){empty.hidden=hidden;}}};
 const ctx=vm.createContext({zones:['Asia/Kolkata','America/New_York'],document:{},withoutGmtOffset:s=>String(s??''),adminData:data,esc:s=>String(s??'').replaceAll('<','&lt;'),el:id=>id.startsWith('searchTable_')?{querySelectorAll:()=>[row]}:empty});
+vm.runInContext(script.slice(script.indexOf('// Display comes from UTC'),script.indexOf('function candidateStatusBadge(')),ctx);ctx.preferredTimeFormat=()=> '12';
 vm.runInContext(script.slice(script.indexOf('function adminBusinessTimezone('),script.indexOf('function showSignedOut(')),ctx);
 for(const kind of ['candidates','bookings','payments','refunds']){
   assert(ctx.adminRecordMatches(kind,data[kind][0],'ANURAG test@example.com'));
@@ -43,7 +46,7 @@ assert(ctx.bookingActions(confirmed).includes('class="small hidden" onclick="sav
 assert(!ctx.bookingActions({...confirmed,status:'CANCELLED'}).includes('<button'));
 assert.equal(ctx.bookingAmountCell({...confirmed,status:'CANCELLED'},'fc',50),'$50.00');
 assert(ctx.bookingAmountCell(confirmed,'fc',50).includes('class="hidden"'));
-assert(!ctx.renderPayments().includes('payAction('));
+assert(ctx.renderPayments().includes('editPaymentStatus('));
 data.payments[0].Status='SUBMITTED';assert(ctx.renderPayments().includes('payAction('));
 console.log('PASS confirmed booking Edit/hidden Save, read-only cancelled bookings and verified payment actions');
 console.log('PASS live search across four tabs, related candidate/booking fields, case-insensitive terms, empty results, preserved edits and clean candidate dropdown');
@@ -59,7 +62,8 @@ for(const key of ['candidate_AV-1','settings','timezone']){
 }
 ctx.el=originalEl;data.settings={};
 data.settings.BUSINESS_TIMEZONE='Europe/London';
-assert(ctx.renderBookings().includes('all times shown in Europe/London'));
+assert(!ctx.renderBookings().includes('<h2>Bookings</h2>'));
+assert(!ctx.renderBookings().includes('all times shown'));
 assert(ctx.renderCreate().includes('id="acTz" readonly value="Europe/London"'));
 assert(ctx.renderCandidates().includes('id="ct_AV-1" disabled'));
 assert(ctx.renderSettings().includes('<select disabled id="sTZ"'));
@@ -80,6 +84,7 @@ const candidateUi=vm.createContext({
   zones:['UTC'],esc:value=>String(value??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'),
   editControls:()=>'',withoutGmtOffset:value=>value,el:()=>({set innerHTML(value){candidateUi.html=value;}})
 });
+vm.runInContext(script.slice(script.indexOf('// Display comes from UTC'),script.indexOf('function candidateStatusBadge(')),candidateUi);candidateUi.preferredTimeFormat=()=> '12';candidateUi.formatPreferredTime=s=>s;candidateUi.formatDisplayDates=s=>s;
 const candidateUiStart=script.indexOf('function candidateStatusBadge('),candidateUiEnd=script.indexOf('async function saveTz(',candidateUiStart);
 vm.runInContext(script.slice(candidateUiStart,candidateUiEnd),candidateUi);
 candidateUi.renderCandidateHome();
@@ -89,7 +94,7 @@ assert(candidateUi.html.includes('Filter interviews by payment and refund status
 assert(candidateUi.html.includes("sortCandidateInterviews('refundStatus')"));
 assert(candidateUi.html.includes('candidate-booking-id">INT-PENDING</span>'));
 for(const key of ['date','start','end'])assert(candidateUi.html.includes("sortCandidateInterviews('"+key+"')"));
-assert(candidateUi.html.includes('<td>Jan 1, 2035</td><td>10:00 AM</td><td>10:30 AM</td>'));
+assert(candidateUi.html.replace(/<\/?span[^>]*>/g,'').includes('<td>Jan 1, 2035</td><td>10:00 AM</td><td>10:30 AM</td>'));
 candidateUi.setCandidateInterviewFilter('payment:SUBMITTED');
 assert(candidateUi.html.includes('candidate-booking-id">INT-PENDING</span>'));
 assert(!candidateUi.html.includes('candidate-booking-id">INT-VERIFIED</span>'));
@@ -139,14 +144,14 @@ data.bookings=[
 ];
 assert.equal(ctx.todaysAdminBookings().length,2);
 assert.equal(ctx.todaysAdminBookings()[0].name,'Earlier');
-assert(ctx.renderTodayBookings().includes('2026-09-28'));
+assert(ctx.renderTodayBookings().includes('28-09-26')); 
 assert(ctx.renderTodayBookings().includes('30 min'));
 assert(!ctx.renderTodayBookings().includes('Cancelled'));
 assert.equal(ctx.todaysAdminBookings('2026-09-29').length,1);
 assert.equal(ctx.todaysAdminBookings('2026-09-29')[0].name,'Tomorrow');
 assert.equal(ctx.todaysAdminBookings('2026-09-30').length,0);
-assert(ctx.renderTodayBookings().includes('value="2026-09-28"'));
-data.bookings=[];assert(ctx.renderTodayBookings('2026-09-30').includes('value="2026-09-30"'));
+assert(!ctx.renderTodayBookings().includes('id="dashboardDate"'));
+data.bookings=[];assert(!ctx.renderTodayBookings('2026-09-30').includes('<h2>Confirmed bookings</h2>'));
 assert(ctx.renderTodayBookings().includes('No confirmed bookings for this date'));
 console.log('PASS today dashboard: business-date boundary, time order, duration, cancelled exclusion and empty state');
 
@@ -236,3 +241,30 @@ assert(scheduleResults.get('candidateBookedResult').includes('aria-sort="descend
 assert(bookedUi.renderBookedTimesResult(schedules,'publicBooked').includes('aria-sort="ascending"'));
 assert.equal(schedules.booked[0].start,'11:00 PM');
 console.log('PASS blocked schedule sorting: AM/PM, overnight end dates, toggles, independent welcome/candidate state and preserved source data');
+
+ctx.adminData.nowUTC='2026-10-10T02:00:00Z';ctx.adminData.settings.BUSINESS_TIMEZONE='America/New_York';
+const filterBooking={bookingId:'FILTER-1',status:'CONFIRMED',paymentStatus:'SUBMITTED',refundStatus:'NOT_REQUIRED',startUTC:'2026-10-10T01:00:00Z',endUTC:'2026-10-10T02:00:00Z'};
+ctx.adminData.bookings=[filterBooking];
+ctx.adminViewState('bookings').date='TODAY';assert(ctx.adminDateMatches('bookings',filterBooking));
+ctx.adminViewState('bookings').date='TOMORROW';assert(!ctx.adminDateMatches('bookings',filterBooking));
+Object.assign(ctx.adminViewState('bookings'),{date:'RANGE',from:'2026-10-09',to:'2026-10-09'});assert(ctx.adminDateMatches('bookings',filterBooking));
+ctx.adminViewState('bookings').status='VERIFIED';ctx.filterAdminRecords('bookings','');assert(row.hidden);
+ctx.adminViewState('bookings').status='SUBMITTED';ctx.filterAdminRecords('bookings','');assert(!row.hidden);
+assert(ctx.adminStatusBadge('SUBMITTED','payment').includes('candidate-status-pending'));
+assert(ctx.adminStatusBadge('REFUNDED','refund').includes('candidate-status-verified'));
+assert(ctx.renderBookings().includes('<th>Date</th><th>Start</th><th>End</th>'));
+ctx.adminViewState('dashboard').date='TOMORROW';assert(ctx.renderTodayBookings().includes("setAdminDateFilter('dashboard','TOMORROW')"));
+const sortedRows=[{dataset:{searchIndex:'0'},cells:[{dataset:{sortKey:'finalCharge'}}],parentElement:{appendChild(row){ordered.push(row.dataset.searchIndex);}}},{dataset:{searchIndex:'1'},cells:[{dataset:{sortKey:'finalCharge'}}],parentElement:{appendChild(row){ordered.push(row.dataset.searchIndex);}}}];
+const ordered=[];ctx.adminData.bookings=[{finalCharge:100},{finalCharge:20}];ctx.document.querySelector=()=>({querySelectorAll:selector=>selector==='[data-search-index]'?sortedRows:[]});
+ctx.adminSortColumn('bookings',0);assert.deepEqual(ordered,['1','0']);ordered.length=0;ctx.adminSortColumn('bookings',0);assert.deepEqual(ordered,['0','1']);
+console.log('PASS admin date/status combination, timezone boundary, dashboard shortcuts, colored badges and numeric DOM-row sorting');
+
+const destinations=[];ctx.adminTab=page=>destinations.push(page);
+ctx.openAdminMetric('pendingPayments');assert.equal(destinations.at(-1),'payments');assert.equal(ctx.adminViewState('payments').status,'SUBMITTED');
+ctx.openAdminMetric('refunds');assert.equal(destinations.at(-1),'refunds');assert.equal(ctx.adminViewState('refunds').status,'REQUESTED');
+ctx.openAdminMetric('upcoming');assert.equal(destinations.at(-1),'bookings');assert(ctx.adminViewState('bookings').upcoming);
+ctx.openAdminMetric('candidates');assert.equal(destinations.at(-1),'candidates');
+ctx.adminData.counts={candidates:7,upcoming:3,pendingPayments:2,refunds:1};
+assert(ctx.renderDash().includes("openAdminMetric('upcoming')"));
+assert(ctx.renderDash().includes('View candidates (7)'));
+console.log('PASS dashboard cleanup and metric destinations with matching pending/refund/upcoming filters');

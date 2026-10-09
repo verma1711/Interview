@@ -1,8 +1,8 @@
 // Local browser inspection helper; requires Edge with remote debugging on 9333.
 const fs=require('node:fs');
-async function connect(){
+async function connect(port=8787){
   const tabs=await (await fetch('http://127.0.0.1:9333/json/list')).json();
-  const tab=tabs.find(t=>t.type==='page'&&t.url.startsWith('http://127.0.0.1:8787'))||tabs.find(t=>t.type==='page'&&t.url==='about:blank');
+  const tab=tabs.find(t=>t.type==='page'&&t.url.startsWith('http://127.0.0.1:'+port))||tabs.find(t=>t.type==='page'&&t.url==='about:blank');
   if(!tab)throw Error('No local test tab');
   const ws=new WebSocket(tab.webSocketDebuggerUrl);await new Promise((resolve,reject)=>{ws.onopen=resolve;ws.onerror=reject;});
   let id=0;const waiting=new Map(),errors=[],dialogs=[];
