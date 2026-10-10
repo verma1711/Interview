@@ -1,5 +1,5 @@
 // Local browser inspection helper; requires Edge with remote debugging on 9333.
-const fs=require('node:fs');
+const fs=require('node:fs'),path=require('node:path');
 async function connect(port=8787){
   const tabs=await (await fetch('http://127.0.0.1:9333/json/list')).json();
   const tab=tabs.find(t=>t.type==='page'&&t.url.startsWith('http://127.0.0.1:'+port))||tabs.find(t=>t.type==='page'&&t.url==='about:blank');
@@ -13,7 +13,7 @@ async function connect(port=8787){
   async function click(selector){const p=await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});if(!e)throw Error('Missing target');e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()`);await send('Input.dispatchMouseEvent',{type:'mousePressed',button:'left',clickCount:1,...p});await send('Input.dispatchMouseEvent',{type:'mouseReleased',button:'left',clickCount:1,...p});}
   async function fill(selector,value){await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(selector)});e.value=${JSON.stringify(value)};e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}));})()`);}
   async function idle(){await wait("typeof pendingCalls!=='undefined'&&pendingCalls===0&&!document.querySelector('#loader').classList.contains('visible')");await new Promise(r=>setTimeout(r,100));}
-  async function screenshot(name){const r=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});fs.writeFileSync('local-preview/'+name+'.png',Buffer.from(r.data,'base64'));}
+  async function screenshot(name){const r=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});fs.writeFileSync(path.join(__dirname,name+'.png'),Buffer.from(r.data,'base64'));}
   await send('Page.enable');await send('Runtime.enable');
   await send('Emulation.setDeviceMetricsOverride',{width:1365,height:950,deviceScaleFactor:1,mobile:false});
   return {send,evaluate,wait,click,fill,idle,screenshot,errors,dialogs,close:()=>ws.close()};

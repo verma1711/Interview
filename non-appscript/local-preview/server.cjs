@@ -1,6 +1,6 @@
 // Local-only server. No external dependencies, network calls, or live Google data.
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
-process.chdir(path.join(__dirname,'..'));
+process.chdir(path.join(__dirname,'..','..'));
 const {ctx,mail}=require('./mock-store.cjs');
 const allowed=new Set([...require('./read-ui.cjs').readUi().matchAll(/call\('([^']+)'/g)].map(m=>m[1]).concat(['changeCandidatePassword','adminChangePassword']));
 const shim=fs.readFileSync(path.join(__dirname,'shim.txt'),'utf8');

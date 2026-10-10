@@ -9,7 +9,7 @@ For every implementation, feature, bug fix, configuration change, or workflow ch
 3. Update commands, schemas, setup instructions, and feature descriptions when they change. Do not merely append a history entry while leaving outdated instructions above it.
 4. Record what was actually tested. Distinguish local mocks from deployed Apps Script verification. Never claim deployment or browser verification unless performed.
 
-Preserve user changes. This is a Google Sheets-bound Apps Script project, not a Node production application. `local-preview/` provides disposable mocks only. Include all numbered server files when deploying. Do not reset live data, change credentials, or deploy without task authorization.
+Preserve user changes. This is a Google Sheets-bound Apps Script project, not a Node production application. `non-appscript/local-preview/` provides disposable mocks only. Include all numbered server files when deploying. Do not reset live data, change credentials, or deploy without task authorization.
 
 Use the existing dependency-free structure unless the task requires a change. Preserve server-side role checks, authentication field privacy, booking locks, timezone handling, payment/refund validation, and retryable external work. Run the relevant tests after changes; use the full suite when shared authentication, booking, or navigation behavior changes.
 

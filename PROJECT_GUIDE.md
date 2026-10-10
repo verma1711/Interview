@@ -1,6 +1,6 @@
 ﻿# Interview Booking Portal â€” project and agent guide
 
-Last updated: 2026-10-10.
+Last updated: 2026-10-11.
 
 This document describes the current application, its features, architecture, development workflow, and operational constraints. Read `AGENTS.md` for the requirement to keep this guide current with every implementation. Existing focused notes are linked below; historical validation in those notes is not proof that a new change has been deployed.
 
@@ -26,16 +26,18 @@ The local Node server emulates Apps Script and Google services in memory. On loo
 | `06_BookingIntegrity.js` | Settings/availability validation, cancellation/refund consistency, persisted external work/errors and role-checked retries |
 | `07_AdminData.js` | Admin overview, bounded table pages, global search/sort/filter and lightweight booking candidate choices |
 | `appsscript.json` | V8 runtime, Asia/Kolkata script timezone, enabled People API and required Google scopes |
-| `local-preview/server.cjs` | Loopback HTTP preview and allowlisted RPC endpoint |
-| `local-preview/mock-store.cjs` | In-memory Google service mocks and seeded accounts/records |
-| `local-preview/read-ui.cjs` | Reads the UI for preview and tests; supports trusted includes for compatibility |
-| `local-preview/shim.txt` | Browser replacement for `google.script.run` in the preview |
-| `local-preview/browser-check.cjs` | Edge remote-debugging helper for optional browser walkthroughs/screenshots |
-| `tests/*.test.cjs` | Dependency-free Node tests using mocked Apps Script services/browser contexts |
-| `LOCAL_TEST_CASES.md` | Local-only test checklist covering modules, edge cases, reported regressions and complete user journeys; results must be recorded separately |
+| `non-appscript/local-preview/server.cjs` | Loopback HTTP preview and allowlisted RPC endpoint |
+| `non-appscript/local-preview/mock-store.cjs` | In-memory Google service mocks and seeded accounts/records |
+| `non-appscript/local-preview/read-ui.cjs` | Reads the UI for preview and tests; supports trusted includes for compatibility |
+| `non-appscript/local-preview/shim.txt` | Browser replacement for `google.script.run` in the preview |
+| `non-appscript/local-preview/browser-check.cjs` | Edge remote-debugging helper for optional browser walkthroughs/screenshots |
+| `non-appscript/tests/*.test.cjs` | Dependency-free Node tests using mocked Apps Script services/browser contexts |
+| `non-appscript/LOCAL_TEST_CASES.md` | Manual browser walkthrough of actual website; requires non-appscript/WEBSITE_TEST_REPORT.md after execution |
+| `non-appscript/WEBSITE_TEST_REPORT.md` | Results and limitations from the latest visible-browser QA walkthrough |
+| `non-appscript/dummy.txt` | Retained local-only artifact; not used by the Apps Script project |
 | `AUTHENTICATION.md` | Detailed authentication setup, upgrade, reset and storage notes |
 | `BOOKING_FIXES.md` | Booking integrity implementation and historical validation notes |
-| `local-preview/README.md` | Preview commands, sample logins and mock limitations |
+| `non-appscript/local-preview/README.md` | Preview commands, sample logins and mock limitations |
 | `AGENTS.md` | Repository agent instructions and documentation maintenance requirement |
 
 ## Current layout mode
@@ -128,12 +130,12 @@ Recovery codes expire after ten minutes, allow five attempts, are single-use and
 
 ## Local development and testing
 
-Use `LOCAL_TEST_CASES.md` for the current pre-deployment test plan. It gives stable case IDs, browser/mock/HTTP/Excel methods, setup data, steps and expected results across visitor, candidate, admin, security, booking, payment/refund, timezone, availability, exports and owner maintenance. All checklist cases initially have Not run status; existing automated tests cover only their actual assertions, and renderer fixtures are not complete user journeys. Record results/evidence using its run template. Live Google delivery, authorization, quotas and real concurrency belong in a separate post-deployment plan. Do not restart the shared preview, change shared credentials or run destructive maintenance to prepare this checklist without authorization; use isolated mock processes for those checks. Maintain this checklist when behavior changes alongside this guide.
+Use `non-appscript/LOCAL_TEST_CASES.md` for the current manual pre-deployment website walkthrough. An agent opens the actual local website, clicks controls, enters forms, checks saved results across pages and writes `non-appscript/WEBSITE_TEST_REPORT.md` after execution, with every case status, evidence, bugs and restoration notes. Browser-control tools may perform those real interactions; Node tests, direct APIs, injected sample screens and storage edits cannot substitute. All cases start Not run; conditional unavailable checks remain Blocked. Use QA records and restore shared configuration; do not change shared admin credentials, restart/reset or deploy without authorization. Internal security/schema/owner checks and live Google delivery need separate technical/post-deployment testing. Maintain this plan alongside the guide when visible behaviour changes.
 
 Run from the project root with Node available:
 
 ```powershell
-node local-preview/server.cjs
+node non-appscript/local-preview/server.cjs
 ```
 
 Open `http://127.0.0.1:8787`. `PREVIEW_PORT` can override the port. The entry point keeps CSS and client helpers inline so raw HTML previews and existing preview processes receive complete styles/scripts without include expansion. Reload for HTML/CSS/client changes; restart for server-code changes or to reset seed data. The server listens only on loopback, allows client RPC names, rejects cross-origin browser RPCs, and uses a separate local-preview session-storage key.
@@ -149,7 +151,7 @@ These are disposable preview credentials. Generated candidate IDs change on rest
 Run all tests (PowerShell-compatible, stopping on failure):
 
 ```powershell
-Get-ChildItem tests/*.test.cjs | ForEach-Object {
+Get-ChildItem non-appscript/tests/*.test.cjs | ForEach-Object {
   node $_.FullName
   if ($LASTEXITCODE -ne 0) { throw "Test failed: $($_.Name)" }
 }
@@ -172,7 +174,7 @@ Get-ChildItem tests/*.test.cjs | ForEach-Object {
 | `public-bookings.test.cjs` | Public privacy projection, timezone boundaries, cancellation exclusion and DST |
 | `reset.test.cjs` | Owner-only reset, cleanup, preserved unrelated data and setup after reset |
 
-`local-preview/browser-check.cjs` can connect to an Edge page using remote debugging on port 9333. Its `connect(port=8787)` argument selects the preview port, including isolated test previews. Existing PNGs are historical screenshots, not automatic evidence of current UI. Local tests do not validate Google authorization, actual service delivery, quotas, deployed latency or real concurrent requests.
+`non-appscript/local-preview/browser-check.cjs` can connect to an Edge page using remote debugging on port 9333. Its `connect(port=8787)` argument selects the preview port, including isolated test previews. Existing PNGs are historical screenshots, not automatic evidence of current UI. Local tests do not validate Google authorization, actual service delivery, quotas, deployed latency or real concurrent requests.
 
 ## Data loading and performance
 
@@ -182,7 +184,7 @@ Sheets still scans relevant tabs for global counts, filtering and sorting; pagin
 
 ## Production setup and maintenance
 
-1. Use the existing Sheets-bound Apps Script project and upload all `00_`â€“`07_` server files, `Index.html` and `appsscript.json`. Local preview/tests/documentation are not production application files; `.claspignore` excludes preview/tests.
+1. Use the existing Sheets-bound Apps Script project and upload all `00_`â€“`07_` server files, `Index.html` and `appsscript.json`. Local preview, tests, walkthroughs, reports, and local artifacts are retained in `non-appscript/`; `.claspignore` excludes that entire folder from Apps Script uploads.
 2. For a new installation, set `INITIAL_ADMIN_EMAIL` and `INITIAL_ADMIN_PASSWORD` in Script Properties, run `runInitialSetup()` manually as owner, then remove those initialization properties.
 3. For an existing authentication upgrade, run `upgradeCandidateAuthentication()` as owner; it preserves existing data/settings while adding authentication schema. See `AUTHENTICATION.md`.
 4. Authorize required scopes: current spreadsheet, email sending, Calendar, Contacts and user identity. The manifest enables Advanced People API v1.
@@ -193,42 +195,52 @@ Sheets still scans relevant tabs for global counts, filtering and sorting; pagin
 
 ## Change history
 
+### 2026-10-11 — Push source to Apps Script
+
+- Uploaded all eight numbered server files, `Index.html` and `appsscript.json` to the configured Apps Script project using `clasp push`. No new numbered deployment version was created.
+- Validation: push completed for 10 files; post-push clasp status and existing deployment list checked. No live web-app smoke tests or Google-service operations were performed.
+
+### 2026-10-11 — Separate Apps Script sources from local QA materials
+
+- Grouped the local preview, dependency-free tests, browser walkthrough materials and retained local-only artifact under `non-appscript/`. Updated references and preview paths; `.claspignore` excludes the entire folder from Apps Script uploads.
+- Files: `.claspignore`, `AGENTS.md`, `PROJECT_GUIDE.md`, relocated preview/tests/checklist/report/artifact. All 14 local test scripts passed; the existing preview returned HTTP 200 with its local-only notice, and the relocated server/browser helper passed Node syntax checks. No clasp push or deployed Apps Script verification performed; live Google integrations remain unverified.
+
 ### 2026-10-10 â€” Dashboard cleanup and clickable metrics
 
 - Removed the Confirmed bookings heading, standalone date calendar and timezone captions; retained table date columns and date-filter controls. Converted live metric cards into keyboard-accessible navigation buttons with matching upcoming/payment/refund filters.
-- Files: `Index.html`, `tests/admin-search.test.cjs`, `PROJECT_GUIDE.md`. Targeted UI checks passed, including destinations and status filters. Local Edge verified removed elements and all four card destinations without uncaught exceptions. All seven local test files passed. No production deployment performed.
+- Files: `Index.html`, `non-appscript/tests/admin-search.test.cjs`, `PROJECT_GUIDE.md`. Targeted UI checks passed, including destinations and status filters. Local Edge verified removed elements and all four card destinations without uncaught exceptions. All seven local test files passed. No production deployment performed.
 
 ### 2026-10-10 â€” Admin UI parity
 
 - Added matching status/date controls to Bookings, Payments and Refunds, plus date shortcuts/ranges on the confirmed-bookings dashboard. Split admin booking times into Date/Start/End and added refund badges. Filters use business dates and combine with existing search.
 - Added sortable headers to dashboard, booking, candidate, payment and refund tables. Sorting moves existing rows rather than recreating edits. Added matching status colors, metric/table hover effects, reduced-motion support and styled remaining admin selects. Retained the fixed desktop layout and existing privileged actions.
-- Files: `Index.html`, `tests/admin-search.test.cjs`, `PROJECT_GUIDE.md`. Full seven-file local suite passed; additional admin date/status/numeric-sort checks passed. Local Edge verified status filtering, range-calendar enhancement, Tomorrow selection, all affected admin pages and preservation of an unsaved charge during sorting, without uncaught exceptions. Screenshot: `local-preview/browser-admin-ui.png` (captured before the final date/time nowrap adjustment). No production deployment performed.
+- Files: `Index.html`, `non-appscript/tests/admin-search.test.cjs`, `PROJECT_GUIDE.md`. Full seven-file local suite passed; additional admin date/status/numeric-sort checks passed. Local Edge verified status filtering, range-calendar enhancement, Tomorrow selection, all affected admin pages and preservation of an unsaved charge during sorting, without uncaught exceptions. Screenshot: `non-appscript/local-preview/browser-admin-ui.png` (captured before the final date/time nowrap adjustment). No production deployment performed.
 
 ### 2026-10-10 â€” Separate admin password page
 
 - Added Change Password to desktop admin navigation and the retained mobile menu, matching the candidate navigation. The shared password form and reauthentication flow are now on that page instead of embedded beneath Settings.
-- Updated `tests/auth.test.cjs` to verify both admin navigation entries and that Settings no longer renders the password form.
-- Files: `Index.html`, `tests/auth.test.cjs`, `PROJECT_GUIDE.md`. Full local test suite run; no production deployment or browser verification performed.
+- Updated `non-appscript/tests/auth.test.cjs` to verify both admin navigation entries and that Settings no longer renders the password form.
+- Files: `Index.html`, `non-appscript/tests/auth.test.cjs`, `PROJECT_GUIDE.md`. Full local test suite run; no production deployment or browser verification performed.
 
 ### 2026-10-09 â€” Candidate dashboard columns and status filtering
 
 - Split the long combined time cell into Date, Start and End; show end date for overnight interviews.
 - Converted display-only payment/refund badges into working filters with All, selected state and empty results.
-- Updated responsive column labels and added regression checks in `tests/admin-search.test.cjs`.
-- Files: `Index.html`, `tests/admin-search.test.cjs`. All six local test files passed. No production deployment performed.
+- Updated responsive column labels and added regression checks in `non-appscript/tests/admin-search.test.cjs`.
+- Files: `Index.html`, `non-appscript/tests/admin-search.test.cjs`. All six local test files passed. No production deployment performed.
 
 ### 2026-10-09 â€” Sorting, navigation feedback and agent handoff
 
 - Removed the My Interviews heading. Added sortable data-column headers with direction indicators, numeric/time/date sorting, filter compatibility and visible controls on smaller screens.
 - Added navigation hover/press/underline effects and candidate/admin active-page indicators; reduced-motion preferences disable navigation animation.
 - Added this project guide and root `AGENTS.md` requiring future agents to update the guide and change history in each implementation task.
-- Files: `Index.html`, `tests/admin-search.test.cjs`, `PROJECT_GUIDE.md`, `AGENTS.md`. All six local test files passed; added sorting/filter compatibility and active navigation checks passed. Local preview returned HTTP 200. Browser visual inspection was unavailable because the Edge debugging endpoint was not running. No production deployment performed.
+- Files: `Index.html`, `non-appscript/tests/admin-search.test.cjs`, `PROJECT_GUIDE.md`, `AGENTS.md`. All six local test files passed; added sorting/filter compatibility and active navigation checks passed. Local preview returned HTTP 200. Browser visual inspection was unavailable because the Edge debugging endpoint was not running. No production deployment performed.
 
 ### 2026-10-09 â€” Reliable arrows and styled input pickers
 
 - Fixed literal question marks in sort headers by replacing text arrow characters with SVG up/down arrows and an active-direction highlight.
 - Added shared styled interview-type, calendar and time panels with original-field event dispatch, mobile positioning, disabled-state handling and keyboard focus/Escape behavior. Moved initial session restoration after picker initialization to retain the client test harness's controlled restoration flow.
-- Files: `Index.html`, `tests/pickers.test.cjs`, `PROJECT_GUIDE.md`; screenshots: `local-preview/browser-picker-calendar.png`, `browser-picker-time.png`, `browser-picker-mobile.png`.
+- Files: `Index.html`, `non-appscript/tests/pickers.test.cjs`, `PROJECT_GUIDE.md`; screenshots: `non-appscript/local-preview/browser-picker-calendar.png`, `browser-picker-time.png`, `browser-picker-mobile.png`.
 - All seven local test files passed. A local Edge browser verified calendar selection, interview-type selection, 12:35 PM conversion to `12:35`, nine SVG sort indicators, Escape dismissal and a 390px layout without page overflow. Calendar/time desktop screenshots were visually inspected. No uncaught exceptions were observed during that walkthrough. No production deployment performed.
 
 ### 2026-10-09 - Distinct Logout animation
@@ -239,7 +251,7 @@ Sheets still scans relevant tabs for global counts, filtering and sorting; pagin
 ### 2026-10-09 - Styled timezone dropdowns
 
 - Extended the shared picker to registration, profile, public/private Booked Times and Settings timezone selects. Added search, scrollable results, empty-match messaging, keyboard focus handling, disabled-state synchronization and displayed-value restoration after Cancel.
-- Files: `Index.html`, `tests/pickers.test.cjs`, `PROJECT_GUIDE.md`. Picker and existing UI tests passed. Local Edge checks confirmed search/selection, empty results, profile Edit enablement and preserved timezone values with no uncaught exceptions. No production deployment performed.
+- Files: `Index.html`, `non-appscript/tests/pickers.test.cjs`, `PROJECT_GUIDE.md`. Picker and existing UI tests passed. Local Edge checks confirmed search/selection, empty results, profile Edit enablement and preserved timezone values with no uncaught exceptions. No production deployment performed.
 
 ### 2026-10-09 - Temporarily disable screen-size responsiveness
 
@@ -249,22 +261,22 @@ Sheets still scans relevant tabs for global counts, filtering and sorting; pagin
 ### 2026-10-09 - Candidate dashboard date filters
 
 - Added a right-aligned All dates/Today/Tomorrow/Yesterday/Range toolbar. Relative dates use candidate timezone; inclusive ranges use the shared calendars and inline validation. Date filtering combines with status filtering and sorting.
-- Files: `Index.html`, `tests/admin-search.test.cjs`, `PROJECT_GUIDE.md`. UI/picker checks passed, including midnight timezone boundaries, day/year/leap-day transitions, inclusive range endpoints and invalid ranges. Local Edge verified Today filtering, enhanced range calendars and toolbar alignment without overlap or uncaught exceptions. Screenshot: `local-preview/browser-dashboard-date-filter.png`. No production deployment performed.
+- Files: `Index.html`, `non-appscript/tests/admin-search.test.cjs`, `PROJECT_GUIDE.md`. UI/picker checks passed, including midnight timezone boundaries, day/year/leap-day transitions, inclusive range endpoints and invalid ranges. Local Edge verified Today filtering, enhanced range calendars and toolbar alignment without overlap or uncaught exceptions. Screenshot: `non-appscript/local-preview/browser-dashboard-date-filter.png`. No production deployment performed.
 
 ### 2026-10-09 - Rename Blocked Schedules
 
 - Renamed Booked Times to Blocked Schedules in candidate/admin navigation, headings, lookup actions and prompts, including the public lookup and booking-form section. Updated current feature descriptions; internal API/function names and schedule behavior remain unchanged.
-- Files: `Index.html`, `tests/admin-search.test.cjs`, `PROJECT_GUIDE.md`. Existing UI and public-schedule checks passed. No production deployment performed.
+- Files: `Index.html`, `non-appscript/tests/admin-search.test.cjs`, `PROJECT_GUIDE.md`. Existing UI and public-schedule checks passed. No production deployment performed.
 
 ### 2026-10-09 - Blocked Schedules table sorting
 
 - Added clickable Status/Date/Start/End sorting to welcome, candidate and admin schedule tables. Uses SVG arrows, independent table sort state, chronological AM/PM and overnight-end comparisons, and cached results without extra RPCs.
-- Files: `Index.html`, `tests/admin-search.test.cjs`, `PROJECT_GUIDE.md`. UI and public-schedule checks passed, including sort direction toggles, overnight ordering, independent table state and source-data preservation. No production deployment performed.
+- Files: `Index.html`, `non-appscript/tests/admin-search.test.cjs`, `PROJECT_GUIDE.md`. UI and public-schedule checks passed, including sort direction toggles, overnight ordering, independent table state and source-data preservation. No production deployment performed.
 
 ### 2026-10-09 - Preferred 12/24-hour time format
 
 - Added Preferred time format controls to candidate/admin pages, with browser-local per-candidate/admin persistence and a 12-hour default. Display conversion updates existing/new UI without replacing forms, and time pickers switch between AM/PM and 00?23 hours. Booking values, timezones and canonical sorting data are preserved.
-- Files: `Index.html`, `tests/pickers.test.cjs`, `PROJECT_GUIDE.md`. All seven existing test files passed; added format/account-isolation checks passed. Local Edge verified candidate/admin 12/24-hour switching, a 24-option hour picker without AM/PM, and selection of 23:45 displaying as 11:45 PM when switched back. No uncaught browser exceptions observed; no production deployment performed.
+- Files: `Index.html`, `non-appscript/tests/pickers.test.cjs`, `PROJECT_GUIDE.md`. All seven existing test files passed; added format/account-isolation checks passed. Local Edge verified candidate/admin 12/24-hour switching, a 24-option hour picker without AM/PM, and selection of 23:45 displaying as 11:45 PM when switched back. No uncaught browser exceptions observed; no production deployment performed.
 
 ### 2026-10-09 - Move candidate time format into profile
 
@@ -280,69 +292,69 @@ Sheets still scans relevant tabs for global counts, filtering and sorting; pagin
 
 - Removed admin Blocked Schedules navigation and redundant admin content/book-form headings. Moved the unlabeled time-format selector to the shared header; converted dashboard Refresh to an icon, aligned range errors below date controls, increased table spacing and separated candidate email/phone columns. Displayed dates use DD-MM-YY while canonical values remain unchanged.
 - Added Change/Save/Cancel on verified payments. Extended the existing locked adminVerifyPayment API to allow pending/failed corrections, synchronize booking/refund state and clear verification timestamps; completed refunds remain protected. Clarified the existing after-midnight checkbox in candidate/admin forms.
-- Files: `Index.html`, `04_Admin.js`, `tests/admin-search.test.cjs`, `tests/auth.test.cjs`, `tests/booking-integrity.test.cjs`, `tests/pickers.test.cjs`, `PROJECT_GUIDE.md`. All seven local test files passed; extra date-format checks passed. Local Edge verified header placement, removed headings/navigation, DD-MM-YY table dates, payment editor and overnight checkbox visibility without uncaught exceptions. Payment transitions and refund protection were validated in mocks, not live Google Sheets. Screenshot: `local-preview/browser-admin-cleanup.png`. No production deployment performed.
+- Files: `Index.html`, `04_Admin.js`, `non-appscript/tests/admin-search.test.cjs`, `non-appscript/tests/auth.test.cjs`, `non-appscript/tests/booking-integrity.test.cjs`, `non-appscript/tests/pickers.test.cjs`, `PROJECT_GUIDE.md`. All seven local test files passed; extra date-format checks passed. Local Edge verified header placement, removed headings/navigation, DD-MM-YY table dates, payment editor and overnight checkbox visibility without uncaught exceptions. Payment transitions and refund protection were validated in mocks, not live Google Sheets. Screenshot: `non-appscript/local-preview/browser-admin-cleanup.png`. No production deployment performed.
 
 ### 2026-10-10 - Header switch visibility, styled controls and contact editing
 
 - Made the header 12/24-hour switch always visible. Redesigned Refresh as a compact blue icon button and styled payment Change/editor/Save/Cancel controls. Added admin editing of candidate email/phone with atomic validation, uniqueness checks, recovery cleanup and session invalidation when email changes.
-- Files: `Index.html`, `04_Admin.js`, `tests/candidate-edit.test.cjs`, `PROJECT_GUIDE.md`. All eight local test files passed after correcting an authorization-message expectation in the new test. Local Edge verified header visibility, 38px refresh dimensions, enabled contact fields and styled payment editor with no uncaught exceptions. Screenshot: `local-preview/browser-payment-editor.png`. Contact-update persistence/security tested against mocks only. No production deployment performed. Restart the local server for the new candidate-update server code.
+- Files: `Index.html`, `04_Admin.js`, `non-appscript/tests/candidate-edit.test.cjs`, `PROJECT_GUIDE.md`. All eight local test files passed after correcting an authorization-message expectation in the new test. Local Edge verified header visibility, 38px refresh dimensions, enabled contact fields and styled payment editor with no uncaught exceptions. Screenshot: `non-appscript/local-preview/browser-payment-editor.png`. Contact-update persistence/security tested against mocks only. No production deployment performed. Restart the local server for the new candidate-update server code.
 
 ### 2026-10-10 - Candidates table alignment
 
 - Added fixed column proportions and centered cells; normalized row/field heights, readonly field styling and action spacing so view/edit modes stay aligned.
-- Files: `Index.html`, `PROJECT_GUIDE.md`. Existing UI checks passed. Local Edge verified middle alignment across all eight columns, working edit controls and no uncaught exceptions; screenshot visually inspected: `local-preview/browser-candidates-aligned.png`. No production deployment performed.
+- Files: `Index.html`, `PROJECT_GUIDE.md`. Existing UI checks passed. Local Edge verified middle alignment across all eight columns, working edit controls and no uncaught exceptions; screenshot visually inspected: `non-appscript/local-preview/browser-candidates-aligned.png`. No production deployment performed.
 
 ### 2026-10-10 - Replace native dialogs with in-page popups
 
 - Replaced all app-authored native alerts/confirmations/prompts in candidate/admin flows and the local-preview reset-code notice with a queued, accessible styled dialog. Cancellation/refund actions wait for user input; Escape/Cancel exits safely. Added error-rejection handling and no-native-dialog regression checks.
-- Files: `Index.html`, `local-preview/shim.txt`, `tests/pickers.test.cjs`, `PROJECT_GUIDE.md`. Local Edge verified Confirm/Cancel values, reference input, Escape dismissal, zero native dialogs and no uncaught exceptions. Screenshot: `local-preview/browser-app-dialog.png`. All eight local test files and the added no-native-dialog checks passed. No production deployment performed.
+- Files: `Index.html`, `non-appscript/local-preview/shim.txt`, `non-appscript/tests/pickers.test.cjs`, `PROJECT_GUIDE.md`. Local Edge verified Confirm/Cancel values, reference input, Escape dismissal, zero native dialogs and no uncaught exceptions. Screenshot: `non-appscript/local-preview/browser-app-dialog.png`. All eight local test files and the added no-native-dialog checks passed. No production deployment performed.
 
 ### 2026-10-10 - Sorting, payment consistency, admin security and paged UI
 
 - Fixed editable candidate-field sorting; synchronized admin booking amount/reference corrections with payments and incomplete refunds; retained admin-only payment authority with before/after audit records and correction reasons. Added salted admin credentials with verified legacy migration and daily expired-session compaction.
 - Added a styled pending email/calendar panel with role-checked individual/bounded batch retries and persisted failure details. Admin tables now load 50-row pages with global search/filter/sort; draft rows and search focus are preserved. Extracted Styles, ClientTime and ClientAdmin HTML partials and updated preview/test include expansion. Dates/times now render from UTC using the viewer timezone and per-account 12/24-hour preference, updating only marked elements.
-- Files: `00_Config.js` through `07_AdminData.js`, `Index.html`, `Styles.html`, `ClientTime.html`, `ClientAdmin.html`, `local-preview/read-ui.cjs`, preview server/browser helper, tests, `PROJECT_GUIDE.md`, `AUTHENTICATION.md`, `BOOKING_FIXES.md` and preview README.
-- Validation: all nine local test files passed. Additional paged-server checks passed for DD-MM-YY search, inclusive ranges and timezone date boundaries after the final date-search optimization. Local Edge on an isolated mock preview with 113 candidates verified separate 50-row pages, candidate email sorting, retained edits across sorting/navigation, payment amount reconciliation, a successful admin retry, both admin time formats and candidate 24-hour display, with no uncaught errors or native dialogs. Screenshots inspected: `local-preview/browser-admin-retry-panel.png`, `local-preview/browser-admin-payment-reason.png`, `local-preview/browser-candidate-canonical-times.png`. No production deployment or live Google verification. Sheets scans and at-least-once email retry limitations remain; no retry trigger was installed. Restart existing preview servers to load the updated partial expansion/server code.
+- Files: `00_Config.js` through `07_AdminData.js`, `Index.html`, `Styles.html`, `ClientTime.html`, `ClientAdmin.html`, `non-appscript/local-preview/read-ui.cjs`, preview server/browser helper, tests, `PROJECT_GUIDE.md`, `AUTHENTICATION.md`, `BOOKING_FIXES.md` and preview README.
+- Validation: all nine local test files passed. Additional paged-server checks passed for DD-MM-YY search, inclusive ranges and timezone date boundaries after the final date-search optimization. Local Edge on an isolated mock preview with 113 candidates verified separate 50-row pages, candidate email sorting, retained edits across sorting/navigation, payment amount reconciliation, a successful admin retry, both admin time formats and candidate 24-hour display, with no uncaught errors or native dialogs. Screenshots inspected: `non-appscript/local-preview/browser-admin-retry-panel.png`, `non-appscript/local-preview/browser-admin-payment-reason.png`, `non-appscript/local-preview/browser-candidate-canonical-times.png`. No production deployment or live Google verification. Sheets scans and at-least-once email retry limitations remain; no retry trigger was installed. Restart existing preview servers to load the updated partial expansion/server code.
 
 ### 2026-10-10 - Restore self-contained CSS and client scripts
 
 - Fixed the unstyled page served by an already-running preview: its older server read Index.html directly and left the new Apps Script include markers unexpanded. Restored the current CSS and shared time/admin code inline in Index.html and removed the three extracted partial files. This retains the sorting, payment, security, paging, retry and time-format improvements while restoring compatibility with raw HTML previews and deployments that upload Index.html. New server behavior still requires restarting existing preview processes.
-- Files: `Index.html`, removed `Styles.html`/`ClientTime.html`/`ClientAdmin.html`, `tests/admin-improvements.test.cjs`, guide/authentication/booking/preview documentation. All nine local test files passed, including an added regression check requiring inline CSS and no unexpanded client includes in the raw entry point. The already-running preview at port 8787 served complete CSS and valid client code without a restart. Local Edge verified applied styles, hidden sections, available shared helpers and zero uncaught errors/native dialogs; screenshot visually inspected: `local-preview/browser-restored-inline-css.png`. No live deployment or Google service verification.
+- Files: `Index.html`, removed `Styles.html`/`ClientTime.html`/`ClientAdmin.html`, `non-appscript/tests/admin-improvements.test.cjs`, guide/authentication/booking/preview documentation. All nine local test files passed, including an added regression check requiring inline CSS and no unexpanded client includes in the raw entry point. The already-running preview at port 8787 served complete CSS and valid client code without a restart. Local Edge verified applied styles, hidden sections, available shared helpers and zero uncaught errors/native dialogs; screenshot visually inspected: `non-appscript/local-preview/browser-restored-inline-css.png`. No live deployment or Google service verification.
 
 ### 2026-10-10 - Restore admin loading against older preview backends
 
 - Reproduced an empty admin page on the existing port-8787 preview: getAdminOverview returned Unsupported preview operation and its error was written to the already-hidden login screen. Added narrow missing-function compatibility fallback to getAdminDashboard for overview/page/candidate-choice loading. Admin sign-in failures now show the login screen and table failures show an inline Retry action. Synchronous RPC startup failures clear the loader. Existing records are preserved; no preview restart/reset or deployment was performed.
-- Files: `Index.html`, `tests/admin-compatibility.test.cjs`, `PROJECT_GUIDE.md`. All ten local test files passed, including missing-function/loading/error-visibility regressions. Local Edge verified the restored dashboard and Bookings, Candidates, Payments, Refunds, Settings, Availability and Create Booking on the already-running older preview, with no uncaught errors/native dialogs. Screenshot: `local-preview/browser-admin-restored.png`. New backend-only features still require the updated numbered server files; the legacy fallback transfers the full dashboard dataset. No live Google verification.
+- Files: `Index.html`, `non-appscript/tests/admin-compatibility.test.cjs`, `PROJECT_GUIDE.md`. All ten local test files passed, including missing-function/loading/error-visibility regressions. Local Edge verified the restored dashboard and Bookings, Candidates, Payments, Refunds, Settings, Availability and Create Booking on the already-running older preview, with no uncaught errors/native dialogs. Screenshot: `non-appscript/local-preview/browser-admin-restored.png`. New backend-only features still require the updated numbered server files; the legacy fallback transfers the full dashboard dataset. No live Google verification.
 
 ### 2026-10-10 - Hide repeated same-day candidate End dates
 
 - Fixed a mixed-projection comparison: canonical start dates were DD-MM-YY while an older server supplied human-readable end dates, so equal calendar dates appeared different. Normalize both dates before deciding whether End needs a date. Real overnight end dates remain visible in both 12/24-hour modes.
-- Files: `Index.html`, `tests/admin-improvements.test.cjs`, `PROJECT_GUIDE.md`. Local admin-improvements, admin-search and picker tests passed, including same-day/overnight cases with mixed and canonical endpoints. Local Edge renderer fixtures verified same-day suppression and overnight retention in both formats, with no uncaught errors; screenshot inspected: `local-preview/browser-candidate-end-date-fixed.png`. This was a browser renderer check, not an authenticated candidate walkthrough or deployed Google verification. No credentials, records or deployment were changed.
+- Files: `Index.html`, `non-appscript/tests/admin-improvements.test.cjs`, `PROJECT_GUIDE.md`. Local admin-improvements, admin-search and picker tests passed, including same-day/overnight cases with mixed and canonical endpoints. Local Edge renderer fixtures verified same-day suppression and overnight retention in both formats, with no uncaught errors; screenshot inspected: `non-appscript/local-preview/browser-candidate-end-date-fixed.png`. This was a browser renderer check, not an authenticated candidate walkthrough or deployed Google verification. No credentials, records or deployment were changed.
 
 ### 2026-10-10 - Six UI trial improvements
 
 - Reduced the candidate profile card, clarified overnight ends with Next day/date labels, increased table row spacing and hover feedback, moved uncommon statuses into More filters, added candidate empty-state actions, and added nonblocking success notices to timezone and admin saves. Existing status choices, sorting, timezone conversion and server permissions are preserved.
-- Files: `Index.html`, `PROJECT_GUIDE.md`. All ten local test files passed. Local Edge renderer fixtures verified the compact profile, overnight label, candidate/admin extra-status filtering, empty-state navigation, and save-notice announcement/dismissal with no uncaught errors or native dialogs. Screenshots visually inspected: `local-preview/browser-ui-trial-candidate.png` and `local-preview/browser-ui-trial-admin.png`. Browser checks injected display fixtures; they did not verify authenticated saves or live Google services. No deployment, credential changes or data resets were performed.
+- Files: `Index.html`, `PROJECT_GUIDE.md`. All ten local test files passed. Local Edge renderer fixtures verified the compact profile, overnight label, candidate/admin extra-status filtering, empty-state navigation, and save-notice announcement/dismissal with no uncaught errors or native dialogs. Screenshots visually inspected: `non-appscript/local-preview/browser-ui-trial-candidate.png` and `non-appscript/local-preview/browser-ui-trial-admin.png`. Browser checks injected display fixtures; they did not verify authenticated saves or live Google services. No deployment, credential changes or data resets were performed.
 
 ### 2026-10-10 - Admin attention box UI trial
 
 - Redesigned the existing pending email/calendar box with amber attention styling, clearer Try again actions and expandable error details; the clear state uses green styling. Retry APIs, batch limits and admin permissions remain unchanged.
-- Files: `Index.html`, `PROJECT_GUIDE.md`. Local admin-improvements and admin-compatibility tests passed. Local Edge renderer fixtures verified pending rows, collapsed/expanded error details and zero uncaught errors/native dialogs; screenshot visually inspected: `local-preview/browser-admin-attention-trial.png`. These were display fixtures, not authenticated retry or live Google checks. No deployment or data changes performed.
+- Files: `Index.html`, `PROJECT_GUIDE.md`. Local admin-improvements and admin-compatibility tests passed. Local Edge renderer fixtures verified pending rows, collapsed/expanded error details and zero uncaught errors/native dialogs; screenshot visually inspected: `non-appscript/local-preview/browser-admin-attention-trial.png`. These were display fixtures, not authenticated retry or live Google checks. No deployment or data changes performed.
 
 ### 2026-10-10 - Candidate same-day booking restriction
 
 - Removed the candidate after-midnight checkbox. Candidate time changes show an accessible inline error when end is earlier than or equal to start; invalid times cannot request a quote. Candidate server quote/submission validation enforces the same local-day restriction regardless of a supplied overnight flag. Admin overnight creation and cross-timezone next-day displays remain available.
-- Files: `Index.html`, `03_Bookings.js`, `tests/auth.test.cjs`, `tests/availability.test.cjs`, `PROJECT_GUIDE.md`. All ten local test files passed, including candidate quote/submission rejection with either overnight flag, no booking writes on rejection, equal-time rejection, and retained admin overnight creation. Local Edge form fixtures verified the removed candidate checkbox, inline reversed-time error, correction clearing the error and retained admin checkbox with no uncaught errors. Browser checks did not submit real bookings. No deployment or live-data changes performed. Updated server behavior requires deploying all numbered server files or restarting an outdated mock preview.
+- Files: `Index.html`, `03_Bookings.js`, `non-appscript/tests/auth.test.cjs`, `non-appscript/tests/availability.test.cjs`, `PROJECT_GUIDE.md`. All ten local test files passed, including candidate quote/submission rejection with either overnight flag, no booking writes on rejection, equal-time rejection, and retained admin overnight creation. Local Edge form fixtures verified the removed candidate checkbox, inline reversed-time error, correction clearing the error and retained admin checkbox with no uncaught errors. Browser checks did not submit real bookings. No deployment or live-data changes performed. Updated server behavior requires deploying all numbered server files or restarting an outdated mock preview.
 
 ### 2026-10-10 - Availability time-field format correction
 
 - Fixed shared time-field trigger labels, which always showed AM/PM even after selecting 24 hours. Availability and other time inputs now show the chosen format without modifying their canonical values or form drafts.
-- Files: `Index.html`, `tests/pickers.test.cjs`, `PROJECT_GUIDE.md`. Picker, admin-search and availability tests passed, including 13:05, midnight and switching back to 12 hours. Local Edge admin Availability fixtures verified both formats and preserved input values. No live saves or deployment performed. The timezone behavior was subsequently clarified and addressed in the following entry.
+- Files: `Index.html`, `non-appscript/tests/pickers.test.cjs`, `PROJECT_GUIDE.md`. Picker, admin-search and availability tests passed, including 13:05, midnight and switching back to 12 hours. Local Edge admin Availability fixtures verified both formats and preserved input values. No live saves or deployment performed. The timezone behavior was subsequently clarified and addressed in the following entry.
 
 ### 2026-10-10 - Preserve and display availability across timezone changes
 
 - Added the AVAILABILITY_TIMEZONE settings anchor on availability save or the first business-timezone change. Booking eligibility continues to use the saved schedule zone. Admin Availability shows a converted table in the current business timezone with both endpoint dates, a reference-week selector for DST-aware weekly rules, full-day block conversion, and an expandable original-zone editor. Saves reject a supplied stale source timezone. Shared 12/24-hour formatting applies to the converted table and source fields.
-- Files: `03_Bookings.js`, `04_Admin.js`, `Index.html`, `tests/availability-timezone.test.cjs`, `PROJECT_GUIDE.md`. All eleven local test files passed, including the new schedule-preservation and DST conversion regressions. Local Edge renderer fixtures verified New York-to-India conversion, next-day ends, both time formats, summer-week changes and unchanged original editor values, with no uncaught errors/native dialogs. Screenshot visually inspected: `local-preview/browser-availability-timezone.png`. Browser checks did not save data; server checks use mocks. No deployment or live Google verification. Upload all numbered server files for production; restart outdated preview processes for server changes. Existing pre-anchor timezone history cannot be recovered automatically; weekly conversions are week-specific and edits remain in the saved source zone.
+- Files: `03_Bookings.js`, `04_Admin.js`, `Index.html`, `non-appscript/tests/availability-timezone.test.cjs`, `PROJECT_GUIDE.md`. All eleven local test files passed, including the new schedule-preservation and DST conversion regressions. Local Edge renderer fixtures verified New York-to-India conversion, next-day ends, both time formats, summer-week changes and unchanged original editor values, with no uncaught errors/native dialogs. Screenshot visually inspected: `non-appscript/local-preview/browser-availability-timezone.png`. Browser checks did not save data; server checks use mocks. No deployment or live Google verification. Upload all numbered server files for production; restart outdated preview processes for server changes. Existing pre-anchor timezone history cannot be recovered automatically; weekly conversions are week-specific and edits remain in the saved source zone.
 
 ### 2026-10-10 - Remove Note from admin Availability
 
@@ -362,7 +374,7 @@ Sheets still scans relevant tabs for global counts, filtering and sorting; pagin
 ### 2026-10-10 - Independent availability zone and admin layout cleanup
 
 - Replaced the converted current-timezone view with a dedicated editable Availability Business timezone selector: all rule hours follow that saved zone regardless of other timezone choices. Added server validation, atomic locked rule-save workflow and a capability flag/old-backend guard. Kept initial editing locks; aligned Edit beside Add Rule, styled the timezone card and compact rule rows, preserved notes and enabled states. Removed internal scrolling/minimum table widths across the five main admin tables, allowing long text and payment editors to fit their columns. Fixed older conflicting availability grid CSS during visual review.
-- Files: `Index.html`, `04_Admin.js`, `07_AdminData.js`, `tests/availability-timezone.test.cjs`, `PROJECT_GUIDE.md`. All eleven local test files passed, including independent timezone validation/save and booking eligibility. Local Edge renderer fixtures verified five admin tables without internal horizontal overflow, adjacent Add/Edit controls, timezone locking, Cancel restoration and the old-server save guard. Browser checks were repeated after the final grid CSS correction; screenshot inspected: `local-preview/browser-admin-availability-business-zone.png`. No live save, deployment, credential changes or reset of the original port-8787 preview performed. Its old backend still requires updating to persist the independent zone. Fixed desktop mode still permits page-level horizontal scrolling on windows narrower than 1365px; picker lists retain scrolling for long options.
+- Files: `Index.html`, `04_Admin.js`, `07_AdminData.js`, `non-appscript/tests/availability-timezone.test.cjs`, `PROJECT_GUIDE.md`. All eleven local test files passed, including independent timezone validation/save and booking eligibility. Local Edge renderer fixtures verified five admin tables without internal horizontal overflow, adjacent Add/Edit controls, timezone locking, Cancel restoration and the old-server save guard. Browser checks were repeated after the final grid CSS correction; screenshot inspected: `non-appscript/local-preview/browser-admin-availability-business-zone.png`. No live save, deployment, credential changes or reset of the original port-8787 preview performed. Its old backend still requires updating to persist the independent zone. Fixed desktop mode still permits page-level horizontal scrolling on windows narrower than 1365px; picker lists retain scrolling for long options.
 
 ### 2026-10-10 - Close the separate preview
 
@@ -378,7 +390,7 @@ Sheets still scans relevant tabs for global counts, filtering and sorting; pagin
 ### 2026-10-10 - Local RPC hardening after reported M_ID popup
 
 - Investigated the reported popup during dashboard refresh/timezone changes. The exact M_ID identifier is absent from project source, and an authenticated dashboard read on the existing 8787 server succeeded. Added direct loopback /rpc transport for marked local previews, bypassing the Google bridge; production transport remains unchanged. Added regression coverage and adjusted the compatibility test extraction to include the routing helper.
-- Files: `Index.html`, `tests/local-rpc.test.cjs`, `tests/admin-compatibility.test.cjs`, `PROJECT_GUIDE.md`. All twelve local test files passed. Local Edge verified an authenticated refresh on 8787 with a deliberately injected M_ID failure in the Google bridge; timezone selection and Cancel also worked without uncaught errors. No settings writes, original preview restart or deployment performed. The original user error was not reproduced naturally, so its root cause remains unconfirmed; this change removes reliance on the bridge in local preview. Independent availability timezone persistence still requires the updated backend.
+- Files: `Index.html`, `non-appscript/tests/local-rpc.test.cjs`, `non-appscript/tests/admin-compatibility.test.cjs`, `PROJECT_GUIDE.md`. All twelve local test files passed. Local Edge verified an authenticated refresh on 8787 with a deliberately injected M_ID failure in the Google bridge; timezone selection and Cancel also worked without uncaught errors. No settings writes, original preview restart or deployment performed. The original user error was not reproduced naturally, so its root cause remains unconfirmed; this change removes reliance on the bridge in local preview. Independent availability timezone persistence still requires the updated backend.
 
 
 ### 2026-10-10 - Restore scrolling for admin Candidates
@@ -389,7 +401,7 @@ Sheets still scans relevant tabs for global counts, filtering and sorting; pagin
 ### 2026-10-10 - Admin forgot-password recovery
 
 - Added admin sign-in Forgot password and a styled email/code/new-password form. Added locked admin recovery APIs with registered-email-only delivery, hashed single-use codes, ten-minute expiry, five failed attempts and one-minute resend throttle. Successful reset updates salted credentials and revokes only admin sessions; signed-in password changes clear pending codes. Owner testing reset also clears ADMIN_PASSWORD_RESET. The disposable preview can show admin recovery codes via its existing in-page reset notice; production never returns codes.
-- Files: `02_AuthCandidates.js`, `01_Setup.js`, `Index.html`, `local-preview/server.cjs`, `tests/admin-recovery.test.cjs`, `tests/reset.test.cjs`, `PROJECT_GUIDE.md`, `AUTHENTICATION.md`. All thirteen local test files passed. Picker checks and the expanded owner-reset cleanup check were also rerun after the final UI/reset-test refinements. Local Edge form fixtures verified email prefill, code step, password mismatch, inline reset success and cleared secret fields with mocked RPC; no uncaught errors. No password changes on the original preview or live data, email delivery, deployment or server restart were performed. Port 8787 still needs the new backend to perform recovery.
+- Files: `02_AuthCandidates.js`, `01_Setup.js`, `Index.html`, `non-appscript/local-preview/server.cjs`, `non-appscript/tests/admin-recovery.test.cjs`, `non-appscript/tests/reset.test.cjs`, `PROJECT_GUIDE.md`, `AUTHENTICATION.md`. All thirteen local test files passed. Picker checks and the expanded owner-reset cleanup check were also rerun after the final UI/reset-test refinements. Local Edge form fixtures verified email prefill, code step, password mismatch, inline reset success and cleared secret fields with mocked RPC; no uncaught errors. No password changes on the original preview or live data, email delivery, deployment or server restart were performed. Port 8787 still needs the new backend to perform recovery.
 
 ### 2026-10-10 - Diagnose recurring M_ID popup
 
@@ -398,7 +410,7 @@ Sheets still scans relevant tabs for global counts, filtering and sorting; pagin
 
 ### 2026-10-10 - Restart original preview with current server code
 
-- At the user explicit approval to discard temporary test data, stopped the verified Node process listening on 8787 and restarted local-preview/server.cjs on the same port with the current numbered server files. No separate preview was started. This recreates sample data and invalidates previous preview sessions; sign in again. Prior old-backend limitations at 8787 in earlier history entries no longer describe the current process.
+- At the user explicit approval to discard temporary test data, stopped the verified Node process listening on 8787 and restarted non-appscript/local-preview/server.cjs on the same port with the current numbered server files. No separate preview was started. This recreates sample data and invalidates previous preview sessions; sign in again. Prior old-backend limitations at 8787 in earlier history entries no longer describe the current process.
 - Validation: authenticated local RPCs confirmed the updated admin overview capability, successful independent availability timezone saves, and unchanged schedule timezone after general BUSINESS_TIMEZONE changes. Restored sample rule values and the original sample business/schedule zones after the check, then logged out the test session. No live Google data, deployed settings or credentials were changed. Windows required elevated process-stop access for the approved restart; it succeeded.
 
 ### 2026-10-10 - Move horizontal scroll from Candidates to Bookings
@@ -409,12 +421,12 @@ Sheets still scans relevant tabs for global counts, filtering and sorting; pagin
 ### 2026-10-10 - Create Booking follows Availability timezone
 
 - Fixed Create Booking using the general Settings timezone rather than the separately saved Availability Business timezone. The form now displays the schedule zone; a client conversion helper maps the entered interval to the existing server input zone without changing its UTC endpoints. Handles shifted start dates/overnight ends and rejects ambiguous clock-change conversions. No server API changes or restart needed.
-- Files: `Index.html`, `tests/availability-timezone.test.cjs`, `PROJECT_GUIDE.md`. All thirteen local test files passed, including added cross-timezone date/midnight and DST conversion regressions. Local Edge fixtures verified the form timezone, correct converted booking payload across midnight and unchanged user-entered times with mocked RPC. No bookings/settings were written to the running preview or live Google services; no data reset or deployment performed.
+- Files: `Index.html`, `non-appscript/tests/availability-timezone.test.cjs`, `PROJECT_GUIDE.md`. All thirteen local test files passed, including added cross-timezone date/midnight and DST conversion regressions. Local Edge fixtures verified the form timezone, correct converted booking payload across midnight and unchanged user-entered times with mocked RPC. No bookings/settings were written to the running preview or live Google services; no data reset or deployment performed.
 
 ### 2026-10-10 - Repair Bookings column spacing
 
 - Replaced equal-width Bookings columns with explicit widths totaling 1840px, giving candidate names, status badges, overnight dates and action buttons adequate space. Increased cell padding, kept date/time labels together and normalized button spacing while retaining horizontal scrolling.
-- Files: `Index.html`, `PROJECT_GUIDE.md`. Local admin-search tests passed. Local Edge renderer fixtures verified twelve column widths, 1840px table layout and horizontal scrolling without uncaught errors. Screenshot inspected: `local-preview/browser-bookings-css-fixed.png`. No real booking edits, server restart or deployment performed.
+- Files: `Index.html`, `PROJECT_GUIDE.md`. Local admin-search tests passed. Local Edge renderer fixtures verified twelve column widths, 1840px table layout and horizontal scrolling without uncaught errors. Screenshot inspected: `non-appscript/local-preview/browser-bookings-css-fixed.png`. No real booking edits, server restart or deployment performed.
 
 ### 2026-10-10 - Payment editor Cancel and simpler controls
 
@@ -424,10 +436,16 @@ Sheets still scans relevant tabs for global counts, filtering and sorting; pagin
 ### 2026-10-10 - Filtered admin Excel export
 
 - Added styled Export Excel controls to the five admin table views. Exports current filters/search/sort across all pages via existing role-checked getAdminPage calls, with a 10,000-row bound and change-detection checks. Added dependency-free XLSX ZIP/XML generation with styled/frozen headers, Excel filters, safe literal text and numeric amounts; includes local start/end dates and timezone. Legacy search state now updates for consistent cached export. No server changes/restart needed.
-- Files: `Index.html`, `tests/admin-export.test.cjs`, `PROJECT_GUIDE.md`. All fourteen local test files passed. New export tests cover package parts, formula-like strings as literal text, numeric values, private-field omission, 101 rows across two pages, admin-only UI and limit handling. Independent .NET ZIP/XML checks opened every sample workbook part. Local Edge renderer fixtures downloaded a filtered Payments workbook; independent inspection confirmed exactly two VERIFIED rows. Screenshot inspected: `local-preview/browser-admin-excel-export.png`; test workbooks: `local-preview/admin-export-test.xlsx` and `local-preview/payments-2026-10-10.xlsx`. No native Excel application opening, live Google verification, real data writes, restart or deployment performed. Concurrent updates are not a transactional snapshot; stable totals/IDs can still contain values edited during export. Dates/times are display text in Excel, not serial date cells.
+- Files: `Index.html`, `non-appscript/tests/admin-export.test.cjs`, `PROJECT_GUIDE.md`. All fourteen local test files passed. New export tests cover package parts, formula-like strings as literal text, numeric values, private-field omission, 101 rows across two pages, admin-only UI and limit handling. Independent .NET ZIP/XML checks opened every sample workbook part. Local Edge renderer fixtures downloaded a filtered Payments workbook; independent inspection confirmed exactly two VERIFIED rows. Screenshot inspected: `non-appscript/local-preview/browser-admin-excel-export.png`; test workbooks: `non-appscript/local-preview/admin-export-test.xlsx` and `non-appscript/local-preview/payments-2026-10-10.xlsx`. No native Excel application opening, live Google verification, real data writes, restart or deployment performed. Concurrent updates are not a transactional snapshot; stable totals/IDs can still contain values edited during export. Dates/times are display text in Excel, not serial date cells.
 
 
 ### 2026-10-10 - Current local test checklist
 
-- Added `LOCAL_TEST_CASES.md` with 209 uniquely identified cases covering every current module, important boundaries/security failures, earlier user-reported regressions and seven complete local journeys. Includes setup data, browser/mock/HTTP/Excel methods, expected results, run-report template, existing fourteen-script mapping, known limitations and separate post-deployment exclusions. Cases are Not run by default; no execution claims inferred from the plan. Added file-map and testing-workflow guidance here; agents should maintain both documents as behavior changes.
-- Files: `LOCAL_TEST_CASES.md`, `PROJECT_GUIDE.md`. Validation: Node documentation checks verified unique case IDs, four-column case tables, exact mapping of all fourteen current test scripts, and guide references. No application code changed; automated application suite and browser journeys were not rerun for this documentation-only task. No server restart, data/credential changes, live service calls or deployment performed. Full checklist execution remains future work.
+- Added `non-appscript/LOCAL_TEST_CASES.md` with 209 uniquely identified cases covering every current module, important boundaries/security failures, earlier user-reported regressions and seven complete local journeys. Includes setup data, browser/mock/HTTP/Excel methods, expected results, run-report template, existing fourteen-script mapping, known limitations and separate post-deployment exclusions. Cases are Not run by default; no execution claims inferred from the plan. Added file-map and testing-workflow guidance here; agents should maintain both documents as behavior changes.
+- Files: `non-appscript/LOCAL_TEST_CASES.md`, `PROJECT_GUIDE.md`. Validation: Node documentation checks verified unique case IDs, four-column case tables, exact mapping of all fourteen current test scripts, and guide references. No application code changed; automated application suite and browser journeys were not rerun for this documentation-only task. No server restart, data/credential changes, live service calls or deployment performed. Full checklist execution remains future work.
+
+
+### 2026-10-10 - Correct checklist to manual website walkthrough
+
+- Replaced mixed Node/mock/API checklist with 135 browser website cases, real interaction requirements, QA record/restoration rules, conditional credential/data checks and required non-appscript/WEBSITE_TEST_REPORT.md after actual execution. Existing automated scripts remain separate. Updated file map/testing instructions.
+- Files: non-appscript/LOCAL_TEST_CASES.md, PROJECT_GUIDE.md. Validation: documentation case ID/table structure and guide references checked. No application code changed, browser cases executed, completed report created, shared records/credentials changed, preview restart or deployment performed. Internal security and live Google checks explicitly outside this manual UI plan.

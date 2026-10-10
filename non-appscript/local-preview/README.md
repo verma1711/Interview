@@ -1,7 +1,7 @@
 Run from the project folder:
 
 ```powershell
-node local-preview/server.cjs
+node non-appscript/local-preview/server.cjs
 ```
 
 Open http://127.0.0.1:8787 in your browser. Stop with Ctrl+C.
@@ -28,5 +28,5 @@ session storage uses a separate local-preview key. These mocks cannot verify
 Google authorization, quotas, concurrency, actual email delivery, Calendar or
 Contacts integration. Those still need Apps Script testing.
 
-Do not upload this directory to Apps Script. Its .cjs/.txt/.md files are outside
-the script/HTML/JSON extensions configured in this project's .clasp.json.
+This directory is retained with local QA materials under `non-appscript/` and is
+excluded from Apps Script uploads by `.claspignore`.

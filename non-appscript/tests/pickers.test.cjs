@@ -50,7 +50,7 @@ assert.equal(formatCtx.formatDisplayDates('9 Sept 2035'),'09-09-35');
 console.log('PASS DD-MM-YY display conversion with canonical source dates preserved');
 
 assert(!/\b(?:alert|confirm|prompt)\s*\(/.test(script),'client must not invoke native dialogs');
-assert(!/\b(?:alert|confirm|prompt)\s*\(/.test(fs.readFileSync('local-preview/shim.txt','utf8')),'preview must not invoke native dialogs');
+assert(!/\b(?:alert|confirm|prompt)\s*\(/.test(fs.readFileSync('non-appscript/local-preview/shim.txt','utf8')),'preview must not invoke native dialogs');
 console.log('PASS no native browser dialogs in app or preview shim');
 
 // Time input triggers must follow the selected format without changing saved HH:mm values.
