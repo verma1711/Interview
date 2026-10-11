@@ -1086,7 +1086,7 @@ async function loadPublicBookings(){
     el('publicBooked').innerHTML=renderBookedTimesResult(result,'publicBooked');
   }catch(e){if(request===publicRequest)msg('publicBooked',e.message,true);}
 }
-async function register(){try{if(el('rPass').value!==el('rPass2').value)throw new Error('Passwords do not match.');const r=await call('registerCandidate',{name:el('rName').value,email:el('rEmail').value,countryCode:el('rCountry').value,phone:el('rPhone').value,timezone:el('rTz').value,password:el('rPass').value});token=r.token;role='candidate';saveSession();await loadCandidate()}catch(e){msg('rMsg',e.message,true);show('register')}}
+async function register(){try{if(el('rPass').value!==el('rPass2').value)throw new Error('Passwords do not match.');const phone=el('rPhone').value.replace(/[\s()-]/g,''),cc=el('rCountry').value;if(!/^\+[1-9]\d{0,2}$/.test(cc)||!/^\d+$/.test(phone)||!/^\+[1-9]\d{6,14}$/.test(cc+phone))throw new Error('Enter a complete phone number with 7 to 15 digits including the country code.');const r=await call('registerCandidate',{name:el('rName').value,email:el('rEmail').value,countryCode:cc,phone:el('rPhone').value,timezone:el('rTz').value,password:el('rPass').value});token=r.token;role='candidate';saveSession();await loadCandidate()}catch(e){msg('rMsg',e.message,true);show('register')}}
 async function candidateSignIn(){try{const r=await call('candidateLogin',el('lId').value,el('lPass').value);token=r.token;role='candidate';saveSession();await loadCandidate()}catch(e){msg('lMsg',e.message,true)}}
 let recoveryCandidateId='',recoveryEmail='';
 function clearRecovery(){recoveryCandidateId='';recoveryEmail='';['fOtp','fPass','fPass2'].forEach(id=>el(id).value='');el('resetBox').classList.add('hidden');el('fMsg').innerHTML='';}
@@ -1317,11 +1317,11 @@ async function quote(){
     q.formData=data;
     currentQuote = q;
     const html = q.paymentRequired ? `
-      <div class="msg ok"><b>Available</b><br>${esc(q.candidateDisplay)}<br>Duration: ${q.durationMinutes} min<br>Charge: $${esc(q.finalChargeUSD)}</div>
+      <div class="msg ok"><b>Available</b><br>${quoteTimeMarkup(q)}<br>Duration: ${q.durationMinutes} min<br>Charge: $${esc(q.finalChargeUSD)}</div>
       <div class="form-actions">
         <button onclick="openPaymentModal(currentQuote)">Pay & Confirm</button>
       </div>
-    ` : `<div class="msg ok"><b>Available</b><br>${esc(q.candidateDisplay)}<br>Duration: ${q.durationMinutes} min<br>Percentage candidate — no upfront payment.<br><button onclick="confirmBooking(false)">Confirm Booking</button></div>`;
+    ` : `<div class="msg ok"><b>Available</b><br>${quoteTimeMarkup(q)}<br>Duration: ${q.durationMinutes} min<br>Percentage candidate — no upfront payment.<br><button onclick="confirmBooking(false)">Confirm Booking</button></div>`;
     el('quoteBox').innerHTML = html;
   } catch(e){el('quoteBox').innerHTML=`<div class="msg err">${esc(e.message)}</div>`;}
 }
@@ -1507,6 +1507,7 @@ function editControls(key,fields,saveAction){
   return `<button id="edit_${key}" class="small" onclick="toggleFields('${key}',${args},true)">Edit</button> <span id="actions_${key}" class="hidden"><button class="small" onclick="${esc(saveAction)}">Save</button> <button class="secondary small" onclick="toggleFields('${key}',${args},false)">Cancel</button></span>`;
 }
 function toggleFields(key,fields,editing){
+  if(key.startsWith('candidate_')){const error=el('candidateError_'+key.slice('candidate_'.length));if(error)error.replaceChildren();}
   fields.forEach(id=>{const field=el(id);if(editing)field.savedValue=field.value;else field.value=field.savedValue;field.disabled=!editing;});
   el('edit_'+key).classList.toggle('hidden',editing);
   el('actions_'+key).classList.toggle('hidden',!editing);
@@ -1533,7 +1534,7 @@ function makeExcelWorkbook(headers,rows,title){
   const sheetRows=[headers,...rows].map((values,r)=>'<row r="'+(r+1)+'">'+values.map((value,c)=>{const ref=excelColumn(c)+(r+1);return typeof value==='number'&&Number.isFinite(value)?`<c r="${ref}"><v>${value}</v></c>`:`<c r="${ref}" t="inlineStr"${r===0?' s="1"':''}><is><t xml:space="preserve">${excelXml(value)}</t></is></c>`;}).join('')+'</row>').join('');
   const columns=headers.map((h,c)=>{const width=Math.min(45,Math.max(16,String(h).length+3,...rows.slice(0,200).map(r=>String(r[c]??'').length+2)));return `<col min="${c+1}" max="${c+1}" width="${width}" customWidth="1"/>`;}).join('');
   return excelZip({
-    '[Content_Types].xml':'<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>',
+    '[Content_Types].xml':'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>',
     '_rels/.rels':'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',
     'xl/workbook.xml':`<workbook xmlns="${ns}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="${excelXml(title)}" sheetId="1" r:id="rId1"/></sheets></workbook>`,
     'xl/_rels/workbook.xml.rels':'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>',
@@ -1819,8 +1820,12 @@ function pickerIcon(kind){return `<svg viewBox="0 0 24 24" fill="none" stroke="c
 function pickerDateValue(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
 function pickerTimeValue(hour,minute,period){return `${String(Number(hour)%12+(period==='PM'?12:0)).padStart(2,'0')}:${String(minute).padStart(2,'0')}`;}
 function pickerFieldLabel(field){
-  const label=field.parentElement.parentElement.querySelector('label');
-  return label?label.textContent.trim():(isTimezonePicker(field)?'Timezone':field.type==='date'?'Date':field.type==='time'?'Time':'Interview type');
+  const explicit=field.getAttribute('aria-label');
+  if(explicit)return explicit;
+  const label=field.labels?.[0]||field.parentElement.querySelector(':scope > label')||field.parentElement.parentElement?.querySelector(':scope > label');
+  if(label)return label.textContent.trim();
+  if(field.id.startsWith('ct_'))return 'Account type';
+  return isTimezonePicker(field)?'Timezone':field.type==='date'?'Date':field.type==='time'?'Time':/Type$/.test(field.id)?'Interview type':'Select option';
 }
 function isTimezonePicker(field){return field.tagName==='SELECT'&&(/timezone$/i.test(field.id)||['rTz','cTz','sTZ'].includes(field.id));}
 function pickerSelectOptions(field,query=''){
@@ -1952,7 +1957,7 @@ function appAlert(message){
 }
 function isExtensionError(error){
   const stack=String(error?.stack||'');
-  return /(?:chrome|moz|safari-web)-extension:\/\//.test(stack)&&!(typeof location!=='undefined'&&stack.includes(location.origin+location.pathname));
+  return ['chrome-extension:','moz-extension:','safari-web-extension:'].some(protocol=>stack.includes(protocol))&&!(typeof location!=='undefined'&&stack.includes(location.origin+location.pathname));
 }
 function appConfirm(message){return appDialog(message,{kind:'confirm'});}
 function appPrompt(message){return appDialog(message,{kind:'prompt',title:'Refund reference',accept:'Save'});}

@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const html=fs.readFileSync('Index.html','utf8');
+const source=html.slice(html.indexOf('function toggleFields('),html.indexOf('function exportExcelButton('));
+const classes=()=>({toggle(){}});
+const error={text:'Old error',replaceChildren(){this.text='';}};
+const nodes={candidateError_AV_TEST:error,field:{value:'original',disabled:true},edit_candidate_AV_TEST:{classList:classes()},actions_candidate_AV_TEST:{classList:classes()}};
+const context={el:id=>nodes[id]};vm.createContext(context);vm.runInContext(source,context);
+context.toggleFields('candidate_AV_TEST',['field'],true);
+nodes.field.value='invalid';error.text='Invalid draft';
+context.toggleFields('candidate_AV_TEST',['field'],false);
+assert.equal(nodes.field.value,'original');assert.equal(nodes.field.disabled,true);assert.equal(error.text,'');
+error.text='Previous error';context.toggleFields('candidate_AV_TEST',['field'],true);assert.equal(error.text,'');
+console.log('PASS candidate Cancel restores and locks saved values and clears stale validation; Edit starts clean');

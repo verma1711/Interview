@@ -1,6 +1,6 @@
 # Manual website walkthrough test cases
 
-Updated: 10-10-2026. Target: http://127.0.0.1:8787/ ? current local website, before deployment.
+Updated: 11-10-2026. Default target: http://127.0.0.1:8787/ — local website. If the user explicitly selects the deployed Apps Script website, use the live URL in WEBSITE_TEST_REPORT.md and clearly label the run **live**, keeping local and live results separate.
 
 ## Instructions for the testing agent
 
@@ -8,7 +8,7 @@ When asked to execute this plan, open the actual website in a browser and test i
 
 This file is a plan, not a completed report. Every case starts **Not run**. When a run is requested, continue through every accessible case, then create WEBSITE_TEST_REPORT.md and give the user a simple summary. If browser access is unavailable, say so; do not pretend to have tested the website.
 
-Read `../AGENTS.md` and `../PROJECT_GUIDE.md` first. Use the existing server and confirm LOCAL TEST DATA ONLY. Do not deploy, restart/reset the preview or start another server. Use seed logins from `local-preview/README.md` without copying passwords/codes into the report.
+Read `../AGENTS.md` and `../PROJECT_GUIDE.md` first. For local runs, use the existing server and confirm LOCAL TEST DATA ONLY. Do not deploy, restart/reset the preview or start another server. Local seed logins from `local-preview/README.md` do not apply to the live site. For live runs use credentials supplied by the user, never guess repeatedly, and do not copy passwords/codes into the report. Registration and booking on live Apps Script can trigger real Contacts, Calendar and email work; use clearly named QA records and state which external results were actually inspected. No real bank transaction is required for QA ledger checks.
 
 Register dedicated QA candidates through the website, with unique names/emails and references such as QA-101026-001. Only mutate QA bookings, payments, refunds and contact details. Record all QA record IDs. For candidate password checks, use your QA account. Do not change/reset the shared admin password without explicit permission; mark those successful-mutation variants Blocked and continue other tests.
 
@@ -262,7 +262,7 @@ Create **WEBSITE_TEST_REPORT.md** after an actual browser run, then tell the use
 
 Include:
 
-1. Date/time, URL, browser/window size, confirmation local not deployed, and QA account/record IDs (no credentials/codes).
+1. Date/time, URL, browser/window size, explicit local/live target, and QA account/record IDs (no credentials/codes).
 2. Total cases and Pass/Fail/Blocked/Not run counts adding up. For partially tested rows list sub-results and do not mark full Pass.
 3. Every case ID, actual observation, exact inputs, evidence and any bug link. A fixture-rendered page or successful form-open is not proof its mutation works.
 4. Every bug: High/Medium/Low, affected page, exact repeatable steps, expected versus actual result, affected QA IDs and screenshot. High = wrong money/time, lost data, account access issue or unusable main feature; Medium = broken action/filter; Low = appearance/usability.
@@ -283,4 +283,5 @@ Result table:
 
 ## Plan history
 
+- 11-10-2026: Clarified user-selected live runs, separate result accounting, live credentials and external-service side effects. Local-only code notices and preview failures are not live test requirements. Preserve the 135-case inventory; partially exercised cases still cannot receive a full Pass.
 - 10-10-2026: Replaced mixed Node/mock/API plan with browser-only website walkthrough (135 cases), visible action requirements, conditional checks, restoration rules and required final report. No website tests executed during this documentation task.

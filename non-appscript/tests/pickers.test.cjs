@@ -56,7 +56,9 @@ console.log('PASS no native browser dialogs in app or preview shim');
 // Time input triggers must follow the selected format without changing saved HH:mm values.
 let triggerFormat='12';ctx.preferredTimeFormat=()=>triggerFormat;ctx.esc=String;
 const timeTrigger={dataset:{},setAttribute(){}};
-const timeField={tagName:'INPUT',type:'time',value:'13:05',disabled:false,parentElement:{querySelector:()=>timeTrigger,parentElement:{querySelector:()=>({textContent:'Start'})}}};
+const timeField={id:'testTime',tagName:'INPUT',type:'time',value:'13:05',disabled:false,getAttribute:()=>null,labels:[{textContent:'Start'}],parentElement:{querySelector:()=>timeTrigger}};
+assert.equal(ctx.pickerFieldLabel({...timeField,getAttribute:()=> 'Payment status'}),'Payment status');
+assert.equal(ctx.pickerFieldLabel({...timeField,id:'ct_AV-QA',tagName:'SELECT',type:'select-one',labels:[],parentElement:{querySelector:()=>null}}),'Account type');
 ctx.syncPickerField(timeField);assert(timeTrigger.innerHTML.includes('1:05 PM'));
 triggerFormat='24';ctx.syncPickerField(timeField);assert(timeTrigger.innerHTML.includes('13:05'));assert(!timeTrigger.innerHTML.includes('PM'));assert.equal(timeField.value,'13:05');
 timeField.value='00:00';ctx.syncPickerField(timeField);assert(timeTrigger.innerHTML.includes('00:00'));

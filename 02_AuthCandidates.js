@@ -4,7 +4,10 @@ function registerCandidate(data) {
   if(email===normEmail_(getSetting_('ADMIN_EMAIL',''))) throw new Error('This email is reserved for Admin. Please use a different email.');
   validatePassword_(password); if(!validateTimezone_(tz)) throw new Error('Invalid timezone.');
   if(candidateByIdentifier_(email)) throw new Error('A candidate account already exists for this email. Please use Candidate Login.');
-  const phoneE164=(cc+phone.replace(/\D/g,'')).replace(/^\+?/, '+');
+  const nationalPhone=phone.replace(/[\s()-]/g,'');
+  if(!/^\+[1-9]\d{0,2}$/.test(cc)||!/^\d+$/.test(nationalPhone)) throw new Error('Enter a valid phone number using digits and the selected country code.');
+  const phoneE164=cc+nationalPhone;
+  if(!/^\+[1-9]\d{6,14}$/.test(phoneE164)) throw new Error('Enter a complete phone number with 7 to 15 digits including the country code.');
   const c=createCandidateInternal_({name,email,phone:phoneE164,countryCode:cc,timezone:tz,type:'REGULAR',password});
   try { c.ContactResourceName=syncGoogleContact_(c); const row=findOne_(sh_(APP.SHEETS.CANDIDATES),'CandidateID',c.CandidateID); updateObjectRow_(sh_(APP.SHEETS.CANDIDATES),row._row,{ContactResourceName:c.ContactResourceName}); } catch(e){ audit_('SYSTEM','CONTACT_SYNC_FAILED','CANDIDATE',c.CandidateID,e.message); }
   const token=authLock_(()=>newSession_({role:'candidate',candidateId:c.CandidateID,email:c.Email})); audit_(c.CandidateID,'REGISTER','CANDIDATE',c.CandidateID,{email});

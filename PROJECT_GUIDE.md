@@ -1,4 +1,4 @@
-﻿# Interview Booking Portal â€” project and agent guide
+# Interview Booking Portal â€” project and agent guide
 
 Last updated: 2026-10-11.
 
@@ -8,7 +8,7 @@ This document describes the current application, its features, architecture, dev
 
 The portal lets candidates register, book interviews, submit payment references, and manage bookings. Administrators manage candidates, payments, refunds, availability, pricing, and bookings. Visitors can inspect blocked schedules without logging in.
 
-Production is a Google Sheets-bound Google Apps Script web app using V8. Google Sheets holds records; Apps Script integrates with Calendar, email, and Google People contacts. `doGet()` serves `Index.html` through HtmlService. The browser calls public server functions through `google.script.run`, wrapped by the client `call()` helper. There is no frontend build step, npm package, external application database, or Node production server.
+Production is a Google Sheets-bound Google Apps Script web app using V8. Google Sheets holds records; Apps Script integrates with Calendar, email, and Google People contacts. `doGet()` serves `Index.html` through HtmlService. The browser calls public server functions through `google.script.run`, wrapped by the client `call()` helper. Avoid raw `<?` sequences in the HTML, including inside JavaScript strings: Apps Script interprets them as template scriptlets. There is no frontend build step, npm package, external application database, or Node production server.
 
 The local Node server emulates Apps Script and Google services in memory. On loopback pages bearing the LOCAL TEST DATA ONLY notice, the shared call helper sends JSON directly to /rpc using fetch; it preserves server errors, recovery-code notices and loading cleanup without relying on the google.script.run shim. Deployed Apps Script continues to use google.script.run. It is solely a development preview. Restarting it discards edits and recreates sample data.
 
@@ -31,6 +31,7 @@ The local Node server emulates Apps Script and Google services in memory. On loo
 | `non-appscript/local-preview/read-ui.cjs` | Reads the UI for preview and tests; supports trusted includes for compatibility |
 | `non-appscript/local-preview/shim.txt` | Browser replacement for `google.script.run` in the preview |
 | `non-appscript/local-preview/browser-check.cjs` | Edge remote-debugging helper for optional browser walkthroughs/screenshots |
+| `non-appscript/local-preview/qa-live.cjs` | Task-specific live QA browser driver: real Edge mouse/keyboard input through nested Apps Script frames, masked observations and screenshots; no direct application RPC |
 | `non-appscript/tests/*.test.cjs` | Dependency-free Node tests using mocked Apps Script services/browser contexts |
 | `non-appscript/LOCAL_TEST_CASES.md` | Manual browser walkthrough of actual website; requires non-appscript/WEBSITE_TEST_REPORT.md after execution |
 | `non-appscript/WEBSITE_TEST_REPORT.md` | Results and limitations from the latest visible-browser QA walkthrough |
@@ -47,7 +48,7 @@ Screen-size responsiveness is temporarily disabled at the user's request. The po
 ## Candidate and visitor features
 
 - Landing page offers candidate login, registration and admin login; public blocked-schedule lookup accepts a date and timezone and exposes times without candidate/payment details.
-- Registration accepts name, email, country code, phone, timezone and matching passwords. Login accepts candidate ID or email.
+- Registration accepts name, email, country code, phone, timezone and matching passwords. Client and server reject incomplete phones, letters/punctuation other than spaces/parentheses/hyphens, invalid country codes and totals outside 7–15 digits. The selected country code is prepended once; this is structural validation, not verification that a phone exists. Login accepts candidate ID or email.
 - Forgot Password sends a six-digit recovery code to the registered email. Candidates can also change their password while signed in. Successful changes clear the session and show an inline success message on the appropriate sign-in screen; validation/errors stay inline on the password form. Admin password changes follow the same flow without browser alert dialogs.
 - Candidate navigation contains Dashboard, Blocked Schedules, Book Interview, Change Password and Logout. Admin navigation also has a separate Change Password page, available in desktop tabs and the retained mobile menu; Settings only contains application configuration. The active page is highlighted; hover/press effects provide feedback and reduced-motion preferences disable navigation animation. Logout has a separate exit icon: its arrow slides outward on hover/focus, the button fills red, and pressing gently shrinks it. The same effect applies to candidate navigation and desktop/mobile admin logout.
 - Dashboard shows candidate ID, account type and timezone in a compact profile row. Timezone changes use Edit/Save/Cancel controls.
@@ -132,6 +133,12 @@ Recovery codes expire after ten minutes, allow five attempts, are single-use and
 
 Use `non-appscript/LOCAL_TEST_CASES.md` for the current manual pre-deployment website walkthrough. An agent opens the actual local website, clicks controls, enters forms, checks saved results across pages and writes `non-appscript/WEBSITE_TEST_REPORT.md` after execution, with every case status, evidence, bugs and restoration notes. Browser-control tools may perform those real interactions; Node tests, direct APIs, injected sample screens and storage edits cannot substitute. All cases start Not run; conditional unavailable checks remain Blocked. Use QA records and restore shared configuration; do not change shared admin credentials, restart/reset or deploy without authorization. Internal security/schema/owner checks and live Google delivery need separate technical/post-deployment testing. Maintain this plan alongside the guide when visible behaviour changes.
 
+The user can explicitly select the live Apps Script URL in `non-appscript/WEBSITE_TEST_REPORT.md` instead. Local seed credentials and mock recovery-code notices do not apply there. Keep live and local case accounting separate, use supplied live credentials and QA records, and record actual external-service verification separately from visible portal status. Live registration/bookings may automatically trigger Contacts/Calendar/email work even when the test uses only the website. A success toast alone does not prove a downloaded spreadsheet or external delivery.
+
+Latest live follow-up (2026-10-11): authenticated admin/candidate browser journeys confirmed candidate and admin booking creation, linked payment verification, changed-payment Cancel, cancellation/refund agreement, correct India next-day display and independent general/schedule zones. Existing New York weekly 12:00–20:00 availability explains the earlier India-daytime quote rejection. General timezone was temporarily changed to Kolkata and restored to New York; availability hours/zone were preserved. Real `.xlsx` files downloaded for five admin tables; spreadsheet-viewer checks, large datasets, recovery delivery, DST boundaries and external Google results remain unverified. See the report's full case inventory; this is not full-suite live approval. The live run found short-phone acceptance, quote AM/PM remaining in 24-hour mode and incorrect payment/account picker names. A subsequent fix task corrected these in local source and verified them through local browser controls and mocked regressions. A subsequent authorized live browser recheck on the same /exec URL confirmed all three corrected behaviors. This resolves the reported defects, while broader checklist variants and full-suite live coverage remain incomplete.
+
+The task-specific `qa-live.cjs` driver requires an already available Edge remote-debugging endpoint on port 9333 and is pinned to the current report's live URL. Its Node process is browser-control plumbing, not a Node application test. Observation JSONL files and PNGs in `non-appscript/local-preview/` are dated evidence, not automatically current results. `qa-live-downloads/` contains actual QA browser downloads. Never put supplied credentials into the report or a driver file; screenshots/observations must mask secret fields. The driver does not replace reviewing the actual visible result after each dependent action.
+
 Run from the project root with Node available:
 
 ```powershell
@@ -189,11 +196,105 @@ Sheets still scans relevant tabs for global counts, filtering and sorting; pagin
 3. For an existing authentication upgrade, run `upgradeCandidateAuthentication()` as owner; it preserves existing data/settings while adding authentication schema. See `AUTHENTICATION.md`.
 4. Authorize required scopes: current spreadsheet, email sending, Calendar, Contacts and user identity. The manifest enables Advanced People API v1.
 5. Configure actual business timezone, availability, buffers, pricing, notification email, UPI/QR and Calendar. QR supports HTTPS image URLs or Drive image file links; Drive sharing must permit image access.
-6. Update the web-app deployment and perform deployed registration/login/recovery/refresh/logout, booking/payment/refund, Calendar and contact smoke checks.
+6. Push all Apps Script source, then publish/update the Web app through the Apps Script editor's Deploy flow. Select **Web app** explicitly; for the public candidate portal, use **Execute as me** and **Anyone** only when that public access is intended. In this project, `clasp deploy` created/updated a Library deployment rather than a Web app, so do not use it to publish the portal. Verify the resulting Web app URL and test registration/login/recovery/refresh/logout, booking/payment/refund, Calendar and contact workflows. A newly created Web app deployment has a new URL.
 
 `migrateLegacyInterviews()` imports compatible legacy rows while tracking source rows to avoid duplication. `resetInterviewPortalForTesting()` permanently deletes the eight portal tabs and portal authentication/pending-work properties. It preserves unrelated tabs/properties and external Calendar/Contacts; it is a destructive owner-only maintenance command, never a routine fix. Reinitialization does not remove orphaned external events/contacts.
 
+The pending-test continuations are recorded in `non-appscript/WEBSITE_TEST_REPORT.md`: live percentage bookings, overnight bookings/conversion, full-day blocks, draft cancellation and date filters were exercised and temporary shared changes restored. Latest live checks also confirmed candidate ID/date/start/end/payment/refund/charge sorting in both directions,13:05/23:59 minute conversion and candidate24-hour preference after reload. Type/Booking status sorting with distinct values and multi-account preferences remain partial. The stale candidate Cancel error (L-04) is fixed and passed its live post-deployment recheck. The historical135-case counts are not current completion totals; concurrency, expiry, DST, inbox/external services and large datasets still need verification.
+
+Candidate Edit/Cancel now clears the row's old validation message; Cancel restores and locks original values. L-04 passed a focused local DOM-stub regression, relevant mocked admin checks and actual live browser recheck on2026-10-11. All ten production files were pushed; the user-supplied live URL now shows the fix. Percentage101 → Save → Cancel restored values, locked fields and removed the stale error. Further live checks confirmed normalized duplicate-email rejection, admin-email reservation, normalized candidate login and time-picker Escape. Deployment version number was not independently inspected.
+
 ## Change history
+
+Current DST validation: six live New York candidate quote checks passed on2026-10-11. Repeated01:30 on01Nov2026 and missing02:30 on14Mar2027 were explicitly rejected; valid noon quotes before/after each transition had correct UTC−4/−5 timestamps and unchanged30-minute pricing. Full DST coverage still needs admin intervals spanning the clock jump, persisted/public booking display and external Calendar/email inspection. The `qa-live.cjs timestamps <label>` command records visible DOM timestamp attributes only, without changing application state.
+
+### 2026-10-11 — Verify New York daylight-saving quotes live
+
+- Updated `non-appscript/WEBSITE_TEST_REPORT.md` with six passing live candidate quote variants:01Nov2026 repeated01:30 rejected,14Mar2027 missing02:30 rejected, and noon quotes before/after both changes showed correct UTC−4/−5 conversion with30minutes/$50 unchanged. Actual browser input and rendered DOM timestamp observations were used; no simulated app calls.
+- Added read-only `timestamps` evidence command to `non-appscript/local-preview/qa-live.cjs`, appended masked observations, restored QA profile Asia/Calcutta/12hours and signed out. No new bookings/payments, shared schedule changes, application fix, push or deployment. Persisted/admin/public/external DST variants remain unverified.
+
+### 2026-10-11 — Continue live sorting and minute-format tests
+
+- Updated `non-appscript/WEBSITE_TEST_REPORT.md` and appended masked browser observations after actual live clicks on all nine candidate table headers in both directions. Distinct ID/date/start/end/payment/refund/charge values sorted correctly; Type/Booking status remain partial because current rows all share the same values.
+- Checked13:05/23:59 picker input converted to1:05PM/11:59PM, and candidate24-hour preference survived actual reload/session restoration. Restored12hours and signed out; no live data changes, source fixes, push or deployment. Multi-account preferences and the remaining concurrency/DST/service/large-data cases remain unverified.
+
+### 2026-10-11 — Verify candidate Cancel fix live
+
+- Rechecked L-04 through actual Edge clicks/typing on the user-supplied Apps Script URL: percentage101 Save showed validation; Cancel removed the error and restored/locked original candidate fields. Updated `non-appscript/WEBSITE_TEST_REPORT.md` and appended masked browser observations.
+- No valid data mutation, deployment or source change; signed out after checking. Live Cancel-fix recheck passed; remaining advanced/service tests are still incomplete. Deployment version number not independently inspected.
+
+### 2026-10-11 — Push candidate Cancel fix
+
+- Verified `clasp status` included all eight numbered server files, `Index.html` and `appsscript.json`, excluding local tests/reports. `clasp push --force` successfully uploaded all ten files after retrying outside the restricted network sandbox.
+- Updated this guide and `non-appscript/WEBSITE_TEST_REPORT.md` with upload status. No Web app deployment, live fix recheck, data reset or credential change performed. Existing focused local validation remains applicable; next deployment requires the live Cancel-error recheck.
+
+### 2026-10-11 — Fix stale candidate error and continue live checks
+
+- Updated `Index.html` candidate field toggling to clear old row validation on Edit/Cancel while preserving saved-value restoration and locking. Added `non-appscript/tests/candidate-cancel.test.cjs`; focused regression and existing admin-improvements mocked tests passed. No shared authentication, booking or navigation behavior changed.
+- Continued actual live browser registration/login/picker checks, appended masked observations and updated `non-appscript/WEBSITE_TEST_REPORT.md`. No new live records, shared setting changes, push or deployment. Local fix verification is explicitly separate from live tests of existing deployed behavior; post-deployment Cancel recheck and previously blocked advanced/service cases remain pending.
+
+### 2026-10-11 — Retain next-deployment bug reminder
+
+- Recorded the user's deferred L-04 fix and live recheck steps in this guide and `non-appscript/WEBSITE_TEST_REPORT.md`. Reviewed existing reports to provide current test status; no new tests, source fix, push or deployment in this reminder task.
+
+### 2026-10-11 — Continue pending manual live tests
+
+- Updated `non-appscript/WEBSITE_TEST_REPORT.md` with actual live browser checks for percentage/no-payment bookings, overnight confirmation/override and timezone conversion, candidate reversed/equal times, date/status filters, admin inclusive ranges, charge draft/discard/save, contact Cancel, full-day availability blocking, dashboard links and candidate Name sorting. Evidence appended to `non-appscript/local-preview/qa-live-20261011-observations.jsonl` with overnight and Cancel-error screenshots.
+- Found L-04: invalid-percentage error remains after Cancel even though saved candidate values are restored. This testing task did not fix application source or deploy. The report identifies tested variants separately from incomplete checklist cases and excludes premature/asynchronous driver observations.
+- Cancelled the two new QA bookings; restored QA candidate REGULAR0 and original contacts/preferences, original seven New York12:00–20:00 weekday rules, removed the temporary full-day block, and signed out. No shared credential changes, resets or actual bank transactions. External service results, inbox recovery, concurrency, expiry, DST and large-data cases remain unverified; no Node application suite was substituted for manual live testing.
+
+### 2026-10-11 — Verify pushed fixes on the live website
+
+- Updated `non-appscript/WEBSITE_TEST_REPORT.md` with three successful focused live browser rechecks: short-phone rejection without a new candidate, 12/24-hour quote display with unchanged duration/price, and corrected payment/account picker names. The existing `/exec` URL now serves the fixed behavior; deployment version was not independently inspected.
+- Used real Edge clicks/typing with the existing QA candidate/admin. No booking/payment/refund creation, shared settings/profile/credential changes, reset or deployment; restored12hour candidate display and signed out. Full135-case coverage remains incomplete; focused bug rechecks are distinct from broad checklist completion.
+- Adjusted `non-appscript/local-preview/qa-live.cjs` to foreground the live tab and scroll immediately before physical clicks. Early mis-targeted driver attempts are excluded from results. Browser evidence appended to the masked JSONL log and a live quote screenshot; no Node application suite substituted for live testing.
+
+### 2026-10-11 — Push walkthrough fixes to Apps Script
+
+- Ran `clasp status` to confirm only the ten production files were included, then successfully uploaded with `clasp push --force` after the ordinary command skipped its cached upload. Uploaded all `00_`–`07_` server files, `Index.html` and `appsscript.json`; local previews, reports and tests were excluded.
+- Validation: clasp reported `Pushed 10 files`. The preceding fix task passed all 14 local test files and focused local browser checks. This task pushed source only: no versioned Web app deployment update, live browser recheck, data reset or credential change. The live `/exec` website still needs its deployment updated to use these fixes.
+
+### 2026-10-11 — Fix three walkthrough findings
+
+- `02_AuthCandidates.js` validates registration phone structure before candidate creation; `Index.html` applies the same client guard. Quote cards for regular and percentage candidates now use UTC-backed `quoteTimeMarkup`, so dynamic 12/24-hour changes update summaries as well as inputs. Picker names prioritize explicit/associated labels and account-type fallback, avoiding unrelated Interview type labels.
+- Added invalid-phone/no-partial-account regression checks in `non-appscript/tests/auth.test.cjs`; updated the picker DOM stub and payment/account label checks in `non-appscript/tests/pickers.test.cjs`. Updated the website report with local fix verification while retaining failed live results until deployment/retest.
+- Browser validation: phone123 rejected in the existing local preview; isolated temporary preview8792 showed Payment status/Account type names and quote20-10-26 noon switching between12:00–12:30 and12:00PM–12:30PM with unchanged30min/$50. Existing preview8787 stalled on login, so label/quote checks used isolated mocks without resetting existing data. All 14 mocked test files passed in the final full-suite run. No live deployment or live fix verification; the temporary preview was stopped after validation.
+
+### 2026-10-11 — Authenticated live browser follow-up
+
+- Extended `non-appscript/WEBSITE_TEST_REPORT.md` with the live admin/candidate walkthrough, full 135-case accounting, reproducible phone/quote-format/picker-label findings, actual download evidence, QA record IDs, restoration notes and unverified conditions. Preserved earlier reports and distinguished their local checks from this live follow-up.
+- Clarified user-selected live testing in `non-appscript/LOCAL_TEST_CASES.md` and updated this guide's testing workflow/file map. Added task-specific browser-control helpers, masked observation logs, screenshots and QA downloads under `non-appscript/local-preview/`; no application source fix, reset or deployment in this task.
+- Validation used real Edge clicks/typing on deployed Apps Script forms and re-read candidate/admin records. Supplemental ZIP/XML inspection only checked downloaded package structure/row counts; no spreadsheet viewer or external Calendar/Contacts/email inspection. Node application tests were not substituted for website verification. Shared settings restored; QA records retained and shared admin credentials unchanged. See the report for incomplete/blocked cases and local supplemental records.
+
+### 2026-10-11 — Repair deployed-client script parsing
+
+- Replaced the browser-extension URL regular-expression literal with protocol substring checks, avoiding escaped-slash syntax that was malformed in the script served by deployed version 16. Added a focused client regression test covering Chrome, Firefox, Safari extension stacks and ordinary page errors.
+- Validation: all 14 local test files and a direct client-script syntax check passed. Pushed all 10 Apps Script files and created source version 17. The CLI update changed the existing deployment to a Library entry, and its old URL returned 404; then created a proper public Web app deployment through the Apps Script editor (version 18, execute as the project owner, access Anyone). The new deployment renders the app; Candidate Login, Register, Admin navigation and a public blocked-schedule lookup for 11-10-2026 succeeded. No candidate was registered and no authenticated workflow was tested. The cause of the original difference between local source and served HTML remains unconfirmed.
+- Operational note: the prior deployment URL now returns 404 because that deployment entry is a Library. The working version-18 web app has a new URL; provide that new URL to users and do not use the old deployment link.
+
+### 2026-10-11 — Run deployed version-18 application walkthrough
+
+- Exercised the new live Web app through visible browser controls: public blocked-schedule requests in Asia/Calcutta and America/New_York; registration required/email/password/duplicate checks; one QA candidate registration and email/ID login; wrong-password rejection; session refresh/logout; empty dashboard filter; candidate timezone change and restoration; 12/24-hour display; booking form blank/reversed-time validation; quote requests; negative password-change checks; admin login blank validation and blank recovery-email validation.
+- Found a live registration defect: country code India with phone `123` was accepted. The labeled test candidate `AV-NP1P2` remains in the Candidates sheet with that phone; no admin access was available to remove it. Initial quote checks on 15-10-2026 at noon and 1 PM were rejected as outside Admin availability. Follow-up visible-UI checks tried 9 AM, 1 PM and 5 PM for one-hour slots on 12–15 October; all 12 were rejected with the same message. A successful quote could not be established. No booking/payment/refund, shared settings/availability, Calendar, Contacts, or password mutation was performed. Full evidence and limitations are recorded in `non-appscript/WEBSITE_TEST_REPORT.md`; all interactions were against deployed Apps Script, not local mocks. No code changes or deployment were made during this walkthrough.
+
+### 2026-10-11 — Continue deployed version-18 quote checks
+
+- Used the visible candidate booking form to test 12 one-hour quote intervals: 9 AM, 1 PM and 5 PM on each date from 12 to 15 October 2026. Every request returned “Requested interview is outside Admin availability.” The custom time picker was operated with its 1–12 hour and AM/PM controls.
+- Updated `non-appscript/WEBSITE_TEST_REPORT.md` with the results. Did not inspect or change shared availability, submit a booking, or mutate production data. Admin-only workflows still require an authorized admin session; payment/refund and Calendar/Contacts workflows remain untested. No source changes, local-mock tests, or deployment were performed.
+
+### 2026-10-11 — Test deployed version 16 client interactions
+
+- Tested the live deployment in the integrated browser. The styled landing page rendered, but Register and Admin navigation failed with `show is not defined`, and public blocked-schedule lookup failed with `loadPublicBookings is not defined`. Syntax-checking the served inline client script exposed a malformed regular expression near `isExtensionError`; local source syntax checks cleanly. The cause of the deployed/source discrepancy is not confirmed.
+- Result: application workflows are blocked before usable form navigation; no registration, authentication, booking, payment, refund, shared setting, availability, spreadsheet, or external Google service data was changed. Authentication and backend workflows remain untested on the live deployment. Full evidence is in `non-appscript/WEBSITE_TEST_REPORT.md`, separated from the historical local-mock walkthrough. No code fix or redeployment was performed.
+
+### 2026-10-11 — Fix Apps Script HTML template parsing
+
+- Removed the XML declaration from the generated XLSX content-types XML string. Apps Script HtmlService treats raw `<?xml` inside `Index.html` as a server-side scriptlet; parsing failed at `doGet()` before the portal rendered. The declaration is optional in XML. Added a regression assertion against template-breaking markup.
+- Files: `Index.html`, `non-appscript/tests/admin-improvements.test.cjs`, `PROJECT_GUIDE.md`. All 14 local test scripts passed. Force-pushed all 10 Apps Script files, updated the existing web-app deployment to version 16, and verified its URL now renders the portal landing page. Only the deployed page-load smoke check was performed; authentication and live Google service workflows still need testing.
+### 2026-10-11 — Reset live portal data and recreate sheets
+
+- Ran the owner-checked `resetInterviewPortalForTesting()` from the Apps Script editor for the bound spreadsheet, then ran `runInitialSetup()`. All eight portal tabs were recreated with headers/defaults and no candidate records. Removed the temporary `Portal Reset` placeholder after setup and removed the one-time initialization Script Properties.
+- Validation: both editor executions completed; the specified spreadsheet showed the recreated portal tabs and an empty Candidates sheet. Unrelated spreadsheet tabs were preserved (none were present); Calendar events and Contacts are not removed by this reset. The existing version 14 web-app deployment still showed a syntax error before this reset; no new deployment or live web-app smoke test was performed.
 
 ### 2026-10-11 — Push source to Apps Script
 
